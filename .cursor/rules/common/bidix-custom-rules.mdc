@@ -1,0 +1,148 @@
+---
+alwaysApply: true
+---
+
+##############################################################
+# I. ARCHITECTURE PRINCIPLES – SSOT & LAYERED DESIGN
+##############################################################
+
+# (1) SSOT 규칙 – 모든 엔진/제네레이터는 policy + dataset + types를 반드시 참조
+rule "ssot-compliance" {
+    condition { file.path.matches("src/lib/(engines|generators)/.*\\.ts") }
+
+    # 정책 참조
+    content_matches { "policy" }
+    # 데이터셋/프리셋 참조
+    content_matches { "dataset" }
+    # 타입은 반드시 /types 에서만 가져오기
+    content_matches { "from \"@/lib/types" }
+
+    reason {
+        "엔진/제너레이터는 docs 및 policy 기반으로 동작해야 하며, 모든 타입은 SSOT(src/lib/types)에서만 읽어야 합니다."
+    }
+}
+
+# (2) 역할 분리 원칙 – UI는 엔진/서비스 직접 호출 금지
+rule "ui-no-engine-calls" {
+    condition { file.path.matches("src/app/components/.*\\.tsx") }
+
+    content_does_not_match { "Engine" }
+    content_does_not_match { "Service" }
+    content_does_not_match { "auctionengine" }
+
+    reason {
+        "UI 컴포넌트는 오직 Server Action 또는 Zustand Store를 통해 비즈니스 로직을 호출해야 합니다."
+    }
+}
+
+# (3) 엔진 Purity – 엔진은 랜덤/DB/서비스 import 금지
+rule "engine-purity" {
+    condition { file.path.matches("src/lib/engines/.*\\.ts") }
+
+    # DB 금지
+    content_does_not_match { "createClient" }
+    # 서비스 import 금지
+    content_does_not_match { "from \"@/lib/services" }
+    # 랜덤 금지
+    content_does_not_match { "Math.random" }
+    content_does_not_match { "randomInt" }
+
+    reason {
+        "엔진은 외부 IO 없이 순수 계산만 담당해야 합니다."
+    }
+}
+
+# (4) 서비스 레이어는 엔진만 호출 가능, UI 호출 금지
+rule "service-isolation" {
+    condition { file.path.matches("src/lib/services/.*\\.ts") }
+
+    content_does_not_match { "from \"@/app" }
+    reason {
+        "Service는 엔진/DB 계층이며 UI(App) 영역을 import하면 안 됩니다."
+    }
+}
+
+
+##############################################################
+# II. TECHNOLOGY & STYLING RULES
+##############################################################
+
+# (5) Next.js + Tailwind 강제
+rule "frontend-tailwind" {
+    condition { file.path.matches("src/app/.*\\.tsx") }
+    content_matches { "className=" }
+    reason { "모든 프론트엔드는 Tailwind 기반으로 스타일링합니다." }
+}
+
+# (6) 타입 안전성 – any 금지
+rule "type-safety" {
+    condition { file.path.matches("src/.*\\.ts") }
+    content_does_not_match { ": any" }
+    reason { "타입 안정성을 위해 any 사용을 금지합니다." }
+}
+
+# (7) Barrel import 강제 (엔진·서비스에서 타입 import 시 index.ts 사용)
+rule "barrel-import" {
+    condition { file.path.matches("src/lib/(engines|services)/.*\\.ts") }
+    content_matches { "from \"@/lib/types\"" }
+    reason { "타입 import 시 반드시 barrel(index.ts) 사용해야 합니다." }
+}
+
+
+##############################################################
+# III. FREEMIUM UX & PREMIUM RULES
+##############################################################
+
+# (8) 프리미엄 페이지는 잠금 표시 필수
+rule "premium-lock" {
+    condition { file.path.matches("src/app/(result|premium)/.*\\.tsx") }
+    content_matches { "🔒" }
+    reason { "유료 리포트 기능은 디자인 시스템에 따라 잠금 표시가 필요합니다." }
+}
+
+# (9) Premium CTA 일관성 – 특정 문구를 반드시 포함
+rule "premium-cta" {
+    condition { file.path.matches("src/app/(result|premium)/.*\\.tsx") }
+
+    content_matches { "프리미엄" }
+    content_matches { "해설판" }
+
+    reason { "Premium CTA는 통일된 단어(프리미엄 / 해설판)를 확보해야 합니다." }
+}
+
+
+##############################################################
+# IV. FILE & NAMING CONVENTIONS
+##############################################################
+
+# (10) 컴포넌트는 PascalCase 파일명 강제
+rule "component-naming" {
+    condition { file.path.matches("src/app/components/.*/.*\\.tsx") }
+    file_name_matches { "^[A-Z].*" }
+    reason { "컴포넌트 파일명은 PascalCase로 작성해야 합니다." }
+}
+
+# (11) Engine 파일은 kebab-case 강제
+rule "engine-naming" {
+    condition { file.path.matches("src/lib/engines/.*\\.ts") }
+    file_name_matches { "^[a-z0-9-]+\\.ts$" }
+    reason { "엔진 계층은 kebab-case 통일: 예) valuation-engine.ts" }
+}
+
+# (12) 파일 경로 오염 방지 – engines는 components import 금지
+rule "no-cross-import" {
+    condition { file.path.matches("src/lib/engines/.*\\.ts") }
+    content_does_not_match { "from \"@/app/components" }
+    reason { "엔진 레이어에서 UI 레이어를 import하면 안 됩니다." }
+}
+
+# (13) 액션 파일은 lowercase + dash 규칙
+rule "action-naming" {
+    condition { file.path.matches("src/app/actions/.*\\.ts") }
+    file_name_matches { "^[a-z0-9-]+\\.ts$" }
+    reason { "actions 폴더는 kebab-case 통일합니다. 예: generate-simulation.ts" }
+}
+
+##############################################################
+# END OF RULESET
+##############################################################

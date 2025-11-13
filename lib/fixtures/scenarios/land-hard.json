@@ -1,0 +1,159 @@
+{
+    "property": {
+      "id": "prop-LND903",
+      "category": "commercial",
+      "type": "commercial_land",
+      "sizeM2": 312,
+      "landSizeM2": 312,
+      "yearBuilt": null,
+      "appraisalValue": 468000000,
+      "auctionStep": 3,
+      "address": "경기도 용인시 처인구 남사읍 000-0",
+      "difficulty": "hard",
+      "floorInfo": { "total": null, "current": null },
+      "buildingUse": "land"
+    },
+    "valuation": {
+      "appraisalValue": 468000000,
+      "baseFMV": 452000000,
+      "adjustedFMV": 439400000,
+      "minBid": 281800000,
+      "recommendedBidRange": { "min": 305000000, "max": 322000000 },
+      "confidence": 0.72,
+      "method": "fmv-weighted",
+      "notes": [
+        "토지거래 신고내역 표본 적음",
+        "주변 공장 부지 개발 영향 반영",
+        "유동성 리스크 존재"
+      ]
+    },
+    "rights": {
+        "assumableRightsTotal": 164800000,
+        "evictionCostEstimated": 8500000,
+        "evictionRisk": 4,
+        "riskFlags": ["multiple_rights", "squatter_present"],
+        "breakdown": [
+          {
+            "type": "mortgage",
+            "inheritable": true,
+            "payout": 98000000,
+            "risk": 3
+          },
+          {
+            "type": "tax_lien",
+            "inheritable": true,
+            "payout": 28800000,
+            "risk": 4
+          },
+          {
+            "type": "prior_tenant",
+            "inheritable": false,
+            "payout": 38000000,
+            "risk": 5
+          }
+        ]
+      },
+      "costs": {
+        "totalAcquisition": 487300000,
+        "taxes": 15200000,
+        "legalFees": 1400000,
+        "repairCost": 0,
+        "holdingCost": 6200000,
+        "interestCost": 11400000,
+        "loanPrincipal": 320000000,
+        "ownCash": 167300000,
+        "totalCost": 514700000
+      },
+      "profit": {
+        "netProfit": -75200000,
+        "roi": -0.448,
+        "annualizedRoi": -0.521,
+        "safetyMargin": -75200000,
+        "breakevenExit": 514700000,
+        "meetsTargetMargin": false,
+        "meetsTargetROI": false
+      },
+      "courtDocs": {
+        "meta": {
+          "caseNo": "2025-55791",
+          "courtName": "수원지방법원",
+          "capturedAt": "2025-11-07T10:36:52.000Z"
+        },
+        "registry": {
+          "parcel": { "buildingUse": "land" },
+          "rights": [
+            {
+              "section": "갑구",
+              "type": "mortgage",
+              "date": "2018-06-22"
+            },
+            {
+              "section": "갑구",
+              "type": "tax_lien",
+              "date": "2024-03-19"
+            },
+            {
+              "section": "을구",
+              "type": "prior_tenant",
+              "date": "2023-11-07"
+            }
+          ]
+        },
+        "maj": {
+          "baseRight": "근저당권",
+          "occupancy": { "type": "squatter" },
+          "tenants": [
+            {
+              "name": "점유자 미상",
+              "deposit": null,
+              "protected": false
+            }
+          ],
+          "specialNotes": [
+            "강제집행 필요 가능성",
+            "점유자 신원 확인 불가",
+            "명도비용 배당 불가"
+          ]
+        },
+        "distribution": {
+          "rows": [
+            {
+              "creditor": "농협은행",
+              "type": "근저당권",
+              "claimAmount": 98000000,
+              "paidAmount": 0,
+              "rankNo": 1
+            },
+            {
+              "creditor": "용인세무서",
+              "type": "국세체납",
+              "claimAmount": 28800000,
+              "paidAmount": 0,
+              "rankNo": 2
+            },
+            {
+              "creditor": "점유자 미상",
+              "type": "선순위점유",
+              "claimAmount": 38000000,
+              "paidAmount": 0,
+              "rankNo": 3
+            }
+          ],
+          "totalClaimAmount": 164800000,
+          "totalPaidAmount": 0
+        },
+        "quality": {
+          "ocrConfidence": 0.73,
+          "missingFields": ["tenant_id", "land_category"],
+          "warnings": ["OCR 정확도 낮음", "명도 위험도 수동 검토 필요"]
+        }
+      },
+      "summary": {
+        "isProfitable": false,
+        "grade": "D",
+        "riskLabel": "High",
+        "recommendedBidRange": [305000000, 322000000],
+        "generatedAt": "2025-11-07T10:36:52.000Z"
+      }
+    }
+          

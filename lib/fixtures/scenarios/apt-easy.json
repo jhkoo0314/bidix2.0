@@ -1,0 +1,109 @@
+{
+    "property": {
+      "id": "prop-APT001",
+      "category": "residential",
+      "type": "apartment",
+      "sizeM2": 84,
+      "landSizeM2": 98,
+      "yearBuilt": 2014,
+      "appraisalValue": 615000000,
+      "auctionStep": 1,
+      "address": "서울시 송파구 잠실동 000-0",
+      "difficulty": "easy",
+      "floorInfo": { "total": 25, "current": 14 },
+      "buildingUse": "apartment"
+    },
+    "valuation": {
+      "appraisalValue": 615000000,
+      "baseFMV": 680000000,
+      "adjustedFMV": 693600000,
+      "minBid": 430500000,
+      "recommendedBidRange": { "min": 530000000, "max": 560000000 },
+      "confidence": 0.91,
+      "method": "fmv-weighted",
+      "notes": ["최근 실거래가 반영", "건물 연식 및 층수 보정 포함"]
+    },
+    "rights": {
+        "assumableRightsTotal": 28500000,
+        "evictionCostEstimated": 0,
+        "evictionRisk": 0,
+        "riskFlags": [],
+        "breakdown": [
+          {
+            "type": "mortgage",
+            "inheritable": true,
+            "payout": 28500000,
+            "risk": 1
+          }
+        ]
+      },
+      "costs": {
+        "totalAcquisition": 563200000,
+        "taxes": 16350000,
+        "legalFees": 1200000,
+        "repairCost": 0,
+        "holdingCost": 4200000,
+        "interestCost": 8200000,
+        "loanPrincipal": 350000000,
+        "ownCash": 213200000,
+        "totalCost": 587100000
+      },
+      "profit": {
+        "netProfit": 10650000,
+        "roi": 0.048,
+        "annualizedRoi": 0.067,
+        "safetyMargin": 10650000,
+        "breakevenExit": 587100000,
+        "meetsTargetMargin": true,
+        "meetsTargetROI": true
+      },
+      "courtDocs": {
+        "meta": {
+          "caseNo": "2025-14322",
+          "courtName": "서울동부지방법원",
+          "capturedAt": "2025-11-07T10:22:13.000Z"
+        },
+        "registry": {
+          "parcel": { "buildingUse": "apartment" },
+          "rights": [
+            {
+              "section": "갑구",
+              "type": "mortgage",
+              "date": "2019-08-14"
+            }
+          ]
+        },
+        "maj": {
+          "baseRight": "근저당권",
+          "occupancy": { "type": "vacant" },
+          "tenants": [],
+          "specialNotes": []
+        },
+        "distribution": {
+          "rows": [
+            {
+              "creditor": "국민은행",
+              "type": "근저당권",
+              "claimAmount": 28500000,
+              "paidAmount": 0,
+              "rankNo": 1
+            }
+          ],
+          "totalClaimAmount": 28500000,
+          "totalPaidAmount": 0
+        },
+        "quality": {
+          "ocrConfidence": 0.94,
+          "missingFields": [],
+          "warnings": []
+        }
+      },
+      "summary": {
+        "isProfitable": true,
+        "grade": "A",
+        "riskLabel": "Low",
+        "recommendedBidRange": [530000000, 560000000],
+        "generatedAt": "2025-11-07T10:22:13.000Z"
+      }
+    }
+          

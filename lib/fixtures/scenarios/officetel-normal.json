@@ -1,0 +1,133 @@
+{
+    "property": {
+      "id": "prop-OFC112",
+      "category": "commercial",
+      "type": "officetel",
+      "sizeM2": 42,
+      "landSizeM2": 55,
+      "yearBuilt": 2008,
+      "appraisalValue": 298000000,
+      "auctionStep": 2,
+      "address": "서울시 영등포구 여의도동 00-0",
+      "difficulty": "normal",
+      "floorInfo": { "total": 18, "current": 9 },
+      "buildingUse": "officetel"
+    },
+    "valuation": {
+      "appraisalValue": 298000000,
+      "baseFMV": 321000000,
+      "adjustedFMV": 316500000,
+      "minBid": 193700000,
+      "recommendedBidRange": { "min": 228000000, "max": 245000000 },
+      "confidence": 0.84,
+      "method": "fmv-weighted",
+      "notes": ["업무시설 수요 변동 영향", "임대수익률 평균 반영"]
+    },
+    "rights": {
+        "assumableRightsTotal": 74200000,
+        "evictionCostEstimated": 3500000,
+        "evictionRisk": 2,
+        "riskFlags": ["tenant_present"],
+        "breakdown": [
+          {
+            "type": "mortgage",
+            "inheritable": true,
+            "payout": 52000000,
+            "risk": 2
+          },
+          {
+            "type": "leasehold",
+            "inheritable": false,
+            "payout": 22200000,
+            "risk": 3
+          }
+        ]
+      },
+      "costs": {
+        "totalAcquisition": 256900000,
+        "taxes": 9200000,
+        "legalFees": 950000,
+        "repairCost": 1800000,
+        "holdingCost": 3300000,
+        "interestCost": 6200000,
+        "loanPrincipal": 180000000,
+        "ownCash": 76890000,
+        "totalCost": 276400000
+      },
+      "profit": {
+        "netProfit": 4010000,
+        "roi": 0.052,
+        "annualizedRoi": 0.059,
+        "safetyMargin": 4010000,
+        "breakevenExit": 276400000,
+        "meetsTargetMargin": true,
+        "meetsTargetROI": false
+      },
+      "courtDocs": {
+        "meta": {
+          "caseNo": "2025-31288",
+          "courtName": "서울남부지방법원",
+          "capturedAt": "2025-11-07T10:28:44.000Z"
+        },
+        "registry": {
+          "parcel": { "buildingUse": "officetel" },
+          "rights": [
+            {
+              "section": "갑구",
+              "type": "mortgage",
+              "date": "2020-03-11"
+            },
+            {
+              "section": "을구",
+              "type": "leasehold",
+              "date": "2022-09-02"
+            }
+          ]
+        },
+        "maj": {
+          "baseRight": "근저당권",
+          "occupancy": { "type": "tenant" },
+          "tenants": [
+            {
+              "name": "이서준",
+              "deposit": 22200000,
+              "protected": true
+            }
+          ],
+          "specialNotes": ["임차인 보호대상", "보증금 배당 미세조정 필요"]
+        },
+        "distribution": {
+          "rows": [
+            {
+              "creditor": "신한은행",
+              "type": "근저당권",
+              "claimAmount": 52000000,
+              "paidAmount": 0,
+              "rankNo": 1
+            },
+            {
+              "creditor": "임차인 이서준",
+              "type": "임차보증금",
+              "claimAmount": 22200000,
+              "paidAmount": 0,
+              "rankNo": 2
+            }
+          ],
+          "totalClaimAmount": 74200000,
+          "totalPaidAmount": 0
+        },
+        "quality": {
+          "ocrConfidence": 0.88,
+          "missingFields": [],
+          "warnings": ["보증금 배당 확인 필요"]
+        }
+      },
+      "summary": {
+        "isProfitable": true,
+        "grade": "B",
+        "riskLabel": "Medium",
+        "recommendedBidRange": [228000000, 245000000],
+        "generatedAt": "2025-11-07T10:28:44.000Z"
+      }
+    }
+          
