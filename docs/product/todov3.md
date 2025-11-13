@@ -128,24 +128,24 @@
 
 ### 1.1 디렉토리 구조 생성
 
-- [ ] `/app` 페이지 라우팅 구조 생성
+- [x] `/app` 페이지 라우팅 구조 생성
 
-  - [ ] `/app/page.tsx` (Landing) - 브랜드 메시지 중심
-  - [ ] `/app/dashboard/page.tsx` - 사용자 대시보드
-  - [ ] `/app/simulations/page.tsx` - 시뮬레이션 목록
-  - [ ] `/app/simulations/[id]/page.tsx` - 시뮬레이션 상세
-  - [ ] `/app/simulations/[id]/bid/page.tsx` - 입찰 페이지
-  - [ ] `/app/simulations/[id]/result/page.tsx` - 결과 페이지 (핵심)
-  - [ ] `/app/history/page.tsx` - 히스토리 페이지
+  - [x] `/app/page.tsx` (Landing) - 브랜드 메시지 중심
+  - [x] `/app/dashboard/page.tsx` - 사용자 대시보드
+  - [x] `/app/simulations/page.tsx` - 시뮬레이션 목록
+  - [x] `/app/simulations/[id]/page.tsx` - 시뮬레이션 상세
+  - [x] `/app/simulations/[id]/bid/page.tsx` - 입찰 페이지
+  - [x] `/app/simulations/[id]/result/page.tsx` - 결과 페이지 (핵심)
+  - [x] `/app/history/page.tsx` - 히스토리 페이지
 
-- [ ] `/components` 컴포넌트 폴더 구조 생성
-  - [ ] `/components/ui/` (shadcn - 이미 존재)
-  - [ ] `/components/common/` - 공통 컴포넌트
-  - [ ] `/components/dashboard/` - 대시보드 전용
-  - [ ] `/components/simulations/` - 시뮬레이션 관련
-  - [ ] `/components/bid/` - 입찰 관련
-  - [ ] `/components/result/` - 결과 관련
-  - [ ] `/components/reports/` - 리포트 관련 (Premium)
+- [x] `/components` 컴포넌트 폴더 구조 생성
+  - [x] `/components/ui/` (shadcn - 이미 존재)
+  - [x] `/components/common/` - 공통 컴포넌트
+  - [x] `/components/dashboard/` - 대시보드 전용
+  - [x] `/components/simulations/` - 시뮬레이션 관련
+  - [x] `/components/bid/` - 입찰 관련
+  - [x] `/components/result/` - 결과 관련
+  - [x] `/components/reports/` - 리포트 관련 (Premium)
 
 ### 1.2 공통 레이아웃 구성
 

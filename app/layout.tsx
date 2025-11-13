@@ -18,8 +18,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SaaS 템플릿",
-  description: "Next.js + Clerk + Supabase 보일러플레이트",
+  title: "BIDIX - Fail Safe, Bid Better",
+  description:
+    "초보 투자자가 실패의 두려움 없이 무한히 실전 경험을 쌓아, 스스로 좋은 의사결정을 내릴 수 있는 판단력을 기르도록 돕는 AI 기반 실전 훈련 시뮬레이터",
 };
 
 export default function RootLayout({
