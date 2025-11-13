@@ -8,7 +8,7 @@
 import { simulationService } from "@/lib/services/simulationservice";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 /**
  * Zod 스키마 (v2.2)
@@ -34,7 +34,7 @@ export async function submitBidAction(formData: FormData) {
     /* ----------------------------------------------------
      * [1] Clerk Authentication
      * ---------------------------------------------------- */
-    const { userId } = auth();
+    const { userId } = await auth();
     if (!userId) {
       return { ok: false, error: "사용자 인증이 필요합니다." };
     }

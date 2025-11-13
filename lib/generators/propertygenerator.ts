@@ -1,4 +1,4 @@
-// src/lib/generators/propertygenerator.ts
+// lib/generators/propertygenerator.ts
 // BIDIX AI - PropertySeed Generator
 // Version: 2.2 (Ultra Realistic A안 적용)
 // Last Updated: 2025-11-13
@@ -35,18 +35,18 @@ export function generatePropertySeed(options?: {
    *    - region에 따라 등장비율이 크게 달라지는 구조를 반영
    * ---------------------------------------------------------------------- */
   const availableTypes = Object.keys(
-    DATASET_PRESETS.basePricePerM2Matrix[region]
+    DATASET_PRESETS.basePricePerM2Matrix[region],
   ) as PropertyType[];
 
   const type: PropertyType =
-    options?.fixedType ?? availableTypes[Math.floor(Math.random() * availableTypes.length)];
+    options?.fixedType ??
+    availableTypes[Math.floor(Math.random() * availableTypes.length)];
 
   /* ------------------------------------------------------------------------
    * 3. 난이도 결정 (Easy/Normal/Hard)
    * ---------------------------------------------------------------------- */
   const difficulty: DifficultyMode =
-    options?.difficulty ??
-    sampleWeighted(DATASET_PRESETS.difficultyWeights);
+    options?.difficulty ?? sampleWeighted(DATASET_PRESETS.difficultyWeights);
 
   /* ------------------------------------------------------------------------
    * 4. 전용면적 결정 (유형별 현실 범위)
@@ -71,20 +71,11 @@ export function generatePropertySeed(options?: {
    * ---------------------------------------------------------------------- */
   const year = randomInt(
     DATASET_PRESETS.yearBuiltRange[0],
-    DATASET_PRESETS.yearBuiltRange[1]
+    DATASET_PRESETS.yearBuiltRange[1],
   );
 
   /* ------------------------------------------------------------------------
-   * 8. 감정가(appraisalValue) 1차 계산
-   *    (유형 × 지역 평단가 매트릭스 기반)
-   * ---------------------------------------------------------------------- */
-  const basePrice =
-    DATASET_PRESETS.basePricePerM2Matrix[region][type];
-
-  const appraisalValue = Math.round(sizeM2 * basePrice);
-
-  /* ------------------------------------------------------------------------
-   * 9. 최종 Seed 반환 (SSOT)
+   * 8. 최종 Seed 반환 (SSOT)
    * ---------------------------------------------------------------------- */
   return {
     id: uuid("seed"),
@@ -98,8 +89,6 @@ export function generatePropertySeed(options?: {
     address: generateAddress(region),
     auctionStep: randomInt(1, 5),
     difficulty,
-    appraisalValue,
-    region,
   };
 }
 
@@ -142,7 +131,15 @@ function calculateLandSize(type: PropertyType, sizeM2: number): number {
  * ============================================================================
  */
 function generateAddress(region: string): string {
-  const streets = ["중앙로", "테헤란로", "강남대로", "광화문로", "종로", "송도대로", "해운대로"];
+  const streets = [
+    "중앙로",
+    "테헤란로",
+    "강남대로",
+    "광화문로",
+    "종로",
+    "송도대로",
+    "해운대로",
+  ];
   const street = streets[Math.floor(Math.random() * streets.length)];
   const number = Math.floor(Math.random() * 250) + 1;
   return `${region} ${street} ${number}`;

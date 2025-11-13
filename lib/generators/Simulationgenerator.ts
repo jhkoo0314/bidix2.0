@@ -1,4 +1,4 @@
-// src/lib/generators/simulationgenerator.ts
+// lib/generators/simulationgenerator.ts
 // BIDIX AI – Master Simulation Scenario Generator (v2.2)
 // Version: 2.2
 // Last Updated: 2025-11-14
@@ -11,7 +11,7 @@ import {
 
 import { generatePropertySeed } from "./propertygenerator";
 import { generateCourtDocs, ScenarioType } from "./courtdocsmocker";
-import { normalizeCourtDocs } from "@/lib/layers/courtdocslayer";
+import { normalizeCourtDocs } from "@/lib/engines/courtdocslayer";
 
 /**
  * SimulationScenario
@@ -92,7 +92,7 @@ function pickScenarioByDifficulty(
   if (difficulty === "normal") {
     // Normal → 안전 45% / 위험 임차인 35% / 복잡권리 20%
     const r = Math.random();
-    if (r < 0.45) return "SAFE_PROPERTY";a
+    if (r < 0.45) return "SAFE_PROPERTY";
     if (r < 0.8) return "PROTECTED_TENANT";
     return "COMPLEX_RIGHTS";
   }

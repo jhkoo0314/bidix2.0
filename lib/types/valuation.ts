@@ -1,4 +1,4 @@
-// src/lib/types/valuation.ts
+// lib/types/valuation.ts
 // Auction Engine v2.2 – Valuation Layer Types
 // Last Updated: 2025-11-13
 

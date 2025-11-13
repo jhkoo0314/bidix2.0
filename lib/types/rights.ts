@@ -1,4 +1,4 @@
-// src/lib/types/rights.ts
+// lib/types/rights.ts
 // Auction Engine v2.2 – Rights Layer Types
 // Last Updated: 2025-11-13
 

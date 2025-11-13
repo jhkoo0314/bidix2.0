@@ -1,10 +1,10 @@
-// src/lib/services/simulationservice.ts
+// lib/services/simulationservice.ts
 // BIDIX AI - Simulation Service (v2.2 Full Rewrite)
 // Version: 2.2
 // Last Updated: 2025-11-14
 
 import { createClient } from "@supabase/supabase-js";
-import { Database } from "@/types/supabase";
+// import { Database } from "@/types/supabase"; // 타입 파일이 없으므로 주석 처리
 
 // Engine Layer
 import { AuctionEngine } from "@/lib/engines/auctionengine";
@@ -22,14 +22,32 @@ import {
 } from "@/lib/types";
 
 // Supabase Init
-const supabase = createClient<Database>(
+const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY! // Server-side only
+  process.env.SUPABASE_SERVICE_ROLE_KEY!, // Server-side only
 );
 
-type SimulationTable = Database["public"]["Tables"]["simulations"];
-type SimulationInsert = SimulationTable["Insert"];
-type SimulationUpdate = SimulationTable["Update"];
+// 타입 정의 (Database 타입이 없으므로 any 사용)
+type SimulationInsert = {
+  user_id: string;
+  property_json: any;
+  valuation_json: any;
+  rights_json: any;
+  court_docs_json: any;
+  property_type: string;
+  difficulty: string;
+  my_bid: number;
+  outcome: string;
+};
+
+type SimulationUpdate = {
+  my_bid?: number;
+  outcome?: string;
+  costs_json?: any;
+  profit_json?: any;
+  result_json?: any;
+  score_awarded?: number;
+};
 
 /* ============================================================
     [1] CREATE Simulation (입찰 전 단계)
@@ -54,7 +72,8 @@ async function create(userId: string, difficulty: DifficultyMode) {
     user_id: userId,
 
     // JSON 저장 (v2.2 구조)
-    property_json: initialResult.property,
+    // PropertySeed를 저장 (Property가 아닌) - AuctionEngine.run()이 PropertySeed를 받음
+    property_json: propertySeed,
     valuation_json: initialResult.valuation,
     rights_json: initialResult.rights,
     court_docs_json: courtDocs,
@@ -93,7 +112,7 @@ async function create(userId: string, difficulty: DifficultyMode) {
 async function submitBid(
   simulationId: string,
   userId: string,
-  userBid: number
+  userBid: number,
 ) {
   /* 1) 기존 데이터 가져오기 */
   const { data: original, error } = await supabase
@@ -162,7 +181,7 @@ async function submitBid(
 
 function determineOutcome(
   result: AuctionAnalysisResult,
-  userBid: number
+  userBid: number,
 ): "win" | "lose" | "overpay" {
   // 최저가: minBid
   const minBid = result.valuation.minBid;

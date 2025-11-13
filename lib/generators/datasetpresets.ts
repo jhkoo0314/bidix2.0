@@ -1,4 +1,4 @@
-// src/lib/generators/datasetpresets.ts
+// lib/generators/datasetpresets.ts
 // BIDIX Auction Engine v2.2 - Ultra Realistic Dataset Presets
 // Version: 2.2 (A안: 현실 기반 매트릭스 적용)
 // Last Updated: 2025-11-13

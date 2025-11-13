@@ -1,4 +1,4 @@
-// src/lib/engines/profitengine.ts
+// lib/engines/profitengine.ts
 // Auction Engine v2.2 - ProfitEngine (3/6/12개월 Exit Multi Scenario Evaluation)
 // Version: 2.2
 // Last Updated: 2025-11-13
@@ -40,27 +40,31 @@ export class ProfitEngine {
      * ------------------------------------------------------- */
     const fmv = valuation.adjustedFMV || valuation.appraisalValue;
     const initialSafetyMargin =
-      fmv > 0 ? (fmv - costs.totalAcquisition) / fmv : 0;
+      fmv > 0 ? (fmv - costs.acquisition.totalAcquisition) / fmv : 0;
 
     /* -------------------------------------------------------
      * 2) 시나리오별 수익 계산 (3 / 6 / 12개월)
      * ------------------------------------------------------- */
 
-    const scenarios: ProfitScenario[] = [];
-
     const scenarioDefs: Array<{
       months: 3 | 6 | 12;
-      exitKey: "exitPrice3m" | "exitPrice6m" | "exitPrice12m";
-      costKey: "totalCost3m" | "totalCost6m" | "totalCost12m";
+      periodKey: "3m" | "6m" | "12m";
     }> = [
-      { months: 3, exitKey: "exitPrice3m", exitKey: "exitPrice3m", costKey: "totalCost3m" },
-      { months: 6, exitKey: "exitPrice6m", costKey: "totalCost6m" },
-      { months: 12, exitKey: "exitPrice12m", costKey: "totalCost12m" },
+      { months: 3, periodKey: "3m" },
+      { months: 6, periodKey: "6m" },
+      { months: 12, periodKey: "12m" },
     ];
 
+    const scenariosMap: {
+      "3m"?: ProfitScenario;
+      "6m"?: ProfitScenario;
+      "12m"?: ProfitScenario;
+    } = {};
+
     for (const def of scenarioDefs) {
-      const exitPrice = (valuation as any)[def.exitKey] as number;
-      const totalCost = (costs as any)[def.costKey] as number;
+      const exitPrice = valuation.exitPrice[def.periodKey];
+      const periodCost = costs.byPeriod[def.periodKey];
+      const totalCost = periodCost.totalCost;
 
       // 방어 코드: 값이 없으면 스킵
       if (!exitPrice || !totalCost) {
@@ -68,7 +72,7 @@ export class ProfitEngine {
       }
 
       const netProfit = exitPrice - totalCost;
-      const ownCash = costs.ownCash > 0 ? costs.ownCash : 1; // 0 방지
+      const ownCash = costs.acquisition.ownCash > 0 ? costs.acquisition.ownCash : 1; // 0 방지
       const roi = netProfit / ownCash;
 
       const months = def.months;
@@ -93,19 +97,27 @@ export class ProfitEngine {
         meetsTargetROI,
       };
 
-      scenarios.push(scenario);
+      scenariosMap[def.periodKey] = scenario;
     }
 
     /* -------------------------------------------------------
      * 3) 손익분기점 Exit (단일 값)
      *    - SSOT: totalAcquisition 기준
      * ------------------------------------------------------- */
-    const breakevenExit = roundToK(costs.totalAcquisition);
+    const breakevenExit3m = roundToK(costs.acquisition.totalAcquisition);
+    const breakevenExit6m = roundToK(costs.acquisition.totalAcquisition);
+    const breakevenExit12m = roundToK(costs.acquisition.totalAcquisition);
 
     return {
       initialSafetyMargin,
-      scenarios,
-      breakevenExit,
+      scenarios: {
+        "3m": scenariosMap["3m"]!,
+        "6m": scenariosMap["6m"]!,
+        "12m": scenariosMap["12m"]!,
+      },
+      breakevenExit_3m: breakevenExit3m,
+      breakevenExit_6m: breakevenExit6m,
+      breakevenExit_12m: breakevenExit12m,
     };
   }
 }

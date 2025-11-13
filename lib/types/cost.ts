@@ -1,4 +1,4 @@
-// src/lib/types/cost.ts
+// lib/types/cost.ts
 // Auction Engine v2.2 – Cost Layer Types
 // Last Updated: 2025-11-13
 

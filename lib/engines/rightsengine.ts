@@ -1,9 +1,9 @@
-// src/lib/engines/rightsengine.ts
+// lib/engines/rightsengine.ts
 // BIDIX Auction Engine v2.1 - RightsEngine
 // Version: 2.1
 // Last Updated: 2025-11-13
 
-import { Rights, RightType, CourtDocsNormalized } from "@/lib/types";
+import { Rights, RightType, CourtDocsNormalized, Occupant } from "@/lib/types";
 import { Policy } from "@/lib/policy/policy";
 import defaultPolicy from "@/lib/policy/defaultpolicy";
 import { RIGHTS_POLICY_TABLE } from "@/lib/policy/rightspolicy";
@@ -54,22 +54,22 @@ export class RightsEngine {
  * 🔍 Step 1. 등기부 내 권리 추출
  * ====================================================== */
 function extractRightsFromRegistry(courtDocs: CourtDocsNormalized) {
-  return courtDocs.registry?.rights ?? [];
+  return courtDocs.registeredRights ?? [];
 }
 
 /* ======================================================
  * 🔍 Step 2. MAJ 세입자 정보 → 권리로 변환
  * ====================================================== */
 function extractTenants(courtDocs: CourtDocsNormalized) {
-  return courtDocs.maj?.tenants ?? [];
+  return courtDocs.occupants ?? [];
 }
 
-function mapTenantsToRights(
-  tenants: Array<{ deposit?: number; protected?: boolean }>,
-  policy: Policy,
-) {
+function mapTenantsToRights(tenants: Occupant[], policy: Policy) {
   return tenants.map((t) => {
-    const isProtected = Boolean(t.protected);
+    // 보호된 임차인 판단: 대항력 있거나 소액임차인인 경우
+    const isProtected = Boolean(
+      t.hasCountervailingPower || t.isSmallClaimTenant,
+    );
     const deposit = t.deposit ?? 0;
 
     const payout = isProtected
@@ -90,9 +90,7 @@ function mapTenantsToRights(
 /* ======================================================
  * 🔍 Step 3. 일반 권리 매핑 → payout/risk 적용
  * ====================================================== */
-function mapRightsToBreakdown(
-  rights: Array<{ type?: string }>,
-): Array<{
+function mapRightsToBreakdown(rights: Array<{ type?: string }>): Array<{
   type: RightType;
   inheritable: boolean;
   payout: number;

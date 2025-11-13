@@ -1,4 +1,4 @@
-// src/lib/engines/costengine.ts
+// lib/engines/costengine.ts
 // Auction Engine v2.2 - CostEngine (취득·보유·대출·명도 기반 총원가 계산)
 // Version: 2.2
 // Last Updated: 2025-11-13
@@ -79,40 +79,40 @@ export class CostEngine {
     const totalCost12m = totalAcquisition + holdingCost12m + interestCost12m;
 
     /* -------------------------------------------------------
-     * 4) 반환 구조
+     * 4) 반환 구조 (v2.2 타입 구조)
      * ------------------------------------------------------- */
 
     return {
-      // 취득 시점
-      totalAcquisition: roundToK(totalAcquisition),
-      taxes: roundToK(taxes),
-      legalFees: roundToK(legalFees),
-      repairCost: roundToK(repairCost),
-      evictionCost: roundToK(evictionCost),
-
-      loanPrincipal: roundToK(loanPrincipal),
-      ownCash: roundToK(ownCash),
-
-      // 3개월
-      holdingCost3m: roundToK(holdingCost3m),
-      interestCost3m: roundToK(interestCost3m),
-      totalCost3m: roundToK(totalCost3m),
-
-      // 6개월 (기본)
-      holdingCost6m: roundToK(holdingCost6m),
-      interestCost6m: roundToK(interestCost6m),
-      totalCost6m: roundToK(totalCost6m),
-
-      // 12개월
-      holdingCost12m: roundToK(holdingCost12m),
-      interestCost12m: roundToK(interestCost12m),
-      totalCost12m: roundToK(totalCost12m),
-
-      // ✅ backward compatibility (기존 v2.0 필드)
-      holdingCost: roundToK(holdingCost6m),
-      interestCost: roundToK(interestCost6m),
-      totalCost: roundToK(totalCost6m),
-    } as Costs;
+      acquisition: {
+        totalAcquisition: roundToK(totalAcquisition),
+        taxes: roundToK(taxes),
+        legalFees: roundToK(legalFees),
+        repairCost: roundToK(repairCost),
+        evictionCost: roundToK(evictionCost),
+        loanPrincipal: roundToK(loanPrincipal),
+        ownCash: roundToK(ownCash),
+      },
+      byPeriod: {
+        "3m": {
+          months: 3,
+          holdingCost: roundToK(holdingCost3m),
+          interestCost: roundToK(interestCost3m),
+          totalCost: roundToK(totalCost3m),
+        },
+        "6m": {
+          months: 6,
+          holdingCost: roundToK(holdingCost6m),
+          interestCost: roundToK(interestCost6m),
+          totalCost: roundToK(totalCost6m),
+        },
+        "12m": {
+          months: 12,
+          holdingCost: roundToK(holdingCost12m),
+          interestCost: roundToK(interestCost12m),
+          totalCost: roundToK(totalCost12m),
+        },
+      },
+    };
   }
 }
 
@@ -128,7 +128,7 @@ function calcAcquisitionTax(bid: number, policy: Policy): number {
 
 /** 법무/등기/인지대 등: 현재는 flat 값만 사용 */
 function calcLegalFees(_bid: number, policy: Policy): number {
-  return policy.cost.legalFeeBase ?? 900_000;
+  return policy.cost.legalFeeFlat ?? 900_000;
 }
 
 /** 감정가 기준 수리비: appraisalValue × repairRate */

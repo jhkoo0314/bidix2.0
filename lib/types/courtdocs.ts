@@ -1,4 +1,4 @@
-// src/lib/types/courtdocs.ts
+// lib/types/courtdocs.ts
 // BIDIX AI – Court Documents Normalized Structure v2.2
 // Last Updated: 2025-11-13
 
@@ -20,6 +20,9 @@ export interface Occupant {
   deposit: number;
   rent: number;
   hasCountervailingPower?: boolean;
+  hasFixedDate?: boolean;
+  isSmallClaimTenant?: boolean;
+  evictionRiskLevel?: "low" | "medium" | "high";
 }
 
 export interface CourtDocsNormalized {

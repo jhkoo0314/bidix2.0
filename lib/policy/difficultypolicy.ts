@@ -1,4 +1,4 @@
-// src/lib/policy/difficultypolicy.ts
+// lib/policy/difficultypolicy.ts
 // BIDIX AI - Difficulty-based Policy Overrides (v2.2)
 // Version: 2.2
 // Last Updated: 2025-11-13

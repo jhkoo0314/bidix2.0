@@ -1,4 +1,4 @@
-// src/lib/engines/valuationengine.ts
+// lib/engines/valuationengine.ts
 // Auction Engine v2.2 - ValuationEngine (FMV 안정화 + ExitPrice Multi)
 // Version: 2.2 (Patched for exitPrice {3m,6m,12m} object)
 // Last Updated: 2025-11-13
@@ -18,7 +18,7 @@ export class ValuationEngine {
     /* ---------------------------------------------
      * 1) Initial FMV (감정가 기반)
      * --------------------------------------------- */
-    const baseFMVRate = policy.valuation.baseFMVRate; // 예: 0.97
+    const baseFMVRate = policy.valuation.baseFMVRatePerType[property.type] ?? 0.95; // 예: 0.97
     const initialFMV = property.appraisalValue * baseFMVRate;
 
     notes.push(
@@ -45,7 +45,7 @@ export class ValuationEngine {
      *   감정가 × lowestBidRateDefault × 0.8^(step-1)
      *   - 회차가 진행될수록 단계적으로 할인
      * --------------------------------------------- */
-    const baseRate = policy.valuation.lowestBidRateDefault; // 예: 0.7
+    const baseRate = policy.valuation.initialMinBidRate; // 예: 0.7
     const reduction = 0.8 ** ((property.auctionStep ?? 1) - 1);
 
     const minBid = property.appraisalValue * baseRate * reduction;
@@ -71,8 +71,8 @@ export class ValuationEngine {
      * 5) Recommended Bid Range (권장 입찰가 구간)
      *   adjustedFMV × recommendedBidGap(min~max)
      * --------------------------------------------- */
-    const gapMin = policy.valuation.recommendedBidGap.min ?? 0.94;
-    const gapMax = policy.valuation.recommendedBidGap.max ?? 0.99;
+    const gapMin = policy.valuation.recommendedRangeRatio.min ?? 0.94;
+    const gapMax = policy.valuation.recommendedRangeRatio.max ?? 0.99;
 
     const recommendedMin = adjustedFMV * gapMin;
     const recommendedMax = adjustedFMV * gapMax;
@@ -84,7 +84,7 @@ export class ValuationEngine {
     /* ---------------------------------------------
      * 6) Confidence (정책 기반 단순 가중)
      * --------------------------------------------- */
-    const confidence = policy.valuation.confidenceWeight ?? 0.25;
+    const confidence = 0.25; // 기본값 사용
 
     /* ---------------------------------------------
      * 7) Valuation 결과 반환 (v2.2 정식 구조)

@@ -1,4 +1,4 @@
-// src/lib/policy/defaultpolicy.ts
+// lib/policy/defaultpolicy.ts
 // BIDIX Auction Engine v2.2 - Default Policy Values
 // Version: 2.2
 // Last Updated: 2025-11-13
@@ -76,9 +76,11 @@ const defaultPolicy: Policy = {
 
     repairRate: 0.06, // 감정가 대비 6%
     holdingMonthsDefault: 6, // 보유 6개월 기준
+    holdingMonthlyRate: 0.0009, // 월 보유비용 비율 (userBid의 0.09%)
 
     loanLtvDefault: 0.7,
     loanInterestRate: 0.055, // 연 5.5%
+    loanRate: 0.055, // 대출 이자율 (loanInterestRate와 동일)
   },
 
   /* ======================================================

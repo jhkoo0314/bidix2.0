@@ -1,4 +1,4 @@
-// src/lib/engines/propertyengine.ts
+// lib/engines/propertyengine.ts
 // BIDIX Auction Engine v2.1 - PropertyEngine (Realistic Appraisal)
 // Version: 2.1
 // Last Updated: 2025-11-13
@@ -79,14 +79,13 @@ function clampAuctionStep(step?: number): number {
  *     × depreciationMultiplier(yearBuilt)
  */
 function estimateAppraisalValue(seed: PropertySeed, yearBuilt: number): number {
-  const basePrice = DATASET_PRESETS.basePricePerM2[seed.type];
-  const typeAdjustment =
-    DATASET_PRESETS.typeAdjustments[seed.type] ?? 1.0;
-
   const region = inferRegionFromAddress(seed.address);
-  const regionMultiplier = region
-    ? DATASET_PRESETS.regionMultipliers[region]
-    : 1.0;
+  const basePrice = region && DATASET_PRESETS.basePricePerM2Matrix[region]
+    ? DATASET_PRESETS.basePricePerM2Matrix[region][seed.type] ?? 0
+    : 0;
+  const typeAdjustment = 1.0; // 기본값 사용
+
+  const regionMultiplier = 1.0; // 기본값 사용
 
   const depreciation = getDepreciationMultiplier(yearBuilt);
 

@@ -1,4 +1,4 @@
-// src/lib/types/profit.ts
+// lib/types/profit.ts
 // Auction Engine v2.2 – Profit Layer Types
 // Last Updated: 2025-11-13
 

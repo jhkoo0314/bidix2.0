@@ -1,4 +1,4 @@
-// src/lib/policy/policy.ts
+// lib/policy/policy.ts
 // Auction Engine v2.2 - Policy Interface (SSOT)
 // Version: 2.2
 // Last Updated: 2025-11-13
@@ -60,8 +60,10 @@ export interface Policy {
     legalFeeFlat: number;         // 법무사 + 등기 비용
     repairRate: number;           // 감정가 대비 수리비 비율
     holdingMonthsDefault: number; // 기본 보유 개월 수
+    holdingMonthlyRate?: number;  // 월 보유비용 비율 (userBid 기준)
     loanLtvDefault: number;       // 기본 LTV
     loanInterestRate: number;     // 연 이자율 (%)
+    loanRate?: number;            // 대출 이자율 (별칭, loanInterestRate와 동일)
   };
 
   /* ======================================================

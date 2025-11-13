@@ -1,4 +1,4 @@
-// src/lib/types/property.ts
+// lib/types/property.ts
 // Auction Engine v2.2 – Property Types
 // Last Updated: 2025-11-13
 

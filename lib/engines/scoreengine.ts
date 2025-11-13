@@ -1,4 +1,4 @@
-// src/lib/engines/scoreengine.ts
+// lib/engines/scoreengine.ts
 // BIDIX AI - ScoreEngine (v2.0)
 // Based on: /docs/system/point-level-system.md
 // Last Updated: 2025-11-09
@@ -112,7 +112,8 @@ function calcAccuracyScore(valuation: Valuation, userBid: number): number {
  * Base by ROI buckets + bonuses
  * ============================================================ */
 function calcProfitabilityScore(val: Valuation, pf: Profit): number {
-  const roi = safeNumber(pf.roi); // decimal (e.g., 0.12)
+  // 12개월 시나리오의 ROI 사용
+  const roi = safeNumber(pf.scenarios["12m"].annualizedRoi); // decimal (e.g., 0.12)
   let base = 0;
 
   if (roi >= 0.2) {
@@ -128,7 +129,7 @@ function calcProfitabilityScore(val: Valuation, pf: Profit): number {
 
   // Bonuses
   const annualizedBonus = mapRange(
-    clamp(safeNumber(pf.annualizedRoi), 0, 0.3),
+    clamp(safeNumber(pf.scenarios["12m"].annualizedRoi), 0, 0.3),
     0,
     0.3,
     0,
@@ -147,7 +148,7 @@ function calcProfitabilityScore(val: Valuation, pf: Profit): number {
 
   let beBonus = 0;
   const fmv = safeNumber(val.adjustedFMV);
-  const be = safeNumber(pf.breakevenExit);
+  const be = safeNumber(pf.breakevenExit_12m);
   if (fmv > 0 && be > 0) {
     // lower BE relative to FMV => better bonus
     const ratio = clamp(be / fmv, 0.6, 1.0);

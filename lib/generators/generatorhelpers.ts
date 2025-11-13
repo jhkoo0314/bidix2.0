@@ -1,4 +1,4 @@
-// src/lib/generators/generatorhelpers.ts
+// lib/generators/generatorhelpers.ts
 // Auction Engine v2.0 - Generator Helpers (난수/가중치/ID)
 // Version: 2.0
 // Last Updated: 2025-11-07

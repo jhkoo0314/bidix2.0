@@ -1,4 +1,4 @@
-// src/lib/types/result.ts
+// lib/types/result.ts
 // Auction Engine v2.2 – Final Output Types
 // Last Updated: 2025-11-13
 
@@ -7,7 +7,7 @@ import { Valuation } from "./valuation";
 import { Rights } from "./rights";
 import { Costs } from "./cost";
 import { Profit } from "./profit";
-import { CourtDocsNormalized } from "./court-docs";
+import { CourtDocsNormalized } from "./courtdocs";
 
 export interface AuctionSummary {
   isProfitable: boolean;

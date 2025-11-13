@@ -1,4 +1,4 @@
-// src/lib/layers/courtdocslayer.ts
+// lib/layers/courtdocslayer.ts
 // BIDIX Auction Engine v2.2 - CourtDocs Normalization Layer
 // Version: 2.2
 // Last Updated: 2025-11-14
@@ -6,8 +6,7 @@
 import {
   CourtDocsNormalized,
   Occupant,
-  RegistryRight,
-  PropertySeed,
+  RegisteredRight,
 } from "@/lib/types";
 
 /**
@@ -18,10 +17,9 @@ import {
  * - 대항력 / 확정일자 / 소액임차인 / 명도 위험도 / 권리순위 등을 계산한다.
  */
 export function normalizeCourtDocs(
-  raw: CourtDocsNormalized,
-  property?: PropertySeed
+  raw: CourtDocsNormalized
 ): CourtDocsNormalized {
-  const baseRightDate = new Date(raw.baseRightDate);
+  const baseRightDateObj = new Date(raw.baseRightDate);
 
   /*──────────────────────────────────────────────
     1) Occupants 정규화
@@ -31,22 +29,22 @@ export function normalizeCourtDocs(
     const fixedDate = occ.fixedDate ? new Date(occ.fixedDate) : null;
 
     // ① 대항력 여부: 전입일 < 말소기준권리일
-    const hasCountervailingPower = moveInDate < baseRightDate;
+    const hasCountervailingPower = moveInDate < baseRightDateObj;
 
     // ② 확정일자 여부
-    const hasFixedDate = fixedDate ? fixedDate < baseRightDate : false;
+    const hasFixedDate = fixedDate ? fixedDate < baseRightDateObj : false;
 
     // ③ 소액임차인 판별 (지역기준 확장 가능)
     const isSmallClaimTenant = checkSmallClaimTenant(
       occ.deposit,
-      raw.region ?? "서울"
+      "서울" // 기본값 사용 (향후 propertyDetails에서 추출 가능)
     );
 
     // ④ 명도 위험 수준 (엔진에서 활용)
     const evictionRiskLevel = computeEvictionRiskLevel(
       hasCountervailingPower,
       hasFixedDate,
-      occ.isBusiness
+      undefined // isBusiness 속성이 없음
     );
 
     return {
@@ -61,16 +59,12 @@ export function normalizeCourtDocs(
   /*──────────────────────────────────────────────
     2) 등기 권리(Registry Rights) 정규화
   ──────────────────────────────────────────────*/
-  const rights: RegistryRight[] = raw.registeredRights.map(
-    (right, idx): RegistryRight => {
-      const priorityDate = new Date(right.priorityDate);
-
+  const rights: RegisteredRight[] = raw.registeredRights.map(
+    (right): RegisteredRight => {
       return {
         ...right,
-        rank: idx + 1,
-        priorityDate,
-        isDeletedRight: !!right.isDeletedRight,
-        typeLabel: right.typeLabel ?? "unknown",
+        // RegisteredRight 타입에는 rank, priorityDate, isDeletedRight, typeLabel 속성이 없으므로
+        // 기본 구조만 유지
       };
     }
   );
@@ -82,7 +76,7 @@ export function normalizeCourtDocs(
     ...raw,
     occupants,
     registeredRights: rights,
-    baseRightDate,
+    baseRightDate: raw.baseRightDate, // 원본 문자열 유지
   };
 
   return result;

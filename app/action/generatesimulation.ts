@@ -5,7 +5,7 @@
 
 "use server";
 
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { simulationService } from "@/lib/services/simulationservice";
 import { DifficultyMode } from "@/lib/types";
 
