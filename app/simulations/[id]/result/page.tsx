@@ -25,7 +25,7 @@
  * @see {@link /docs/ui/component-spec.md} - 모든 Result 컴포넌트 Props
  */
 
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -113,8 +113,8 @@ export default async function ResultPage({ params }: ResultPageProps) {
               임대 권리 관계, 우선순위 분석, 명도비용 상세
             </p>
             <p className="text-sm text-gray-500 italic mb-4">
-              "당신은 이미 물건의 '사실'을 파악했습니다. 이제 '분석'을 시작할
-              준비가 되셨나요?"
+              &quot;당신은 이미 물건의 &apos;사실&apos;을 파악했습니다. 이제 &apos;분석&apos;을 시작할
+              준비가 되셨나요?&quot;
             </p>
             <Button variant="outline" disabled>
               프리미엄 해설판 보기

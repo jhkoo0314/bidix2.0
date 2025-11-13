@@ -23,9 +23,8 @@
  * @see {@link /docs/engine/api-contracts.md} - submitBidAction 명세
  */
 
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 interface BidPageProps {

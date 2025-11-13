@@ -21,7 +21,7 @@
  * @see {@link /docs/product/point-level-system.md} - 등급별 색상 체계
  */
 
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 export default async function HistoryPage() {

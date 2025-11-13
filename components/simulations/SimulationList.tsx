@@ -44,7 +44,7 @@ export interface SimulationListProps {
 export function SimulationList({
   simulations: initialSimulations,
 }: SimulationListProps) {
-  const [filters, setFilters] = useState<FilterState>({});
+  const [_filters, setFilters] = useState<FilterState>({});
   const [simulations] = useState(initialSimulations);
 
   // TODO: 필터링 로직 구현

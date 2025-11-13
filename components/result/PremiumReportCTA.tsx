@@ -53,8 +53,8 @@ export function PremiumReportCTA({ type }: PremiumReportCTAProps) {
         {config.description}
       </p>
       <p className="text-sm text-gray-500 italic mb-4">
-        "당신은 이미 물건의 '사실'을 파악했습니다. 이제 '분석'을 시작할 준비가
-        되셨나요?"
+        &quot;당신은 이미 물건의 &apos;사실&apos;을 파악했습니다. 이제 &apos;분석&apos;을 시작할 준비가
+        되셨나요?&quot;
       </p>
       <Button variant="outline" disabled>
         프리미엄 해설판 보기
