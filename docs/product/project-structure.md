@@ -1,213 +1,440 @@
+# 📐 BIDIX v2.0 - lib 폴더 구조 (Project Structure)
 
-```md
-# 📁 BIDIX v2.0 – Source Code Structure
-**Version:** 2.0
-**Last Updated:** 2025-01-28
-**Status:** ✅ 최종 확정
-
-## 1. 목적
-
-이 파일은 프로젝트 루트의 `lib/` 및 `app/` 디렉토리 구조와 아키텍처 원칙을 정의하는 SSOT입니다. **코드 구조가 변경되면 반드시 이 문서를 갱신**하여, 설계와 실제 코드의 불일치를 방지합니다.
-
-## 2. Directory Structure
-
-> 이 구조는 프로젝트의 유일한 파일 구조 SSOT입니다.
-
-```
-app/
-└─ action/                        # Server Actions
-   ├─ generatesimulation.ts       # 시뮬레이션 생성 액션
-   └─ submitbid.ts                # 입찰 제출 액션
-
-lib/                              # 핵심 도메인 레이어 (UI와 100% 분리)
-├─ types/                       # 📌 타입 SSOT (8개 파일)
-│  ├─ Property.ts               # 매물 타입 정의
-│  ├─ valuation.ts              # 감정가/평가 타입
-│  ├─ rights.ts                 # 권리 타입 (18종)
-│  ├─ cost.ts                   # 비용 타입
-│  ├─ profit.ts                 # 수익 타입
-│  ├─ courtdocs.ts              # 법원문서 타입
-│  ├─ result.ts                 # 결과 타입
-│  └─ index.ts                  # Barrel export
-│
-├─ policy/                      # 정책 레이어 (계산 로직에 사용되는 숫자/정책)
-│  ├─ policy.ts                 # Policy 인터페이스 정의
-│  ├─ defaultpolicy.ts          # 기본 정책값
-│  ├─ difficultypolicy.ts       # 난이도별 정책
-│  ├─ rightspolicy.ts           # 18종 권리 기준 테이블
-│  └─ index.ts                  # Barrel export
-│
-├─ engines/                     # 계산 엔진 레이어 (Pure Function)
-│  ├─ propertyengine.ts         # 매물 엔진
-│  ├─ valuationengine.ts        # 감정가 엔진
-│  ├─ courtdocslayer.ts         # 법원문서 레이어
-│  ├─ rightsengine.ts           # 권리 엔진
-│  ├─ costengine.ts             # 비용 엔진
-│  ├─ profitengine.ts           # 수익 엔진
-│  ├─ scoreengine.ts            # 점수 엔진
-│  └─ auctionengine.ts           # 경매 엔진 (Seed → Result)
-│
-├─ generators/                  # 랜덤/모의 데이터 생성 레이어
-│  ├─ datasetpresets.ts         # 지역/평형/유형 확률 테이블
-│  ├─ generatorhelpers.ts       # 난수/가중치/ID 유틸
-│  ├─ propertygenerator.ts      # 매물 생성기
-│  ├─ courtdocsmocker.ts        # 법원문서 모킹
-│  └─ Simulationgenerator.ts   # 시뮬레이션 생성기
-│
-├─ fixtures/                    # 실제 JSON 샘플 데이터 (테스트/데모용)
-│  ├─ index.ts                  # Fixture 로더
-│  ├─ loadScenario.ts           # 시나리오 로더
-│  └─ scenarios/                # 시나리오 JSON 파일
-│     ├─ apt-easy.json          # 아파트 쉬움 난이도
-│     ├─ officetel-normal.json  # 오피스텔 보통 난이도
-│     └─ land-hard.json         # 토지 어려움 난이도
-│
-├─ services/                    # 서비스 레이어 (비즈니스 로직 조합)
-│  └─ simulationservice.ts      # 시뮬레이션 서비스
-│
-├─ supabase/                    # Supabase 클라이언트 (환경별 분리)
-│  ├─ clerk-client.ts          # Client Component용
-│  ├─ client.ts                 # 공개 데이터용 (anon key)
-│  ├─ server.ts                 # Server Component용
-│  └─ service-role.ts           # 관리자 권한용
-│
-├─ tests/                       # 단위 테스트
-│  ├─ defaultpolicy.test.ts     # 기본 정책 테스트
-│  ├─ rightsengine.test.ts      # 권리 엔진 테스트
-│  └─ profitengine.test.ts      # 수익 엔진 테스트
-│
-├─ utils/                       # 유틸리티 함수 (현재 비어있음)
-├─ utils.ts                     # 공통 유틸리티
-└─ supabase.ts                  # 레거시 Supabase 클라이언트 (사용 지양)
-
-```
-## 3. 아키텍처 원칙 (Architecture Principles)
-
-*   **UI Layer (`app/`):** 사용자 인터페이스. 오직 Server Actions를 통해서만 비즈니스 로직 호출.
-*   **Service Layer (`lib/services/`):** 여러 엔진과 외부 서비스(DB)를 조합하여 비즈니스 로직 실행.
-*   **Engine Layer (`lib/engines/`):** 순수 계산 함수. 외부 I/O 금지.
-*   **Generator Layer (`lib/generators/`):** 랜덤 데이터 생성 및 모킹.
-*   **Policy Layer (`lib/policy/`):** 계산에 사용되는 모든 규칙과 상수.
-*   **Type Layer (`lib/types/`):** 모든 TypeScript 타입의 SSOT.
+**Version:** 2.2  
+**Last Updated:** 2025-01-28  
+**Status:** ✅ **SSOT - Single Source of Truth**
 
 ---
-## 4. 핵심 파일명 규칙 (Naming Conventions) - 최종 확정
 
-> **[중요]** 이 프로젝트의 파일명은 통일된 단일 규칙 대신, 역할에 따라 아래와 같이 복합적인 규칙을 따릅니다.
+## 📋 목차
 
-| 구분 | 규칙 | 예시 |
-|:---|:---|:---|
-| **일반 소스 코드** | **`alllowercase.ts`** | `auctionengine.ts`, `defaultpolicy.ts`, `courtdocsmocker.ts` |
-| **특정 생성기** | **`PascalCase.ts`** | `Simulationgenerator.ts` |
-| **특정 타입** | **`PascalCase.ts`** | `Property.ts` |
-| **컴포넌트 파일** | **`PascalCase.tsx`** | `PropertyCard.tsx`, `ReportHeader.tsx` |
+1. [전체 구조 개요](#전체-구조-개요)
+2. [디렉토리별 상세 설명](#디렉토리별-상세-설명)
+3. [아키텍처 레이어](#아키텍처-레이어)
+4. [의존성 관계](#의존성-관계)
+5. [파일명 규칙](#파일명-규칙)
 
-> **결론:** `src/` 폴더 내의 파일명을 새로 생성할 때는, **`Section 2. Directory Structure`에 있는 기존 파일들의 작명 스타일을 참고**하여 일관성을 유지한다.
+---
 
-```
-
-## 4) Key Files Index
-
-|   # | File                       | Path                                         | Purpose              | Status |
-| --: | -------------------------- | -------------------------------------------- | -------------------- | ------ |
-|   1 | Property Types             | `/lib/types/Property.ts`                 | 매물 타입 SSOT       | ✅     |
-|   2 | Valuation Types            | `/lib/types/valuation.ts`                | 감정가 타입          | ✅     |
-|   3 | Rights Types               | `/lib/types/rights.ts`                   | 권리 타입 (18종)     | ✅     |
-|   4 | Cost Types                 | `/lib/types/cost.ts`                     | 비용 타입            | ✅     |
-|   5 | Profit Types               | `/lib/types/profit.ts`                   | 수익 타입            | ✅     |
-|   6 | Court Docs Types           | `/lib/types/courtdocs.ts`               | 법원문서 타입        | ✅     |
-|   7 | Result Types               | `/lib/types/result.ts`                   | 결과 타입            | ✅     |
-|   8 | Default Policy             | `/lib/policy/defaultpolicy.ts`           | 기본 정책값          | ✅     |
-|   9 | Difficulty Policy          | `/lib/policy/difficultypolicy.ts`        | 난이도별 정책        | ✅     |
-|  10 | Rights Policy              | `/lib/policy/rightspolicy.ts`            | 권리 정책 테이블     | ✅     |
-|  11 | Property Engine            | `/lib/engines/propertyengine.ts`         | 매물 계산 엔진       | ✅     |
-|  12 | Valuation Engine           | `/lib/engines/valuationengine.ts`        | 감정가 계산 엔진     | ✅     |
-|  13 | Court Docs Layer           | `/lib/engines/courtdocslayer.ts`         | 법원문서 처리 레이어 | ✅     |
-|  14 | Rights Engine              | `/lib/engines/rightsengine.ts`           | 권리 계산 엔진       | ✅     |
-|  15 | Cost Engine                | `/lib/engines/costengine.ts`             | 비용 계산 엔진       | ✅     |
-|  16 | Profit Engine              | `/lib/engines/profitengine.ts`           | 수익 계산 엔진       | ✅     |
-|  17 | Score Engine               | `/lib/engines/scoreengine.ts`            | 점수 계산 엔진       | ✅     |
-|  18 | Auction Engine             | `/lib/engines/auctionengine.ts`          | 경매 파이프라인 엔진 | ✅     |
-|  19 | Property Generator         | `/lib/generators/propertygenerator.ts`   | 매물 생성기          | ✅     |
-|  20 | Simulation Generator       | `/lib/generators/Simulationgenerator.ts` | 시뮬레이션 생성기    | ✅     |
-|  21 | Court Docs Mocker          | `/lib/generators/courtdocsmocker.ts`     | 법원문서 모킹        | ✅     |
-|  22 | Simulation Service         | `/lib/services/simulationservice.ts`     | 시뮬레이션 서비스    | ✅     |
-|  23 | Generate Simulation Action | `/app/action/generatesimulation.ts`      | 시뮬레이션 생성 액션 | ✅     |
-|  24 | Submit Bid Action          | `/app/action/submitbid.ts`               | 입찰 제출 액션       | ✅     |
-
-## 5) Data Flow
+## 전체 구조 개요
 
 ```
-User Input (UI)
-    ↓
-Server Action (app/action/)
-    ↓
-Service Layer (lib/services/)
-    ↓
-Engine Layer (lib/engines/)
-    ↓
-Result → UI
+lib/
+├── types/                    # 📌 타입 SSOT (Single Source of Truth)
+│   ├── property.ts
+│   ├── valuation.ts
+│   ├── rights.ts
+│   ├── cost.ts
+│   ├── profit.ts
+│   ├── courtdocs.ts
+│   ├── result.ts
+│   └── index.ts             # Barrel export
+│
+├── policy/                   # 📋 정책 레이어 (계산 규칙 및 상수)
+│   ├── policy.ts             # Policy 인터페이스
+│   ├── defaultpolicy.ts      # 기본 정책값
+│   ├── difficultypolicy.ts   # 난이도별 정책 (Easy/Normal/Hard)
+│   ├── rightspolicy.ts       # 18종 권리 기준 테이블
+│   └── index.ts              # Barrel export
+│
+├── engines/                  # ⚙️ 계산 엔진 레이어 (Pure Function)
+│   ├── propertyengine.ts     # 매물 엔진
+│   ├── valuationengine.ts   # 감정가 엔진
+│   ├── courtdocslayer.ts     # 법원문서 레이어
+│   ├── rightsengine.ts      # 권리 엔진
+│   ├── costengine.ts        # 비용 엔진
+│   ├── profitengine.ts      # 수익 엔진 (3/6/12개월)
+│   ├── scoreengine.ts       # 점수 엔진 (1000점 만점)
+│   └── auctionengine.ts     # 경매 엔진 (Master Orchestrator)
+│
+├── generators/               # 🎲 랜덤/모의 데이터 생성 레이어
+│   ├── datasetpresets.ts     # 지역/평형/유형 확률 테이블
+│   ├── generatorhelpers.ts   # 난수/가중치/ID 유틸
+│   ├── propertygenerator.ts  # 매물 생성기 (±5% 가격 변동)
+│   ├── courtdocsmocker.ts   # 법원문서 모킹
+│   └── simulationgenerator.ts # 시뮬레이션 생성기 (Master Generator)
+│
+├── services/                 # 🔧 서비스 레이어 (비즈니스 로직 조합)
+│   └── simulationservice.ts  # 시뮬레이션 서비스 (DB + 엔진)
+│
+├── fixtures/                 # 📦 실제 JSON 샘플 데이터 (테스트/데모용)
+│   ├── index.ts
+│   ├── loadScenario.ts
+│   └── scenarios/
+│       ├── apt-easy.json
+│       ├── officetel-normal.json
+│       └── land-hard.json
+│
+├── supabase/                 # 🗄️ Supabase 클라이언트 (환경별 분리)
+│   ├── clerk-client.ts       # Client Component용 (useClerkSupabaseClient)
+│   ├── client.ts             # 공개 데이터용 (anon key)
+│   ├── server.ts             # Server Component용 (createClerkSupabaseClient)
+│   └── service-role.ts      # 관리자 권한용 (RLS 우회)
+│
+├── utils/                    # 🛠️ 유틸리티 함수
+│   └── number.ts             # 숫자 관련 유틸리티 (roundToK 등)
+│
+├── utils.ts                  # 공통 유틸리티 (cn 함수 등)
+├── supabase.ts              # 레거시 Supabase 클라이언트 (사용 지양)
+└── NAMING_CONVENTION.md      # 파일명 규칙 문서
 ```
 
-## 6) Import Conventions
+---
 
-### 6.1) Type Imports
+## 디렉토리별 상세 설명
+
+### 1. `types/` - 타입 SSOT (Single Source of Truth)
+
+**역할**: 모든 TypeScript 타입 정의의 단일 출처
+
+**파일 목록**:
+
+- `property.ts`: 매물 타입 (`Property`, `PropertySeed` 등)
+- `valuation.ts`: 감정가/평가 타입 (`Valuation`, `FMV` 등)
+- `rights.ts`: 권리 타입 (18종 권리 정의)
+- `cost.ts`: 비용 타입 (`Cost`, `AcquisitionCost`, `HoldingCost` 등)
+- `profit.ts`: 수익 타입 (`Profit`, `ExitScenario` 등)
+- `courtdocs.ts`: 법원문서 타입 (`CourtDocs`, `CourtDocsNormalized` 등)
+- `result.ts`: 결과 타입 (`AuctionAnalysisResult`, `DifficultyMode` 등)
+- `index.ts`: Barrel export (모든 타입을 한 곳에서 export)
+
+**특징**:
+
+- ✅ **절대 수정 금지**: 타입 변경 시 전체 프로젝트에 영향
+- ✅ **Barrel export 사용**: `@/lib/types`로 통일된 import
+- ✅ **SSOT 원칙**: 타입은 오직 여기서만 정의
+
+---
+
+### 2. `policy/` - 정책 레이어
+
+**역할**: 계산 로직에 사용되는 모든 규칙, 상수, 기준값
+
+**파일 목록**:
+
+- `policy.ts`: `Policy` 인터페이스 정의
+- `defaultpolicy.ts`: 기본 정책값 (기본 난이도, 기본 비율 등)
+- `difficultypolicy.ts`: 난이도별 정책 (Easy/Normal/Hard)
+- `rightspolicy.ts`: 18종 권리 기준 테이블
+- `index.ts`: Barrel export
+
+**특징**:
+
+- ✅ **정책 기반 계산**: 모든 엔진은 Policy 객체를 받아서 계산
+- ✅ **난이도별 분리**: Easy/Normal/Hard별로 다른 정책 적용
+- ✅ **Magic Number 금지**: 하드코딩된 숫자 없이 정책에서 읽어옴
+
+---
+
+### 3. `engines/` - 계산 엔진 레이어
+
+**역할**: 순수 계산 함수 (Pure Function) - 외부 I/O 금지
+
+**파일 목록**:
+
+- `propertyengine.ts`: PropertySeed → Property 정규화
+- `valuationengine.ts`: FMV, minBid, ExitPrice 계산
+- `courtdocslayer.ts`: CourtDocs → CourtDocsNormalized 정규화
+- `rightsengine.ts`: 권리 분석, 명도비용 계산
+- `costengine.ts`: 취득비용, 보유비용 계산
+- `profitengine.ts`: 3/6/12개월 수익 시나리오 계산
+- `scoreengine.ts`: 점수 계산 (1000점 만점)
+- `auctionengine.ts`: **Master Orchestrator** - 모든 엔진을 조합하여 최종 결과 생성
+
+**특징**:
+
+- ✅ **순수 함수**: DB, fetch, random(), Date.now() 금지
+- ✅ **Policy 기반**: 모든 계산은 Policy 객체를 파라미터로 받음
+- ✅ **타입 기반**: 모든 입출력은 `lib/types/`에서 정의된 타입 사용
+- ✅ **단방향 의존성**: engines는 types, policy만 import 가능
+
+**금지사항**:
+
+- ❌ `import { createClient } from "@supabase/supabase-js"`
+- ❌ `import { auth } from "@clerk/nextjs"`
+- ❌ `console.log("debug")` (프로덕션 코드)
+- ❌ `crypto.randomUUID()`
+- ❌ `fetch(...)`
+- ❌ `Date.now()`
+
+---
+
+### 4. `generators/` - 데이터 생성 레이어
+
+**역할**: 랜덤 데이터 및 시나리오 생성
+
+**파일 목록**:
+
+- `datasetpresets.ts`: 지역/평형/유형 확률 테이블
+- `generatorhelpers.ts`: 난수 생성, 가중치 선택, ID 생성 유틸
+- `propertygenerator.ts`: 매물 생성기 (±5% 가격 변동)
+- `courtdocsmocker.ts`: 법원문서 모킹 (랜덤 생성)
+- `simulationgenerator.ts`: **Master Generator** - 전체 시뮬레이션 시나리오 생성
+
+**특징**:
+
+- ✅ **완전 자체 생성**: 외부 API 사용 안 함
+- ✅ **랜덤 시드 기반**: 재현 가능한 랜덤 데이터 생성
+- ✅ **난이도별 분기**: Easy/Normal/Hard에 따라 다른 데이터 생성
+
+---
+
+### 5. `services/` - 서비스 레이어
+
+**역할**: DB 통신 + 엔진 실행 조합
+
+**파일 목록**:
+
+- `simulationservice.ts`: 시뮬레이션 서비스
+  - Supabase read/write
+  - 정책 병합
+  - generator 호출
+  - auctionEngine 실행
+  - serialization
+
+**특징**:
+
+- ✅ **DB 통신**: Supabase 클라이언트 사용
+- ✅ **엔진 조합**: 여러 엔진을 조합하여 비즈니스 로직 실행
+- ✅ **정책 병합**: defaultPolicy + difficultyPolicy 병합
+- ❌ **UI 반환형 금지**: 엔진 타입 그대로 반환
+
+---
+
+### 6. `fixtures/` - 테스트 데이터
+
+**역할**: 실제 JSON 샘플 데이터 (테스트/데모용)
+
+**파일 목록**:
+
+- `index.ts`: Barrel export
+- `loadScenario.ts`: 시나리오 로드 유틸
+- `scenarios/`: JSON 시나리오 파일
+  - `apt-easy.json`: 아파트 쉬운 난이도
+  - `officetel-normal.json`: 오피스텔 보통 난이도
+  - `land-hard.json`: 토지 어려운 난이도
+
+**특징**:
+
+- ✅ **실제 데이터**: 실제 사용 가능한 시나리오 데이터
+- ✅ **난이도별 샘플**: Easy/Normal/Hard 샘플 제공
+
+---
+
+### 7. `supabase/` - Supabase 클라이언트
+
+**역할**: 환경별 Supabase 클라이언트 설정
+
+**파일 목록**:
+
+- `clerk-client.ts`: Client Component용 (`useClerkSupabaseClient` hook)
+- `client.ts`: 공개 데이터용 (anon key만 사용)
+- `server.ts`: Server Component용 (`createClerkSupabaseClient`)
+- `service-role.ts`: 관리자 권한용 (RLS 우회, 서버 사이드 전용)
+
+**특징**:
+
+- ✅ **환경별 분리**: Client/Server/Service Role 분리
+- ✅ **Clerk 통합**: Clerk 토큰을 사용한 인증
+- ✅ **RLS 지원**: Row Level Security 정책 적용
+
+---
+
+### 8. `utils/` - 유틸리티 함수
+
+**역할**: 재사용 가능한 유틸리티 함수
+
+**파일 목록**:
+
+- `number.ts`: 숫자 관련 유틸리티
+  - `roundToK(value: number)`: 천 단위로 반올림
+
+**특징**:
+
+- ✅ **도메인 특화**: 비즈니스 로직에 특화된 유틸리티
+- ✅ **순수 함수**: 부수 효과 없음
+
+---
+
+### 9. 루트 레벨 파일
+
+**파일 목록**:
+
+- `utils.ts`: 공통 유틸리티 (`cn` 함수 - Tailwind 클래스 병합)
+- `supabase.ts`: 레거시 Supabase 클라이언트 (사용 지양, `supabase/` 폴더 사용 권장)
+- `NAMING_CONVENTION.md`: 파일명 규칙 문서
+
+---
+
+## 아키텍처 레이어
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ UI Layer (app/, components/)                                │
+│ - 사용자 인터페이스                                          │
+│ - Server Actions만 호출                                      │
+│ - 엔진 직접 호출 금지                                        │
+└─────────────────────────────────────────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Server Actions (app/action/)                                  │
+│ - 인증 확인 (Clerk auth())                                   │
+│ - 입력 유효성 검사 (Zod)                                     │
+│ - Service Layer 호출                                         │
+└─────────────────────────────────────────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Service Layer (lib/services/)                                │
+│ - 비즈니스 로직 조합                                         │
+│ - DB 통신 (Supabase)                                         │
+│ - 여러 엔진 조합 호출                                        │
+└─────────────────────────────────────────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Engine Layer (lib/engines/)                                  │
+│ - 순수 계산 함수 (Pure Function)                             │
+│ - 외부 I/O 금지                                              │
+│ - Policy 기반 계산                                           │
+└─────────────────────────────────────────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Generator Layer (lib/generators/)                            │
+│ - 랜덤 데이터 생성                                           │
+│ - 시나리오 생성                                              │
+│ - 외부 API 사용 안 함 (완전 자체 생성)                       │
+└─────────────────────────────────────────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Policy Layer (lib/policy/)                                   │
+│ - 계산에 사용되는 모든 규칙과 상수                           │
+│ - 난이도별 정책                                              │
+│ - 권리 기준 테이블                                            │
+└─────────────────────────────────────────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Type Layer (lib/types/)                                      │
+│ - 모든 TypeScript 타입의 SSOT                                │
+│ - Barrel export (index.ts)                                   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 의존성 관계
+
+### 단방향 의존성 원칙
+
+```
+generators → engines → services → actions → UI
+```
+
+**규칙**:
+
+- ✅ 하위 레이어는 상위 레이어를 import할 수 없음
+- ✅ UI는 engines, services 직접 호출 금지
+- ✅ engines는 DB, fetch, random() 호출 금지
+- ✅ 모든 타입은 `lib/types/`에서만 import
+
+### 허용되는 Import
 
 ```typescript
-// ✅ DO: types에서 import
-import { Property, Valuation, Rights } from "@/lib/types";
+// ✅ engines에서 types, policy import
+import { Property, Valuation } from "@/lib/types";
+import { Policy } from "@/lib/policy/policy";
 
-// ❌ DON'T: 직접 파일에서 import
+// ✅ services에서 engines, types, policy import
+import { AuctionEngine } from "@/lib/engines/auctionengine";
+import { PropertySeed } from "@/lib/types";
+
+// ✅ generators에서 types, engines import
+import { PropertySeed } from "@/lib/types";
+import { normalizeCourtDocs } from "@/lib/engines/courtdocslayer";
+```
+
+### 금지되는 Import
+
+```typescript
+// ❌ engines에서 services import
+import { SimulationService } from "@/lib/services/simulationservice";
+
+// ❌ engines에서 UI import
+import { PropertyCard } from "@/app/components/PropertyCard";
+
+// ❌ UI에서 engines 직접 import
+import { AuctionEngine } from "@/lib/engines/auctionengine";
+```
+
+---
+
+## 파일명 규칙
+
+### 기본 원칙
+
+**모든 파일명은 소문자로 통일합니다.**
+
+### 디렉토리별 규칙
+
+| 디렉토리      | 규칙                     | 예시                     |
+| ------------- | ------------------------ | ------------------------ |
+| `engines/`    | 소문자                   | `auctionengine.ts`       |
+| `generators/` | 소문자                   | `simulationgenerator.ts` |
+| `types/`      | 소문자                   | `property.ts`            |
+| `services/`   | 소문자                   | `simulationservice.ts`   |
+| `policy/`     | 소문자                   | `defaultpolicy.ts`       |
+| `utils/`      | 소문자                   | `number.ts`              |
+| `supabase/`   | 소문자 (kebab-case 허용) | `clerk-client.ts`        |
+
+### Import 시 주의사항
+
+```typescript
+// ❌ 잘못된 예 (대문자 사용)
+import { generateSimulationScenario } from "@/lib/generators/Simulationgenerator";
 import { Property } from "@/lib/types/Property";
+
+// ✅ 올바른 예 (소문자 사용)
+import { generateSimulationScenario } from "@/lib/generators/simulationgenerator";
+import { Property } from "@/lib/types/property";
 ```
 
-### 6.2) Policy Imports
+**자세한 내용**: `lib/NAMING_CONVENTION.md` 참고
 
-```typescript
-// ✅ DO: policy에서 import
-import { getDefaultPolicy } from "@/lib/policy";
+---
 
-// ❌ DON'T: 직접 파일에서 import
-import { getDefaultPolicy } from "@/lib/policy/defaultpolicy";
-```
+## 핵심 원칙 요약
 
-### 6.3) Engine Usage
+### 1. SSOT (Single Source of Truth)
 
-```typescript
-// ✅ DO: Service에서 엔진 호출
-import { calculateValuation } from "@/lib/engines/valuationengine";
+- **타입**: `lib/types/` (절대 수정 금지)
+- **정책**: `lib/policy/` (절대 수정 금지)
+- **엔진**: `lib/engines/` (절대 수정 금지)
 
-// ❌ DON'T: UI에서 직접 엔진 호출
-// UI는 Server Action을 통해서만 호출
-```
+### 2. 단방향 의존성
 
-## 7) Naming Conventions
+- `UI → Server Actions → Services → Engines → Policy/Types`
+- 하위 레이어는 상위 레이어를 import할 수 없음
 
-- **파일명**: kebab-case (예: `propertyengine.ts`)
-- **클래스/타입**: PascalCase (예: `Property`, `ValuationEngine`)
-- **함수/변수**: camelCase (예: `calculateValuation`, `defaultPolicy`)
-- **상수**: UPPER_SNAKE_CASE (예: `DEFAULT_POLICY`)
+### 3. 엔진의 순수성
 
-## 8) Testing
+- 외부 I/O 금지 (DB, API, 랜덤 등)
+- 모든 의존성은 파라미터로 주입
+- Policy 기반 계산
 
-- **위치**: `lib/tests/`
-- **규칙**:
-  - 엔진은 순수 함수이므로 단위 테스트 작성 용이
-  - 정책 변경 시 테스트 업데이트 필수
-- **실행**: `pnpm test` 또는 `vitest`
+### 4. 파일명 통일
 
-## 9) Versioning & Maintenance
+- 모든 파일명은 소문자
+- Import 경로는 실제 파일명과 정확히 일치
 
-- 코드 구조 변경 시 **상단 메타**(Version / Last Updated) 갱신
-- 새 파일 추가 시 **Key Files Index** 테이블 업데이트
-- 아키텍처 변경 시 **Architecture Layers** 섹션 업데이트
-- 배포 태그 시 **전체 구조 점검**
+---
 
-## 10) Related Documentation
+## 관련 문서
 
-- **프로젝트 구조**: `/docs/product/project-structure.md`
-- **도메인 지식**: `/docs/Domian/`
-- **엔진 명세**: `/docs/engine/`
-- **타입 정의**: `/docs/domain/` + `/lib/types/`
+- **프로젝트 전체 구조**: `docs/index.ts`
+- **빌드 계획**: `docs/product/todov3.md`
+- **API 명세**: `docs/engine/api-contracts.md`
+- **타입 정의**: `docs/domain/` + `lib/types/`
+- **엔진 명세**: `docs/engine/`
+- **파일명 규칙**: `lib/NAMING_CONVENTION.md`
 
-**END OF FILE**
+---
+
+**이 문서는 `lib/` 폴더 구조의 SSOT입니다. 구조가 변경되면 반드시 이 문서를 업데이트해야 합니다.**

@@ -2,8 +2,8 @@
 
 **Version:** 3.0  
 **Strategy:** Skeleton Hybrid (스켈레톤 먼저 → 진짜 구현)  
-**Last Updated:** 2025-11-13  
-**Status:** 🚧 Planning
+**Last Updated:** 2025-01-28  
+**Status:** 🚧 **Ready for Build**
 
 ---
 
@@ -21,6 +21,7 @@
 - ✅ **UI 레이어만 구축** (app/ 디렉토리)
 - ✅ **Design System v2.2 엄격 준수**
 - ✅ **Component Spec v2.2 Props 1:1 매핑**
+- ✅ **엔진 타입 직접 사용** (DTO/Adapter 생성 금지)
 
 ---
 
@@ -35,6 +36,7 @@
 - **컴포넌트 파일**: `PascalCase.tsx` (예: `PropertyCard.tsx`)
 - **일반 코드 파일**: `camelCase.ts` (예: `auctionEngine.ts`)
 - **액션 파일**: `kebab-case.ts` (예: `generate-simulation.ts`)
+- **페이지 파일**: `kebab-case.tsx` (예: `page.tsx`, `not-found.tsx`)
 - **문서 파일**: `kebab-case.md` (예: `report-result.md`)
 - **테스트 파일**: `camelCase.test.ts` (예: `auctionEngine.test.ts`)
 
@@ -66,7 +68,7 @@
   ```
 - **핵심 로직 로그**: `console.group`, `console.log` 추가
   - 서버 및 클라이언트 환경 모두
-  - 서버용 목적 (디버깅용/최소한 고려)
+  - 디버깅 목적 (안정화 후 최소화 고려)
 
 #### 4. TDD 원칙 (Test-Driven Development)
 
@@ -84,6 +86,7 @@
 
 - **잠금 아이콘**: 🔒 이모지 표시
 - **브랜드 메시지**: "프리미엄", "해설판" 단어 사용
+- **CTA 메시지**: "당신은 이미 물건의 '사실'을 파악했습니다. 이제 '분석'을 시작할 준비가 되셨나요?"
 
 ---
 
@@ -127,37 +130,38 @@
 
 - [ ] `/app` 페이지 라우팅 구조 생성
 
-  - [ ] `/app/page.tsx` (Landing)
-  - [ ] `/app/dashboard/page.tsx`
-  - [ ] `/app/simulations/page.tsx`
-  - [ ] `/app/simulations/[id]/page.tsx`
-  - [ ] `/app/simulations/[id]/bid/page.tsx`
-  - [ ] `/app/simulations/[id]/result/page.tsx`
-  - [ ] `/app/history/page.tsx`
+  - [ ] `/app/page.tsx` (Landing) - 브랜드 메시지 중심
+  - [ ] `/app/dashboard/page.tsx` - 사용자 대시보드
+  - [ ] `/app/simulations/page.tsx` - 시뮬레이션 목록
+  - [ ] `/app/simulations/[id]/page.tsx` - 시뮬레이션 상세
+  - [ ] `/app/simulations/[id]/bid/page.tsx` - 입찰 페이지
+  - [ ] `/app/simulations/[id]/result/page.tsx` - 결과 페이지 (핵심)
+  - [ ] `/app/history/page.tsx` - 히스토리 페이지
 
 - [ ] `/components` 컴포넌트 폴더 구조 생성
   - [ ] `/components/ui/` (shadcn - 이미 존재)
-  - [ ] `/components/common/`
-  - [ ] `/components/dashboard/`
-  - [ ] `/components/simulations/`
-  - [ ] `/components/bid/`
-  - [ ] `/components/result/`
-  - [ ] `/components/reports/`
+  - [ ] `/components/common/` - 공통 컴포넌트
+  - [ ] `/components/dashboard/` - 대시보드 전용
+  - [ ] `/components/simulations/` - 시뮬레이션 관련
+  - [ ] `/components/bid/` - 입찰 관련
+  - [ ] `/components/result/` - 결과 관련
+  - [ ] `/components/reports/` - 리포트 관련 (Premium)
 
 ### 1.2 공통 레이아웃 구성
 
 - [ ] RootLayout 확인 및 개선 (`app/layout.tsx`)
 
-  - [ ] Navbar 통합 확인
-  - [ ] ClerkProvider 확인
-  - [ ] SyncUserProvider 확인
+  - [x] Navbar 통합 확인
+  - [x] ClerkProvider 확인
+  - [x] SyncUserProvider 확인
+  - [ ] 메타데이터 업데이트 (BIDIX 브랜드)
   - [ ] 다크모드 Provider (선택적)
 
 - [ ] Navbar 컴포넌트 개선 (`components/Navbar.tsx`)
-  - [ ] 로고 및 브랜드명 표시
+  - [ ] 로고 및 브랜드명 표시 ("BIDIX")
   - [ ] 내비게이션 링크 (Dashboard, Simulations, History)
   - [ ] 사용자 정보 및 로그아웃
-  - [ ] 사용량 표시 (예: 5회 제한)
+  - [ ] 사용량 표시 (예: 5회 제한) - 선택적
 
 ### 1.3 shadcn/ui 컴포넌트 설치 확인
 
@@ -195,6 +199,7 @@
 - ✅ 파일 상단 100줄 이내 JSDoc 문서화
 - ✅ Props 타입 Component Spec v2.2 엄격 준수
 - ✅ UI에서 엔진/서비스 직접 호출 금지
+- ✅ 엔진 타입 직접 import (`@/lib/types`)
 
 ### 2.1 Common Components (공통)
 
@@ -222,6 +227,7 @@
   ```
 - [ ] `components/common/Badge.tsx` (난이도/등급 표시)
 - [ ] `components/common/ErrorState.tsx`
+- [ ] `components/common/EmptyState.tsx`
 
 ### 2.2 Dashboard Components
 
@@ -286,7 +292,7 @@
   ```typescript
   import { Valuation } from "@/lib/types";
   interface QuickFactsProps {
-    valuation: Valuation;
+    valuation: Valuation; // exitPrice3m/6m/12m 포함
   }
   ```
 - [ ] `components/bid/BidAmountInput.tsx`
@@ -310,7 +316,7 @@
   ```typescript
   import { AuctionSummary } from "@/lib/types";
   interface BidOutcomeBlockProps {
-    summary: AuctionSummary;
+    summary: AuctionSummary; // isProfitable3m/6m/12m 포함
     userBid: number;
   }
   ```
@@ -318,7 +324,7 @@
   ```typescript
   import { Profit, ScoreBreakdown } from "@/lib/types";
   interface MetricsStripProps {
-    profit: Profit;
+    profit: Profit; // initialSafetyMargin, scenarios[]
     score: ScoreBreakdown;
   }
   ```
@@ -326,7 +332,7 @@
   ```typescript
   import { ProfitScenario } from "@/lib/types";
   interface ExitScenarioTableProps {
-    scenarios: ProfitScenario[];
+    scenarios: ProfitScenario[]; // 3개 보유기간 모두 표시
   }
   ```
 - [ ] `components/result/PremiumReportCTA.tsx`
@@ -371,7 +377,7 @@
 
 ### 3.1 Landing Page (`/`)
 
-**우선순위:** ⭐⭐
+**우선순위:** ⭐⭐  
 **📚 추가 참조 문서**: `docs/product/prdv2.md` - 브랜드 메시지 및 프로로고
 
 - [ ] 히어로 섹션
@@ -387,7 +393,7 @@
 
 ### 3.2 Dashboard (`/dashboard`)
 
-**우선순위:** ⭐⭐⭐⭐
+**우선순위:** ⭐⭐⭐⭐  
 **📚 필수 참조 문서**:
 
 - `docs/product/user-flow.md` - Usage 조회 및 시뮬레이션 생성 플로우
@@ -489,7 +495,7 @@
 
 ### 3.4 Simulation Detail (`/simulations/[id]`)
 
-**우선순위:** ⭐⭐⭐⭐
+**우선순위:** ⭐⭐⭐⭐  
 **📚 필수 참조 문서**:
 
 - `docs/ui/component-spec.md` - SaleStatementSummary, RightsSummary Props
@@ -515,7 +521,7 @@
 
 ### 3.5 Bid Page (`/simulations/[id]/bid`)
 
-**우선순위:** ⭐⭐⭐⭐
+**우선순위:** ⭐⭐⭐⭐  
 **📚 필수 참조 문서**:
 
 - `docs/ui/component-spec.md` - QuickFacts, BidAmountInput, BidGuidanceBox Props
@@ -531,7 +537,7 @@
   - [ ] `<QuickFacts valuation={} />`
     - [ ] adjustedFMV 표시
     - [ ] minBid 표시
-    - [ ] exitPrice3m/6m/12m 표시
+    - [ ] exitPrice3m/6m/12m 표시 (v2.2 핵심 변경)
   - [ ] `<BidGuidanceBox valuation={} />`
     - [ ] 안전마진 설명
     - [ ] 권장 입찰가 범위
@@ -550,7 +556,7 @@
 
 ---
 
-### 3.6 Result Page (`/simulations/[id]/result`)
+### 3.6 Result Page (`/simulations/[id]/result`) - 핵심 페이지
 
 **우선순위:** ⭐⭐⭐⭐ (핵심 페이지)  
 **📚 필수 참조 문서**:
@@ -637,7 +643,7 @@
      - [ ] 잠금 UI
        - 🔒 아이콘
        - "로그인하기" 버튼 (v2.2에서는 비활성)
-       - 브랜드 메시지: "지금까지 '실제'를 '파악'하셨습니다. 이제 '분석'을 시작할 준비가 되셨나요?"
+       - 브랜드 메시지: "당신은 이미 물건의 '사실'을 파악했습니다. 이제 '분석'을 시작할 준비가 되셨나요?"
 
   5. [ ] `<ResultActions simulationId={} />`
      - [ ] "히스토리 저장" 버튼
@@ -678,7 +684,7 @@
 
 ### 3.7 History Page (`/history`)
 
-**우선순위:** ⭐⭐
+**우선순위:** ⭐⭐  
 **📚 필수 참조 문서**:
 
 - `docs/engine/api-contracts.md` - `GET /api/history` 명세 (페이지네이션 포함)
@@ -758,8 +764,8 @@
 
 ### 4.1 기존 Server Actions 확인
 
-- [x] `app/action/generatesimulation.ts`
-- [x] `app/action/submitbid.ts`
+- [x] `app/action/generatesimulation.ts` - 확인 필요 (기존 코드 검토)
+- [x] `app/action/submitbid.ts` - 확인 필요 (기존 코드 검토)
 
 ### 4.2 추가 필요 Server Actions
 
@@ -955,6 +961,7 @@
 
 - [ ] Phase 3.1: Landing Page 구현 ⭐⭐
 - [ ] Phase 3.7: History Page 구현 ⭐⭐
+- [ ] Phase 4: Server Actions 및 API Routes
 - [ ] Phase 5: 스타일링 및 반응형
 - [ ] Phase 6: 테스트 및 디버깅
 
@@ -986,12 +993,6 @@
 |    7     | 최적화 및 마무리             |    3-4시간    | SEO, a11y, 문서화          |
 | **총계** |                              | **56-72시간** | 평균 64시간 (약 8일 작업)  |
 
-### 시간 조정 및 설명
-
-**Phase 0 추가**: 문서 학습 시간 별도 추가  
-**Phase 4 조정**: API Routes 3개 추가로 시간 증가 (2-3시간 → 4-6시간)  
-**Phase 6 강화**: Chrome DevTools MCP 사용으로 전반 테스트 포함
-
 ### 우선순위별 분류
 
 | 우선순위 | 페이지/기능                               | 시간      |
@@ -1020,6 +1021,10 @@
 - ✅ 엔진 결과를 그대로 UI에 바인딩 (DTO/Adapter 생성 금지)
 - ✅ 모든 금액에 `toLocaleString()` 사용
 - ✅ 핵심 로직에 `console.log` 추가
+- ✅ v2.2 핵심 변경사항 준수:
+  - ExitPrice: 단일 → exitPrice3m/6m/12m 분리
+  - Profit: 단일 ROI → scenarios 배열 (3개 기간)
+  - Summary: 단일 isProfitable → isProfitable3m/6m/12m
 
 ### 개발 워크플로우
 
@@ -1070,6 +1075,8 @@
 - [x] `.cursor/rules/web/playwright-test-guide.mdc` - Playwright 테스트 가이드
 - [x] `.cursor/rules/supabase/disable-rls-for-development.mdc` - RLS 비활성화 규칙
 
+---
+
 ## 📌 핵심 학습 내용 요약
 
 ### 1. 시뮬레이션 흐름 (Auction Flow)
@@ -1101,41 +1108,27 @@ UI → Server Action → Service → SimulationGenerator
 
 ### 5. API 구조
 
-**Server Actions**: `generateSimulationAction`, `submitBidAction`  
+**Server Actions**: `generateSimulationAction`, `submitBidAction`, `saveHistoryAction`  
 **API Routes**: `/api/history`, `/api/scores`, `/api/usage`  
 **인증**: Clerk `auth()` 함수
+
+### 6. v2.2 핵심 변경사항
+
+- **ExitPrice**: 단일 → `exitPrice3m/6m/12m` 분리
+- **Profit**: 단일 ROI → `scenarios[]` 배열 (3개 기간)
+- **Summary**: 단일 `isProfitable` → `isProfitable3m/6m/12m` 분리
+- **Valuation**: `exitPrice` 객체 구조로 변경
 
 ---
 
 ## 📝 버전 히스토리
 
-- **v3.0** (2025-11-13): 초기 생성
-- **v3.1** (2025-11-13): Phase 0 추가, 7개 문서 학습 반영
-  - API Routes 구현 상세화 (Phase 4)
-  - 각 페이지별 참조 문서 명시
-  - Dashboard, Result Page 상세 사용 가이드 보강
-  - 예상 시간 조정 업데이트 (56-72시간)
-- **v3.2** (2025-11-13): 개발 규칙 반영
-  - Phase 0에 개발 규칙 섹션 추가 (파일명, 아키텍처, 문서화, TDD 등)
-  - 각 Phase에 개발 규칙 준수사항 명시
-  - 파일명 체크리스트 추가
-  - 참고 문서 체크리스트에 규칙 파일 추가
-  - 개발 워크플로우에 문서화 및 TDD 단계 추가
-- **v3.3** (2025-11-13): Phase별 필수 참조 문서 명시
-  - 각 Phase 섹션에 "📚 필수 참조 문서" 추가
-  - Phase별로 필요한 핵심 문서를 구분하여 표시
-  - 페이지별(3.1~3.7) 추가 참조 문서 명시
-  - 문서 참조 효율성 향상
-- **v3.4** (2025-11-13): 폴더 구조 업데이트 반영
-  - `src/lib/` → `lib/` 경로 업데이트 (모든 문서 반영)
-  - `src/app/action/` → `app/action/` 경로 업데이트
-  - 컴포넌트 경로는 루트 `components/` 사용 (기존 유지)
-  - `tsconfig.json` baseUrl 변경: `"src"` → `"."`
-  - 프로젝트 구조 단순화 (Next.js 표준 구조 준수)
-- **v3.5** (2025-11-13): 파일 인코딩 문제 해결
-  - 전체 파일 UTF-8로 재작성
-  - 한글 깨짐 현상 수정
-  - 모든 경로 및 내용 정확성 확인
+- **v3.0** (2025-01-28): 상세 빌드 계획 최종 작성
+  - 학습한 모든 문서 내용 반영
+  - 스켈레톤 하이브리드 전략 상세화
+  - 각 Phase별 필수 참조 문서 명시
+  - v2.2 핵심 변경사항 반영
+  - 예상 소요 시간 및 우선순위 분류
 
 ---
 
