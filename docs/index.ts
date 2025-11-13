@@ -7,6 +7,7 @@
  *
  * @version 2.2
  * @lastUpdated 2025-01-28
+ * @lastModified 2025-01-28 (구조 업데이트)
  */
 
 /**
@@ -18,32 +19,36 @@
  *
  * bidix-v2.0/
  * ├── app/                          # Next.js App Router (루트 레벨)
+ * │   ├── action/                   # Server Actions
+ * │   │   ├── generatesimulation.ts  # 시뮬레이션 생성 액션
+ * │   │   └── submitbid.ts          # 입찰 제출 액션
  * │   ├── api/                      # API Routes
  * │   │   └── sync-user/           # Clerk → Supabase 사용자 동기화
+ * │   │       └── route.ts
  * │   ├── auth-test/                # 인증 테스트 페이지
+ * │   │   └── page.tsx
  * │   ├── storage-test/             # 스토리지 테스트 페이지
+ * │   │   └── page.tsx
  * │   ├── layout.tsx                # Root Layout (ClerkProvider + SyncUserProvider)
  * │   ├── page.tsx                  # Landing Page
- * │   └── globals.css               # Tailwind CSS v4 (설정 파일)
+ * │   ├── globals.css               # Tailwind CSS v4 (설정 파일)
+ * │   └── favicon.ico               # 파비콘
  * │
  * ├── components/                   # React 컴포넌트 (루트 레벨)
  * │   ├── ui/                       # shadcn/ui 컴포넌트
+ * │   │   ├── accordion.tsx
  * │   │   ├── button.tsx
- * │   │   ├── card.tsx
+ * │   │   ├── dialog.tsx
+ * │   │   ├── form.tsx
  * │   │   ├── input.tsx
- * │   │   └── ...
+ * │   │   ├── label.tsx
+ * │   │   └── textarea.tsx
  * │   ├── providers/                # React Context Providers
  * │   │   └── sync-user-provider.tsx
  * │   └── Navbar.tsx                # 네비게이션 바
  * │
  * ├── hooks/                        # 커스텀 React Hooks
  * │   └── use-sync-user.ts          # Clerk 사용자 동기화 훅
- * │
- * ├── app/                          # Next.js App Router (루트 레벨)
- * │   ├── action/                   # Server Actions
- * │   │   ├── generatesimulation.ts  # 시뮬레이션 생성 액션
- * │   │   └── submitbid.ts          # 입찰 제출 액션
- * │   └── ... (기타 라우트 파일들)
  * │
  * ├── lib/                          # 핵심 비즈니스 로직 (SSOT) - 도메인 레이어 (UI와 100% 분리)
  * │       ├── types/                # 📌 타입 SSOT (8개 파일)
@@ -97,13 +102,13 @@
  * │       │   ├── server.ts              # Server Component용 (createClerkSupabaseClient)
  * │       │   └── service-role.ts        # 관리자 권한용 (RLS 우회)
  * │       │
- * │       ├── tests/               # 단위 테스트
- * │       │   ├── defaultpolicy.test.ts
- * │       │   ├── rightsengine.test.ts
- * │       │   └── profitengine.test.ts
+ * │       ├── utils/               # 유틸리티 함수
+ * │       │   ├── number.ts              # 숫자 관련 유틸리티
+ * │       │   └── ... (추가 유틸리티)
  * │       │
- * │       ├── utils.ts             # 공통 유틸리티
- * │       └── supabase.ts           # 레거시 Supabase 클라이언트 (사용 지양)
+ * │       ├── utils.ts             # 공통 유틸리티 (cn 함수 등)
+ * │       ├── supabase.ts           # 레거시 Supabase 클라이언트 (사용 지양)
+ * │       └── NAMING_CONVENTION.md  # 파일명 규칙 문서
  * │
  * ├── supabase/                    # Supabase 설정 및 마이그레이션
  * │   ├── config.toml              # Supabase 프로젝트 설정
@@ -113,20 +118,61 @@
  * │       └── setup_storage.sql
  * │
  * ├── docs/                        # 프로젝트 문서 (SSOT)
- * │   ├── Domain/                  # 도메인 지식
+ * │   ├── domain/                  # 도메인 지식
+ * │   │   ├── court-docs.md
+ * │   │   ├── default-policy.md
+ * │   │   ├── glossary.md
+ * │   │   ├── policy-keys.md
+ * │   │   ├── property-types.md
+ * │   │   ├── rights-types.md
+ * │   │   └── valuation-logic.md
  * │   ├── engine/                  # 엔진 명세
+ * │   │   ├── api-contracts.md
+ * │   │   ├── auction-flow.md
+ * │   │   ├── cost-profit-logic.md
+ * │   │   ├── fixtures-spec.md
+ * │   │   └── json-schema.md
+ * │   ├── meta/                    # 메타 문서
+ * │   │   ├── changelog.md
+ * │   │   └── index.md
  * │   ├── product/                 # 제품 기획
+ * │   │   ├── plan.md
+ * │   │   ├── point-level-system.md
+ * │   │   ├── prdv2.md
+ * │   │   ├── project-plan.md
+ * │   │   ├── project-structure.md
+ * │   │   ├── report-result.md
+ * │   │   ├── todov3.md
+ * │   │   └── user-flow.md
+ * │   ├── system/                  # 시스템 설정
+ * │   │   └── difficulty-modes.md
  * │   ├── ui/                      # UI/UX 명세
- * │   └── system/                  # 시스템 설정
+ * │   │   ├── component-architecture.md
+ * │   │   ├── component-spec.md
+ * │   │   └── design-system.md
+ * │   ├── DIR.md                   # 디렉토리 구조 설명
+ * │   ├── TODO.md                  # 할 일 목록
+ * │   └── index.ts                 # 프로젝트 구조도 (이 파일)
  * │
  * ├── public/                      # 정적 파일
  * │   ├── icons/                   # PWA 아이콘
+ * │   │   ├── icon-192x192.png
+ * │   │   ├── icon-256x256.png
+ * │   │   ├── icon-384x384.png
+ * │   │   └── icon-512x512.png
+ * │   ├── logo.png                 # 로고 이미지
  * │   └── og-image.png             # OG 이미지
  * │
  * ├── middleware.ts                # Next.js 미들웨어 (Clerk 인증)
  * ├── components.json              # shadcn/ui 설정
+ * ├── eslint.config.mjs            # ESLint 설정
+ * ├── next.config.ts               # Next.js 설정
+ * ├── postcss.config.mjs           # PostCSS 설정
  * ├── package.json                 # 의존성 관리
- * └── tsconfig.json                # TypeScript 설정
+ * ├── tsconfig.json                # TypeScript 설정
+ * ├── AGENTS.md                    # AI 에이전트 가이드
+ * ├── CLAUDE.md                    # Claude 코딩 규칙
+ * └── README.md                    # 프로젝트 README
  *
  * ============================================================================
  * 🔄 데이터 흐름 (Data Flow)
@@ -277,8 +323,9 @@
  * - 프로젝트 구조: docs/product/project-structure.md
  * - 빌드 계획: docs/product/todov3.md
  * - API 명세: docs/engine/api-contracts.md
- * - 타입 정의: docs/Domain/ + lib/types/
+ * - 타입 정의: docs/domain/ + lib/types/
  * - 엔진 명세: docs/engine/
+ * - 파일명 규칙: lib/NAMING_CONVENTION.md
  *
  * ============================================================================
  */
