@@ -90,7 +90,7 @@
 
 #### 7. 브랜드 스토리 및 보이스 가이드
 
-**참조**: `docs/product/brand-story.md`
+**참조**: `docs/product/brand-story.md`, `docs/ui/design-system.md`
 
 - **브랜드 에센스**: "당신의 경험을, 데이터로 증명하다."
 - **슬로건**: "Fail Safe, Bid Better."
@@ -109,6 +109,32 @@
 - "완벽한 입찰가를 찾아드립니다" (정답 제공자 포지션 회피)
 - "게임하듯 배우는 경매" (학습의 진지함 훼손)
 - "100% 성공하는 입찰 비법" (과장 금지)
+
+#### 8. 디자인 시스템 v2.2 (Brand Integrated) - 필수 준수
+
+**참조**: `docs/ui/design-system.md` (SSOT)
+
+**브랜드 가치 4가지 축**:
+
+1. **Infinite eXperience (경험)** → 사용자가 반복 경험할 영역 구조
+2. **Insight (통찰)** → 복기 리포트/지표 그래픽
+3. **Index (지표)** → 점수·레벨·정확도 기반 UI
+4. **Fail Safe (브랜드 톤)** → 실패를 허용하는 따뜻한 UX 메시지
+
+**UI 텍스트 톤 매트릭스**:
+
+- **Data-focused** (차트/표/지표) → 건조한 문체
+- **User feedback** (결과/실패/성공) → 브랜드 톤의 따뜻한 응원
+- **Premium 안내** → 브랜드 기반 "통찰을 얻을 준비가 되었나요?" 톤
+
+**브랜드 보이스 → UI 표현 매핑**:
+
+| 브랜드 가이드 | UI 표현 방식 |
+|------------|------------|
+| "실패는 자산입니다." | ResultPage 실패 화면 상단의 브랜드 메시지 |
+| "당신의 성장은 숫자로 증명됩니다." | MetricsStrip와 Score 표시에 강조 문구 |
+| "당신은 이미 충분히 공부했습니다." | 랜딩 페이지 첫 문구 |
+| "생각하는 과정을 훈련한다." | 권리/수익/경매 분석의 단계별 구조 |
 
 ---
 
@@ -263,6 +289,8 @@
     simulationCount: number;
   }
   ```
+  - 브랜드 패치: 점수/금액은 Numeric Highlight 스타일 적용
+
 - [ ] `components/dashboard/RecentSimulations.tsx`
   ```typescript
   interface RecentSimulationsProps {
@@ -276,6 +304,15 @@
     limit: number;
   }
   ```
+- [ ] `components/dashboard/DashboardStats.tsx` (브랜드 Value Chain 반영)
+  ```typescript
+  interface DashboardStatsProps {
+    experience: { count: number }; // Experience Module
+    insight: { count: number }; // Insight Module
+    index: { score: number; level: number }; // Index Module
+  }
+  ```
+  - 브랜드 패치: Experience/Insight/Index 기반 3모듈 구조
 
 ### 2.3 Simulation Components
 
@@ -294,6 +331,8 @@
     valuation: { minBid: number };
   }
   ```
+  - 금액 표시: Numeric Highlight 스타일 적용
+
 - [ ] `components/simulations/SaleStatementSummary.tsx`
   ```typescript
   import { Property, CourtDocsNormalized } from "@/lib/types";
@@ -302,6 +341,9 @@
     courtDocs: CourtDocsNormalized;
   }
   ```
+  - 브랜드 패치: 감성·멘토 톤의 한 줄 메시지 추가
+  - Data Mapping: `valuation.adjustedFMV` → "현재 시장가 기준 판단 정확도는 XX%입니다."
+
 - [ ] `components/simulations/RightsSummary.tsx`
   ```typescript
   import { Rights } from "@/lib/types";
@@ -309,6 +351,8 @@
     rights: Rights;
   }
   ```
+  - 브랜드 패치: 감성·멘토 톤의 한 줄 메시지 추가
+  - Data Mapping: `rights.evictionRisk` → "이 리스크는 Hard 모드에서 자주 등장합니다."
 
 ### 2.4 Bid Components
 
@@ -344,6 +388,9 @@
     userBid: number;
   }
   ```
+  - 브랜드 패치: "실패는 자산입니다" 메시지 추가
+  - Accent Colors 사용: Green(성공), Amber(경고), Red(실패)
+
 - [ ] `components/result/MetricsStrip.tsx`
   ```typescript
   import { Profit, ScoreBreakdown } from "@/lib/types";
@@ -352,6 +399,10 @@
     score: ScoreBreakdown;
   }
   ```
+  - 브랜드 패치: 브랜드 Numeric Highlight 적용 (Score / ROI / MoS)
+  - 브랜드 메시지: "당신의 경험은 숫자로 증명됩니다."
+  - Data Mapping: `profit.initialSafetyMargin` → "당신의 안전마진은 X%였습니다."
+
 - [ ] `components/result/ExitScenarioTable.tsx`
   ```typescript
   import { ProfitScenario } from "@/lib/types";
@@ -359,12 +410,19 @@
     scenarios: ProfitScenario[]; // 3개 보유기간 모두 표시
   }
   ```
+  - 브랜드 패치: Amber/Green 기준 색상 (브랜드 Accent Colors)
+  - ROI 컬럼: Numeric Highlight 스타일 적용
+
 - [ ] `components/result/PremiumReportCTA.tsx`
   ```typescript
   interface PremiumReportCTAProps {
     type: "rights" | "profit" | "auction";
   }
   ```
+  - 브랜드 패치: 브랜드 tone + blue accent
+  - 브랜드 메시지: "사실을 이해하셨습니다. 이제 분석을 시작할 준비가 되셨나요?"
+  - 또는: "🔒 더 깊은 분석을 원하신가요?"
+
 - [ ] `components/result/ResultActions.tsx`
   ```typescript
   interface ResultActionsProps {
@@ -407,12 +465,13 @@
 - `docs/product/prdv2.md` - 브랜드 메시지 및 프로로고
 - `docs/product/brand-story.md` - 브랜드 스토리 및 보이스 가이드
 
-- [ ] 히어로 섹션
+- [ ] 히어로 섹션 (브랜드 톤이 가장 직접 반영되는 영역)
   - [ ] 브랜드 로고 및 슬로건 표시
     - 슬로건: **"Fail Safe, Bid Better."**
     - 부제: "안전하게 실패하고, 더 나은 입찰자가 되는 것. 이것이 BIDIX의 약속입니다."
   - [ ] 브랜드 에센스 표시
     - **"당신의 경험을, 데이터로 증명하다."**
+    - 브랜드 문구 스타일: 넓은 letter-spacing + 얇은 weight
   - [ ] 주요 가치 제안 메시지
     - "우리는 경매를 '배워본 적 없는 사람'이 아니라, '해본 적 없는 사람'을 위해 존재합니다."
     - "실패해도 되는 완벽한 실전" 제공
@@ -423,6 +482,8 @@
     - Infinite eXperience (무한한 경험)
     - Insight (날카로운 통찰)
     - Index (성장의 지표: 정확성/수익성/안정성)
+- [ ] Hard 모드 소개 (브랜드 규칙)
+  - [ ] Hard 모드 소개 문구: *"실패는 비용이 아닙니다. 여기서는 데이터가 됩니다."*
 - [ ] Footer
 
 **예상 소요:** 2-3시간
@@ -459,9 +520,15 @@
     - 프로그레스바 형태
     - 남은 횟수 강조
     - 5회 초과 시 "일일 표시 제도해주세요" 메시지
+  - [ ] 브랜드 Value Chain 반영: 3개 모듈 구조
+    - [ ] Experience Module - 이번 주 시뮬레이션 횟수
+    - [ ] Insight Module - 무료 리포트 조회 수
+    - [ ] Index Module - 점수/레벨/히스토리
+    - 이 3개 모듈은 브랜드 가치 IX 그대로 UI로 표현
   - [ ] `<QuickStats level={3} totalScore={1240} simulationCount={47} />` 배치
     - 3개 카드 레이아웃 (레벨 / 점수 / 총 시뮬레이션 수)
     - 점수 계산 공식: `point-level-system.md` 참조
+    - 점수/금액은 Numeric Highlight 스타일 적용
   - [ ] `<RecentSimulations simulations={[...]} />` 배치
     - PropertyCard 형태로 표시
     - 클릭 시 결과 페이지로 이동
@@ -547,8 +614,12 @@
   - [ ] Property, CourtDocs, Rights 데이터 포함
 - [ ] UI 구성
   - [ ] 헤더 (사건번호, 난이도 배지)
+  - [ ] 브랜드 문구 삽입
+    - "사실을 먼저 이해한 다음, 분석이 시작됩니다."
   - [ ] `<SaleStatementSummary property={} courtDocs={} />`
+    - 모든 Summary 컴포넌트에 감성·멘토 톤의 한 줄 메시지 추가
   - [ ] `<RightsSummary rights={} />`
+    - 모든 Summary 컴포넌트에 감성·멘토 톤의 한 줄 메시지 추가
   - [ ] "입찰하기" CTA 버튼 → `/simulations/[id]/bid`
 - [ ] 반응형 레이아웃
   - [ ] 2열 레이아웃 (Desktop)
@@ -614,13 +685,21 @@
     - property, valuation, rights, costs, profit, courtDocs, summary
   - [ ] userBid, score 데이터 포함
   - [ ] 데이터 검증 `json-schema.md` 구조 확인
-- [ ] UI 구성 (단계별 순서)
+- [ ] UI 구성 (단계별 순서 - 브랜드 핵심이 가장 드러나는 페이지)
+
+  **브랜드 메시지 layer 추가** (페이지 최상단):
+  
+  - [ ] 브랜드 메시지 섹션
+    - **"실패는 비용이 아니라, 자산입니다."**
+    - 브랜드 문구 스타일: 넓은 letter-spacing + 얇은 weight
+    - Failure 메시지는 따뜻함 + 데이터 기반 톤
 
   1. [ ] `<BidOutcomeBlock summary={} userBid={} />`
 
      - [ ] 입찰 성공/실패/근접 표시
        - userBid vs minBid 비교
        - 상태별 색상 (success: green, fail: red, close: yellow)
+       - Accent Colors 사용: Green(성공), Amber(경고/근접), Red(실패)
      - [ ] summary.grade 표시 (S/A/B/C/D)
        - 등급별 색상: `point-level-system.md` 참조
      - [ ] summary.isProfitable3m/6m/12m 표시
@@ -636,17 +715,22 @@
        - 초기 안전마진 (profit.initialSafetyMargin)
          - 백분율 표시 (예: 7.8%)
          - 설명: "FMV 대비 초기 마진"
+         - 브랜드 메시지: "당신의 안전마진은 X%였습니다." (Data Mapping 규칙)
        - 최적 ROI (profit.scenarios 중 최고값)
          - 백분율 표시 (예: 22.4%)
          - 보유기간 표시 (예: "12개월 기준")
+         - Numeric Highlight 스타일 적용 (두껍고 선명하게)
        - 최종 점수 (score.finalScore)
          - 1000점 만점
          - 등급 표시 (S/A/B/C/D)
+         - 브랜드 메시지: "당신의 경험은 숫자로 증명됩니다."
+         - Numeric Highlight 스타일 적용
      - [ ] 점수 구성 상세 (접기/펼치기)
        - Accuracy Score: X/400
        - Profitability Score: X/400
        - Risk Control Score: X/200
        - 총 점수 계산 근거: `point-level-system.md`
+     - [ ] 브랜드 Numeric Highlight 적용 (Score / ROI / MoS)
 
   3. [ ] `<ExitScenarioTable scenarios={profit.scenarios} />`
 
@@ -656,10 +740,11 @@
        - 매각가 (exitPrice)
        - 총비용 (totalCost)
        - 순이익 (netProfit)
-       - ROI (roi)
-       - 연환산 ROI (annualizedRoi)
+       - ROI (roi) - Numeric Highlight 스타일
+       - 연환산 ROI (annualizedRoi) - Numeric Highlight 스타일
      - [ ] 최적 시나리오 하이라이트
        - bestHoldingPeriod 강조
+       - Amber/Green 기준 색상 (브랜드 Accent Colors)
      - [ ] 금액 포맷: `toLocaleString()`
      - [ ] 모바일 스크롤 가능한 테이블
 
@@ -683,7 +768,9 @@
      - [ ] 잠금 UI
        - 🔒 아이콘
        - "로그인하기" 버튼 (v2.2에서는 비활성)
-       - 브랜드 메시지: **"당신은 이미 물건의 '사실'을 파악했습니다. 이제 '분석'을 시작할 준비가 되셨나요?"** (PRD v2.0 전환 메시지 톤)
+       - 브랜드 메시지: **"사실을 이해하셨습니다. 이제 분석을 시작할 준비가 되셨나요?"** (브랜드 톤)
+       - 또는: **"🔒 더 깊은 분석을 원하신가요?"** + "당신은 이미 사실을 이해했습니다. 이제 분석을 시작할 준비가 되셨습니다."
+       - 브랜드 Accent Color (blue/amber) 적용
        - 브랜드 보이스 준수: 격려하되 과장하지 않음, 데이터 기반 강조
 
   5. [ ] `<ResultActions simulationId={} />`
@@ -879,11 +966,63 @@
 - `docs/ui/component-architecture.md` - 컴포넌트 레이아웃 가이드
 - `.cursor/rules/web/nextjs-convention.mdc` - Tailwind CSS 사용 규칙
 
-### 5.1 Design System 사용
+### 5.1 Design System 사용 (Brand Integrated)
 
-- [ ] Tailwind Design Tokens 확인 (`app/globals.css`)
-  - [ ] --primary, --success, --warning, --danger 색상
-  - [ ] --border, --background 색상
+**Color Tokens (브랜드 통합)**:
+
+- [ ] `app/globals.css`에 브랜드 Color Tokens 설정
+  ```css
+  :root {
+    /* Backgrounds */
+    --background: 0 0% 100%;
+    --foreground: 222 84% 5%;
+    
+    /* Brand Primary */
+    --primary: 222 47% 11%;
+    --primary-foreground: 0 0% 98%;
+    
+    /* Brand Accent Colors */
+    --accent-green: 142 70% 45%; /* 성장 Growth */
+    --accent-amber: 38 92% 55%; /* 경고 / 학습 시그널 */
+    --accent-blue: 222 85% 55%; /* Financial clarity 핵심 */
+    
+    /* Functional Colors */
+    --success: 142 76% 36%;
+    --warning: 48 96% 53%;
+    --danger: 0 84% 60%;
+    --info: 212 100% 50%;
+    
+    /* Border / Card */
+    --border: 214 32% 91%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 84% 5%;
+  }
+  ```
+
+- [ ] Accent Colors 사용 규칙 적용
+  - Green → 점수 상승, MoS+, 긍정적 시나리오
+  - Amber → 리스크, 경고, Hard 모드
+  - Blue → Premium CTA, 정보 강조
+
+**Typography (브랜드 톤)**:
+
+- [ ] 글꼴 설정
+  - Heading (H1–H4): Inter / Poppins — 기하학적, 안정감
+  - Body: Pretendard / Noto Sans KR — 높은 가독성
+  - Numeric Highlight: tabular-nums 지원 글꼴 필수
+
+- [ ] 스타일 규칙 적용
+  - 점수/금액/ROI는 **Numeric Highlight 스타일** (두껍고 선명하게)
+  - 브랜드 문구는 **넓은 letter-spacing + 얇은 weight**
+  - 예: "실패는 비용이 아니라, 자산입니다." (넓은 letter-spacing)
+
+**Layout Rules (브랜드 원칙)**:
+
+- [ ] 레이아웃 구조
+  - **좌측 메인 정보 → 우측 인사이트 구조**
+  - **간격은 넓게, 경계는 옅게 (눈이 시리지 않게)**
+  - **요약 → 상세 → 인사이트** 순서
+
 - [ ] 다크모드 지원 (선택적)
 
 ### 5.2 반응형 레이아웃
@@ -902,6 +1041,20 @@
 - [ ] shadcn/ui 기본 커스터마이징 최소화
 - [ ] 금액 표시 포맷팅 (`toLocaleString()`)
 - [ ] 백분율 표시 포맷팅
+
+### 5.4 인터랙션 규칙 (Brand Behavior)
+
+**Hover 효과**:
+
+- [ ] 소극적 강조, 낮은 채도
+- [ ] 브랜드 메시지 포함 미세툴팁 제공
+  - 예: "이 값은 시세 대비 정확도를 의미합니다."
+
+**Error/Empty State**:
+
+- [ ] 브랜드 톤: 단호하지만 따뜻하게
+- [ ] 사용자를 평가하지 않음
+- [ ] 예: "이 결과는 당신의 학습을 위한 데이터입니다."
 
 ---
 
@@ -1058,7 +1211,12 @@
 ### 반드시 준수사항
 
 - ✅ Component Spec v2.2의 Props 타입 엄격 사용
-- ✅ Design System v2.2의 디자인 가이드 준수
+- ✅ Design System v2.2의 디자인 가이드 준수 (`docs/ui/design-system.md` SSOT)
+  - 브랜드 Color Tokens 사용 (Primary, Accent Green/Amber/Blue)
+  - Typography 규칙 준수 (Numeric Highlight, 브랜드 문구 스타일)
+  - Layout Rules 준수 (좌측 메인 정보 → 우측 인사이트)
+  - 브랜드 보이스 → UI 표현 매핑 적용
+  - Data Mapping 규칙 적용 (엔진 데이터 → 브랜드 메시지)
 - ✅ 엔진 결과를 그대로 UI에 바인딩 (DTO/Adapter 생성 금지)
 - ✅ 모든 금액에 `toLocaleString()` 사용
 - ✅ 핵심 로직에 `console.log` 추가
@@ -1066,6 +1224,14 @@
   - UI 메시지는 브랜드 보이스 DO's/DON'Ts 준수
   - 페이지별 톤 조절 매트릭스 참조
   - 브랜드 경험 원칙 (투명성, 존중, 점진성, 현실성) 반영
+- ✅ 브랜드 기반 컴포넌트 패치 사항 반영
+  - 모든 Summary 컴포넌트에 감성·멘토 톤의 한 줄 메시지 추가
+  - Score / ROI / MoS는 Numeric Accent 스타일 적용
+  - Premium Report CTA는 브랜드 Accent Color(blue/amber)
+  - Failure 메시지는 따뜻함 + 데이터 기반 톤
+- ✅ 인터랙션 규칙 준수
+  - Hover: 소극적 강조, 브랜드 메시지 포함 미세툴팁
+  - Error/Empty State: 단호하지만 따뜻하게, 사용자 평가 금지
 - ✅ v2.2 핵심 변경사항 준수:
   - ExitPrice: 단일 → exitPrice3m/6m/12m 분리
   - Profit: 단일 ROI → scenarios 배열 (3개 기간)
@@ -1164,6 +1330,13 @@ UI → Server Action → Service → SimulationGenerator
 **슬로건**: "Fail Safe, Bid Better."  
 **BIDIX의 'ix' 가치 사슬**: Infinite eXperience → Insight → Index
 
+**브랜드 가치 4가지 축**:
+
+1. **Infinite eXperience (경험)** → 사용자가 반복 경험할 영역 구조
+2. **Insight (통찰)** → 복기 리포트/지표 그래픽
+3. **Index (지표)** → 점수·레벨·정확도 기반 UI
+4. **Fail Safe (브랜드 톤)** → 실패를 허용하는 따뜻한 UX 메시지
+
 **주요 메시지 시나리오**:
 
 - 신규 사용자: "당신은 이미 경매를 공부했습니다. 이제 BIDIX에서 안전하게 경험할 차례입니다."
@@ -1174,6 +1347,21 @@ UI → Server Action → Service → SimulationGenerator
 
 - DO's: "당신은 이미 충분히 공부했습니다. 이제 경험할 차례입니다.", "실패는 비용이 아니라 자산입니다."
 - DON'Ts: "경매 전문가가 되세요!", "완벽한 입찰가를 찾아드립니다", "게임하듯 배우는 경매"
+
+**UI 텍스트 톤 매트릭스**:
+
+- **Data-focused** (차트/표/지표) → 건조한 문체
+- **User feedback** (결과/실패/성공) → 브랜드 톤의 따뜻한 응원
+- **Premium 안내** → 브랜드 기반 "통찰을 얻을 준비가 되었나요?" 톤
+
+**Data Mapping (엔진 → 브랜드 경험)**:
+
+| 엔진 원천 데이터 | UI 메시지/표현 |
+|------------|------------|
+| `profit.initialSafetyMargin` | "당신의 안전마진은 X%였습니다." |
+| `rights.evictionRisk` | "이 리스크는 Hard 모드에서 자주 등장합니다." |
+| `valuation.adjustedFMV` | "현재 시장가 기준 판단 정확도는 XX%입니다." |
+| Score | "당신의 경험은 숫자로 증명됩니다." |
 
 ### 7. v2.2 핵심 변경사항
 
@@ -1201,7 +1389,36 @@ UI → Server Action → Service → SimulationGenerator
   - Premium CTA에 브랜드 보이스 원칙 추가
   - 반드시 준수사항에 브랜드 스토리 가이드 추가
   - 핵심 학습 내용에 브랜드 스토리 섹션 추가
+- **v3.2** (2025-01-28): 디자인 시스템 v2.2 (Brand Integrated) 반영
+  - Phase 0에 디자인 시스템 v2.2 필수 준수 섹션 추가
+    - 브랜드 가치 4가지 축 (Infinite eXperience, Insight, Index, Fail Safe)
+    - UI 텍스트 톤 매트릭스
+    - 브랜드 보이스 → UI 표현 매핑
+  - Phase 2 컴포넌트 스켈레톤에 브랜드 패치 사항 반영
+    - 모든 Summary 컴포넌트에 감성·멘토 톤 메시지 추가
+    - MetricsStrip, ExitScenarioTable에 Numeric Highlight 및 Accent Colors 적용
+    - PremiumReportCTA에 브랜드 메시지 및 Accent Color 적용
+    - DashboardStats에 Experience/Insight/Index 3모듈 구조 추가
+  - Phase 3 페이지 구현에 브랜드 구조 반영
+    - Landing Page: Hard 모드 소개 문구 추가
+    - Dashboard: 브랜드 Value Chain 3개 모듈 구조 반영
+    - Simulation Detail: 브랜드 문구 삽입
+    - Result Page: 브랜드 메시지 layer 추가, Data Mapping 규칙 적용
+  - Phase 5 스타일링에 Design System 상세화
+    - Color Tokens (브랜드 Primary, Accent Green/Amber/Blue) 상세 명시
+    - Typography 규칙 (Numeric Highlight, 브랜드 문구 스타일)
+    - Layout Rules (좌측 메인 정보 → 우측 인사이트)
+    - 인터랙션 규칙 (Hover, Error/Empty State)
+  - 반드시 준수사항에 디자인 시스템 가이드 추가
+    - 브랜드 Color Tokens 사용 규칙
+    - Typography 및 Layout Rules 준수
+    - 브랜드 기반 컴포넌트 패치 사항 반영
+    - 인터랙션 규칙 준수
+  - 핵심 학습 내용에 디자인 시스템 섹션 추가
+    - 브랜드 가치 4가지 축
+    - UI 텍스트 톤 매트릭스
+    - Data Mapping 규칙
 
 ---
 
-**END OF TODO v3.1**
+**END OF TODO v3.2**
