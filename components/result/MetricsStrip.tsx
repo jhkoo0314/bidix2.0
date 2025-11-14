@@ -42,7 +42,6 @@ import { Profit } from "@/lib/types";
 import { ScoreBreakdown } from "@/lib/engines/scoreengine";
 import { SectionCard } from "@/components/common/SectionCard";
 import { Badge } from "@/components/common/Badge";
-import { DataRow } from "@/components/common/DataRow";
 
 export interface MetricsStripProps {
   profit: Profit;

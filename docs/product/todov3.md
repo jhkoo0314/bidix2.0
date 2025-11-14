@@ -452,10 +452,10 @@
 
 ### 2.6 Premium Report Components (아직 잠금 상태)
 
-- [ ] `components/reports/RightsAnalysisReport.tsx` (잠금 UI만)
-- [ ] `components/reports/ProfitAnalysisReport.tsx` (잠금 UI만)
-- [ ] `components/reports/AuctionAnalysisReport.tsx` (잠금 UI만)
-- [ ] `components/reports/SaleStatementReport.tsx` (첫 1회 무료)
+- [x] `components/reports/RightsAnalysisReport.tsx` (잠금 UI만)
+- [x] `components/reports/ProfitAnalysisReport.tsx` (잠금 UI만)
+- [x] `components/reports/AuctionAnalysisReport.tsx` (잠금 UI만)
+- [x] `components/reports/SaleStatementReport.tsx` (첫 1회 무료)
 
 ---
 
@@ -485,26 +485,26 @@
 - `docs/product/prdv2.md` - 브랜드 메시지 및 프로로고
 - `docs/product/brand-story.md` - 브랜드 스토리 및 보이스 가이드
 
-- [ ] 히어로 섹션 (브랜드 톤이 가장 직접 반영되는 영역)
-  - [ ] 브랜드 로고 및 슬로건 표시
+- [x] 히어로 섹션 (브랜드 톤이 가장 직접 반영되는 영역)
+  - [x] 브랜드 로고 및 슬로건 표시
     - 슬로건: **"Fail Safe, Bid Better."**
     - 부제: "안전하게 실패하고, 더 나은 입찰자가 되는 것. 이것이 BIDIX의 약속입니다."
-  - [ ] 브랜드 에센스 표시
+  - [x] 브랜드 에센스 표시
     - **"당신의 경험을, 데이터로 증명하다."**
     - 브랜드 문구 스타일: 넓은 letter-spacing + 얇은 weight
-  - [ ] 주요 가치 제안 메시지
+  - [x] 주요 가치 제안 메시지
     - "우리는 경매를 '배워본 적 없는 사람'이 아니라, '해본 적 없는 사람'을 위해 존재합니다."
     - "실패해도 되는 완벽한 실전" 제공
-  - [ ] CTA 버튼
+  - [x] CTA 버튼
     - "첫 입찰을 시작하시겠습니까?" (브랜드 스토리 시나리오 1 참조)
-- [ ] 주요 기능 소개 섹션
-  - [ ] BIDIX의 'ix' 가치 사슬 설명
+- [x] 주요 기능 소개 섹션
+  - [x] BIDIX의 'ix' 가치 사슬 설명
     - Infinite eXperience (무한한 경험)
     - Insight (날카로운 통찰)
     - Index (성장의 지표: 정확성/수익성/안정성)
-- [ ] Hard 모드 소개 (브랜드 규칙)
-  - [ ] Hard 모드 소개 문구: _"실패는 비용이 아닙니다. 여기서는 데이터가 됩니다."_
-- [ ] Footer
+- [x] Hard 모드 소개 (브랜드 규칙)
+  - [x] Hard 모드 소개 문구: _"실패는 비용이 아닙니다. 여기서는 데이터가 됩니다."_
+- [x] Footer
 
 **예상 소요:** 2-3시간
 
