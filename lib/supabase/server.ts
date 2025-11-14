@@ -25,9 +25,27 @@ export function createClerkSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error(
+      "Supabase URL or Anon Key is missing. Please check your environment variables.",
+    );
+  }
+
   return createClient(supabaseUrl, supabaseKey, {
     async accessToken() {
-      return (await auth()).getToken();
+      try {
+        // lib/supabase.ts와 동일한 패턴 사용
+        const token = await (await auth()).getToken();
+        return token ?? null;
+      } catch (error) {
+        console.error("Failed to get Clerk token:", error);
+        console.error(
+          "Token error details:",
+          error instanceof Error ? error.message : String(error),
+        );
+        // 토큰을 가져오지 못해도 클라이언트는 생성하되, 인증이 필요한 쿼리는 실패할 것입니다
+        return null;
+      }
     },
   });
 }

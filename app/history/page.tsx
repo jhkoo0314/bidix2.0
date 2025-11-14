@@ -142,12 +142,30 @@ export default async function HistoryPage({ searchParams }: HistoryPageProps) {
     });
 
     if (!response.ok) {
+      let errorMessage = "히스토리를 불러오는 중 오류가 발생했습니다.";
       console.error("API 호출 실패:", response.status, response.statusText);
+
+      // 에러 응답 본문 읽기 시도 (안전하게)
+      try {
+        const errorData = await response.json().catch(() => null);
+        if (errorData) {
+          console.error("에러 상세:", errorData);
+          if (errorData.details) {
+            errorMessage += ` (${errorData.details})`;
+          } else if (errorData.error) {
+            errorMessage += ` (${errorData.error})`;
+          }
+        }
+      } catch (e) {
+        // JSON 파싱 실패는 무시 (기본 메시지 사용)
+        console.error("에러 응답 파싱 실패:", e);
+      }
+
       console.groupEnd();
       return (
         <main className="min-h-[calc(100vh-80px)] px-8 py-16">
           <div className="w-full max-w-7xl mx-auto">
-            <ErrorState message="히스토리를 불러오는 중 오류가 발생했습니다." />
+            <ErrorState message={errorMessage} />
           </div>
         </main>
       );
@@ -311,7 +329,9 @@ export default async function HistoryPage({ searchParams }: HistoryPageProps) {
                               <Badge type="grade" value={item.grade} />
                             </div>
                             <div>
-                              <div className="font-medium">{item.propertyType}</div>
+                              <div className="font-medium">
+                                {item.propertyType}
+                              </div>
                               <div className="text-sm text-muted-foreground">
                                 {item.address}
                               </div>
@@ -386,4 +406,3 @@ export default async function HistoryPage({ searchParams }: HistoryPageProps) {
     console.groupEnd();
   }
 }
-

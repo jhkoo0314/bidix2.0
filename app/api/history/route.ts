@@ -58,10 +58,42 @@ interface HistoryResponse {
 export async function GET(request: NextRequest) {
   console.group("History API");
   console.log("사용자 입찰 히스토리 조회 시작");
+  console.log("요청 URL:", request.url);
+  console.log("요청 메서드:", request.method);
 
   try {
     // 1. 인증 확인
-    const { userId } = await auth();
+    console.log("인증 확인 시작");
+    let authResult;
+    try {
+      authResult = await auth();
+      console.log("auth() 호출 성공:", {
+        userId: authResult?.userId || "없음",
+      });
+    } catch (authError) {
+      console.error("auth() 호출 실패:", authError);
+      console.error(
+        "auth() 에러 타입:",
+        authError instanceof Error
+          ? authError.constructor.name
+          : typeof authError,
+      );
+      console.error(
+        "auth() 에러 메시지:",
+        authError instanceof Error ? authError.message : String(authError),
+      );
+      console.groupEnd();
+      return NextResponse.json(
+        {
+          error: "인증 확인 중 오류가 발생했습니다.",
+          details:
+            authError instanceof Error ? authError.message : String(authError),
+        },
+        { status: 500 },
+      );
+    }
+
+    const { userId } = authResult;
     if (!userId) {
       console.log("인증 실패: userId 없음");
       console.groupEnd();
@@ -94,9 +126,44 @@ export async function GET(request: NextRequest) {
     });
 
     // 3. Supabase 클라이언트 생성
-    const supabase = createClerkSupabaseClient();
+    console.log("Supabase 클라이언트 생성 시작");
+    let supabase;
+    try {
+      supabase = createClerkSupabaseClient();
+      console.log("Supabase 클라이언트 생성 성공");
+    } catch (clientError) {
+      console.error("Supabase 클라이언트 생성 실패:", clientError);
+      console.error(
+        "에러 타입:",
+        clientError instanceof Error
+          ? clientError.constructor.name
+          : typeof clientError,
+      );
+      console.error(
+        "에러 메시지:",
+        clientError instanceof Error
+          ? clientError.message
+          : String(clientError),
+      );
+      console.error(
+        "에러 스택:",
+        clientError instanceof Error ? clientError.stack : "스택 없음",
+      );
+      console.groupEnd();
+      return NextResponse.json(
+        {
+          error: "데이터베이스 연결에 실패했습니다.",
+          details:
+            clientError instanceof Error
+              ? clientError.message
+              : String(clientError),
+        },
+        { status: 500 },
+      );
+    }
 
     // 4. 쿼리 빌더 시작
+    console.log("쿼리 빌더 시작");
     let query = supabase
       .from("simulations")
       .select(
@@ -140,13 +207,31 @@ export async function GET(request: NextRequest) {
     query = query.limit(limit + 1); // 다음 페이지 존재 여부 확인을 위해 +1
 
     // 8. 데이터 조회
+    console.log("데이터 조회 실행");
+    console.log("쿼리 조건:", {
+      userId,
+      difficulty: difficulty || "all",
+      outcome: outcome || "all",
+      sort,
+      limit,
+      cursor: cursor || "none",
+    });
+
     const { data: simulations, error } = await query;
 
     if (error) {
       console.error("Supabase 조회 에러:", error);
+      console.error("에러 코드:", error.code);
+      console.error("에러 메시지:", error.message);
+      console.error("에러 상세:", JSON.stringify(error, null, 2));
+      console.error("에러 해시:", error.hint);
       console.groupEnd();
       return NextResponse.json(
-        { error: "데이터 조회 중 오류가 발생했습니다." },
+        {
+          error: "데이터 조회 중 오류가 발생했습니다.",
+          details: error.message || "알 수 없는 오류",
+          code: error.code,
+        },
         { status: 500 },
       );
     }
@@ -162,25 +247,47 @@ export async function GET(request: NextRequest) {
         : null;
 
     // 10. 데이터 변환
-    const historyItems: HistoryItem[] = items.map((sim) => {
-      const propertyJson = sim.property_json as PropertySeed;
-      const profitJson = sim.profit_json as Profit | null;
-      const score = sim.score_awarded || 0;
-      const grade = mapScoreToGrade(score);
+    console.log("데이터 변환 시작");
+    const historyItems: HistoryItem[] = items.map((sim, index) => {
+      try {
+        const propertyJson = sim.property_json as PropertySeed | null;
+        const profitJson = sim.profit_json as Profit | null;
+        const score = sim.score_awarded ?? 0;
+        const grade = mapScoreToGrade(score);
 
-      return {
-        historyId: sim.id,
-        simulationId: sim.id,
-        pinned: sim.pinned || false, // DB에서 실제 pinned 필드 조회
-        savedAt: sim.created_at,
-        propertyType: sim.property_type || "unknown",
-        address: propertyJson?.address || "주소 없음",
-        myBid: sim.my_bid || 0,
-        outcome: (sim.outcome as "win" | "lose" | "overpay" | "pending") || "pending",
-        score,
-        grade,
-        initialSafetyMargin: profitJson?.initialSafetyMargin || 0,
-      };
+        return {
+          historyId: sim.id,
+          simulationId: sim.id,
+          pinned: sim.pinned ?? false,
+          savedAt: sim.created_at,
+          propertyType: sim.property_type || "unknown",
+          address: propertyJson?.address || "주소 없음",
+          myBid: sim.my_bid ?? 0,
+          outcome:
+            (sim.outcome as "win" | "lose" | "overpay" | "pending") ||
+            "pending",
+          score,
+          grade,
+          initialSafetyMargin: profitJson?.initialSafetyMargin ?? 0,
+        };
+      } catch (transformError) {
+        console.error(`항목 ${index} 변환 실패:`, transformError);
+        console.error("항목 데이터:", JSON.stringify(sim, null, 2));
+        // 기본값으로 반환
+        return {
+          historyId: sim.id,
+          simulationId: sim.id,
+          pinned: false,
+          savedAt: sim.created_at,
+          propertyType: "unknown",
+          address: "주소 없음",
+          myBid: 0,
+          outcome: "pending" as const,
+          score: 0,
+          grade: "D" as const,
+          initialSafetyMargin: 0,
+        };
+      }
     });
 
     const result: HistoryResponse = {
@@ -195,11 +302,18 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(result);
   } catch (err) {
     console.error("예상치 못한 에러:", err);
+    console.error("에러 스택:", err instanceof Error ? err.stack : "스택 없음");
+    console.error(
+      "에러 상세:",
+      JSON.stringify(err, Object.getOwnPropertyNames(err), 2),
+    );
     console.groupEnd();
     return NextResponse.json(
-      { error: "서버 오류가 발생했습니다." },
+      {
+        error: "서버 오류가 발생했습니다.",
+        details: err instanceof Error ? err.message : "알 수 없는 오류",
+      },
       { status: 500 },
     );
   }
 }
-
