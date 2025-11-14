@@ -23,8 +23,9 @@ import {
 } from "@/lib/types";
 
 // Policy
-import { Policy } from "@/lib/policy/policy";
+import { Policy, PolicyOverrides } from "@/lib/policy/policy";
 import defaultPolicy from "@/lib/policy/defaultpolicy";
+import { easyModePolicy, hardModePolicy } from "@/lib/policy/difficultypolicy";
 
 // Utils
 import {
@@ -152,10 +153,18 @@ async function submitBid(
     userBid,
   });
 
-  /* 4) OUTCOME 판단 (v2.2 기반 재작성) */
-  const outcome = determineOutcome(finalResult, userBid);
+  /* 4) 난이도별 정책 병합 */
+  const mergedPolicy = mergePolicyWithDifficulty(propertySeed.difficulty);
 
-  /* 5) DB 업데이트 Payload 구성 */
+  /* 5) OUTCOME 판단 (경쟁자 로직 포함) */
+  const outcome = determineOutcome(
+    finalResult,
+    userBid,
+    propertySeed, // 시드 추가
+    mergedPolicy, // 병합된 정책 전달
+  );
+
+  /* 6) DB 업데이트 Payload 구성 */
   const updateData: SimulationUpdate = {
     my_bid: userBid,
     outcome,
@@ -169,7 +178,7 @@ async function submitBid(
     score_awarded: scoreResult.finalScore,
   };
 
-  /* 6) DB 업데이트 실행 */
+  /* 7) DB 업데이트 실행 */
   const { error: updateError } = await supabase
     .from("simulations")
     .update(updateData)
@@ -180,7 +189,7 @@ async function submitBid(
     throw new Error("Failed to submit bid.");
   }
 
-  /* 7) 결과 반환 */
+  /* 8) 결과 반환 */
   return {
     ...finalResult,
     score: scoreResult,
@@ -188,7 +197,69 @@ async function submitBid(
 }
 
 /* ============================================================
-    [3] 경쟁자 입찰가 생성 함수
+    [3] 정책 병합 유틸리티 함수
+   ============================================================ */
+
+/**
+ * 난이도별 정책 병합 함수
+ * defaultPolicy를 기본으로 하고, 난이도에 따라 오버라이드 적용
+ *
+ * @param difficulty - 난이도 모드 (Easy/Normal/Hard)
+ * @returns 병합된 Policy 객체
+ */
+export function mergePolicyWithDifficulty(difficulty: DifficultyMode): Policy {
+  // 기본 정책 복사
+  const merged: Policy = JSON.parse(JSON.stringify(defaultPolicy));
+
+  // 난이도별 오버라이드 선택
+  let override: PolicyOverrides;
+  switch (difficulty) {
+    case DifficultyMode.Easy:
+      override = easyModePolicy;
+      break;
+    case DifficultyMode.Hard:
+      override = hardModePolicy;
+      break;
+    default:
+      // Normal 모드는 오버라이드 없음
+      return merged;
+  }
+
+  // Deep merge 구현
+  function deepMerge(target: any, source: any): any {
+    if (source === null || source === undefined) {
+      return target;
+    }
+
+    if (typeof source !== "object" || Array.isArray(source)) {
+      return source;
+    }
+
+    const result = { ...target };
+    for (const key in source) {
+      if (source.hasOwnProperty(key)) {
+        if (
+          typeof source[key] === "object" &&
+          !Array.isArray(source[key]) &&
+          source[key] !== null &&
+          target[key] &&
+          typeof target[key] === "object" &&
+          !Array.isArray(target[key])
+        ) {
+          result[key] = deepMerge(target[key], source[key]);
+        } else {
+          result[key] = source[key];
+        }
+      }
+    }
+    return result;
+  }
+
+  return deepMerge(merged, override) as Policy;
+}
+
+/* ============================================================
+    [4] 경쟁자 입찰가 생성 함수
    ============================================================ */
 
 /**
@@ -204,18 +275,40 @@ async function submitBid(
  * 2. 난이도별 경쟁 강도: difficultyMultiplier 적용
  * 3. 정규 분포 기반: minBid ~ maxRecommended 범위 내 분포
  */
-function generateCompetitorBids(
+export function generateCompetitorBids(
   seed: PropertySeed,
   valuation: Valuation,
   policy: Policy,
 ): number[] {
+  console.group("[generateCompetitorBids] 경쟁자 입찰가 생성 시작");
+  console.log("입력 파라미터:", {
+    difficulty: seed.difficulty,
+    minBid: valuation.minBid,
+    maxRecommended: valuation.recommendedBidRange.max,
+  });
+
   // 1. 정책에서 경쟁자 수 확인 (기본값: 4)
   const competitorPolicy = policy.competitor ?? defaultPolicy.competitor!;
   const competitorCount = competitorPolicy.count;
+  console.log("경쟁자 정책:", {
+    count: competitorCount,
+    bidRange: competitorPolicy.bidRange,
+    distributionType: competitorPolicy.distributionType,
+  });
 
   // 2. 난이도별 경쟁 강도 배수 적용
   const difficultyMultiplier =
     competitorPolicy.difficultyMultiplier[seed.difficulty] ?? 1.0;
+  console.log("난이도별 경쟁 강도:", {
+    difficulty: seed.difficulty,
+    multiplier: difficultyMultiplier,
+    description:
+      difficultyMultiplier === 0.6
+        ? "Easy: 경쟁 강도 60% (범위 축소)"
+        : difficultyMultiplier === 1.0
+          ? "Normal: 경쟁 강도 100% (기본 범위)"
+          : "Hard: 경쟁 강도 150% (범위 확대)",
+  });
 
   // 3. 입찰가 범위 계산
   const minBid = valuation.minBid;
@@ -229,10 +322,31 @@ function generateCompetitorBids(
     maxRecommended * 1.2, // maxRecommended * 1.2 이하로 제한
   );
 
+  console.log("입찰가 범위 계산:", {
+    minBid,
+    bidRangeMin: bidRange.min,
+    bidRangeMax: bidRange.max,
+    rangeMin,
+    rangeMax,
+    rangeWidth: rangeMax - rangeMin,
+  });
+
   // 난이도별 경쟁 강도 배수 적용 (범위 조정)
   const adjustedRangeMin = rangeMin;
   const adjustedRangeMax =
     rangeMin + (rangeMax - rangeMin) * difficultyMultiplier;
+
+  console.log("난이도별 범위 조정:", {
+    originalRange: { min: rangeMin, max: rangeMax },
+    adjustedRange: { min: adjustedRangeMin, max: adjustedRangeMax },
+    adjustedWidth: adjustedRangeMax - adjustedRangeMin,
+    multiplierEffect:
+      difficultyMultiplier === 1.0
+        ? "기본 범위 유지"
+        : difficultyMultiplier < 1.0
+          ? `범위 축소 (${((1 - difficultyMultiplier) * 100).toFixed(0)}% 감소)`
+          : `범위 확대 (${((difficultyMultiplier - 1) * 100).toFixed(0)}% 증가)`,
+  });
 
   // 4. 분포 타입에 따라 입찰가 생성
   const bids: number[] = [];
@@ -279,16 +393,30 @@ function generateCompetitorBids(
   }
 
   // 5. 내림차순 정렬 후 반환
-  return bids.sort((a, b) => b - a);
+  const sortedBids = bids.sort((a, b) => b - a);
+
+  console.log("경쟁자 입찰가 생성 완료:", {
+    competitorCount: sortedBids.length,
+    bids: sortedBids,
+    minBid: Math.min(...sortedBids),
+    maxBid: Math.max(...sortedBids),
+    averageBid:
+      sortedBids.reduce((sum, bid) => sum + bid, 0) / sortedBids.length,
+  });
+  console.groupEnd();
+
+  return sortedBids;
 }
 
 /* ============================================================
-    [4] OUTCOME 판단 (v2.2에 맞게 재작성)
+    [5] OUTCOME 판단 (v2.2에 맞게 재작성)
    ============================================================ */
 
 function determineOutcome(
   result: AuctionAnalysisResult,
   userBid: number,
+  propertySeed: PropertySeed, // 시드 추가 (경쟁자 생성용)
+  policy?: Policy, // 정책 추가
 ): "win" | "lose" | "overpay" {
   // 최저가: minBid
   const minBid = result.valuation.minBid;
@@ -296,15 +424,34 @@ function determineOutcome(
   // 권장가 범위
   const maxRecommended = result.valuation.recommendedBidRange.max;
 
+  // 정책 확인 (기본값: defaultPolicy)
+  const currentPolicy = policy ?? defaultPolicy;
+
+  // 기존 검증
   if (userBid === 0) return "lose"; // 미입찰
   if (userBid < minBid) return "lose"; // 최저가 미달
   if (userBid > maxRecommended * 1.1) return "overpay"; // 과입찰
 
-  return "win"; // 정상 낙찰 (학습 기준)
+  // 경쟁자 로직 추가
+  if (currentPolicy.competitor) {
+    const competitorBids = generateCompetitorBids(
+      propertySeed,
+      result.valuation,
+      currentPolicy,
+    );
+
+    // 사용자 입찰가가 최고가인지 확인
+    const maxCompetitorBid = Math.max(...competitorBids);
+    if (userBid <= maxCompetitorBid) {
+      return "lose"; // 경쟁자에게 패배
+    }
+  }
+
+  return "win"; // 정상 낙찰
 }
 
 /* ============================================================
-    [5] SAVE HISTORY (히스토리 저장)
+    [6] SAVE HISTORY (히스토리 저장)
    ============================================================ */
 
 async function saveHistory(simulationId: string, userId: string) {

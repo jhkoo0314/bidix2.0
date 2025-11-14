@@ -51,12 +51,17 @@ import {
   CourtDocsNormalized,
   AuctionSummary,
 } from "@/lib/types";
+import {
+  generateCompetitorBids,
+  mergePolicyWithDifficulty,
+} from "@/lib/services/simulationservice";
 import { BidOutcomeBlock } from "@/components/result/BidOutcomeBlock";
 import { MetricsStrip } from "@/components/result/MetricsStrip";
 import { ExitScenarioTable } from "@/components/result/ExitScenarioTable";
 import { PremiumReportCTA } from "@/components/result/PremiumReportCTA";
 import { SaleStatementReport } from "@/components/reports/SaleStatementReport";
 import { ResultActions } from "@/components/result/ResultActions";
+import { CompetitorAnalysis } from "@/components/result/CompetitorAnalysis";
 import { Separator } from "@/components/ui/separator";
 
 interface ResultPageProps {
@@ -86,6 +91,7 @@ export default async function ResultPage({ params }: ResultPageProps) {
   let scoreBreakdown: ScoreBreakdown | null = null;
   let freeReportAvailable = false;
   const isHistorySaved = false; // 히스토리 저장 여부 (현재는 false, 추후 DB 조회 필요)
+  let competitorBids: number[] = []; // 경쟁자 입찰가 배열
 
   try {
     console.group("Result Page Data Fetch");
@@ -282,6 +288,27 @@ export default async function ResultPage({ params }: ResultPageProps) {
         // 에러 발생 시 기본값 사용 (무료 리포트 사용 불가)
         freeReportAvailable = false;
       }
+      // 5. 경쟁자 입찰가 생성 (입찰 완료된 경우에만)
+      console.group("Competitor Bids Generation");
+      if (userBid > 0) {
+        try {
+          const propertySeed = simulationRecord.property_json as PropertySeed;
+          const mergedPolicy = mergePolicyWithDifficulty(propertySeed.difficulty);
+          competitorBids = generateCompetitorBids(
+            propertySeed,
+            valuation,
+            mergedPolicy,
+          );
+          console.log("경쟁자 입찰가 생성 성공:", competitorBids.length, "명");
+        } catch (err) {
+          console.error("경쟁자 입찰가 생성 에러:", err);
+          // 에러 발생 시 빈 배열 유지
+        }
+      } else {
+        console.log("입찰 전 상태, 경쟁자 입찰가 생성 생략");
+      }
+      console.groupEnd();
+
       console.groupEnd();
     } catch (err) {
       console.error("데이터 구조 재구성 에러:", err);
@@ -320,8 +347,10 @@ export default async function ResultPage({ params }: ResultPageProps) {
   } else {
     console.log("ScoreBreakdown 없음 (점수 계산 실패 또는 입찰 전)");
   }
+
   console.log("무료 리포트 사용 가능:", freeReportAvailable);
   console.log("히스토리 저장 여부:", isHistorySaved);
+  console.log("경쟁자 수:", competitorBids.length);
   console.groupEnd();
 
   return (
@@ -354,6 +383,8 @@ export default async function ResultPage({ params }: ResultPageProps) {
               userBid={userBid}
               minBid={result.valuation.minBid}
               profit={result.profit}
+              competitorBids={competitorBids}
+              difficulty={result.property.difficulty}
             />
           );
         })()}
@@ -380,6 +411,24 @@ export default async function ResultPage({ params }: ResultPageProps) {
         })()}
 
         <Separator />
+
+        {/* CompetitorAnalysis */}
+        {competitorBids.length > 0 && (
+          <>
+            {(() => {
+              console.log("Rendering CompetitorAnalysis");
+              return (
+                <CompetitorAnalysis
+                  competitorBids={competitorBids}
+                  userBid={userBid}
+                  minBid={result.valuation.minBid}
+                  difficulty={result.property.difficulty}
+                />
+              );
+            })()}
+            <Separator />
+          </>
+        )}
 
         {/* Premium Report CTAs */}
         <section className="space-y-6">

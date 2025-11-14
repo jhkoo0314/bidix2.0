@@ -95,17 +95,36 @@ const defaultPolicy: Policy = {
    * 5) Competitor (경쟁자 시뮬레이션 정책)
    * ====================================================== */
   competitor: {
-    /** 경쟁자 수 (Normal 모드 기본값) */
+    /** 경쟁자 수 (Normal 모드 기본값)
+     * - todov3.md 4.5.5 설계표 기준: 4명
+     * - 현실적인 경쟁 환경 제공
+     */
     count: 4,
-    /** 경쟁자 입찰가 범위 (minBid 대비 %) */
+    /** 경쟁자 입찰가 범위 (minBid 대비 %)
+     * - todov3.md 4.5.5 설계표 기준: 95%~115%
+     * - 중간 경쟁 강도로 표준 실습 환경 제공
+     */
     bidRange: { min: 0.95, max: 1.15 }, // minBid 대비 95%~115%
-    /** 난이도별 경쟁 강도 배수 */
+    /** 난이도별 경쟁 강도 배수
+     * - Easy: 0.6 (경쟁 강도 60%) - 범위 폭 축소로 보수적 입찰 유도
+     * - Normal: 1.0 (경쟁 강도 100%) - 기본 범위 유지
+     * - Hard: 1.5 (경쟁 강도 150%) - 범위 폭 확대로 공격적 입찰 가능
+     * 
+     * 적용 방식 (generateCompetitorBids 함수):
+     * adjustedRangeMax = rangeMin + (rangeMax - rangeMin) * difficultyMultiplier
+     * 
+     * 이 배수는 입찰가 범위의 "폭"을 조절하여 난이도별 경쟁 강도를 차등화합니다.
+     */
     difficultyMultiplier: {
       easy: 0.6,   // Easy: 경쟁 강도 60%
       normal: 1.0, // Normal: 경쟁 강도 100%
       hard: 1.5,   // Hard: 경쟁 강도 150%
     },
-    /** 경쟁자 입찰가 분포 타입 */
+    /** 경쟁자 입찰가 분포 타입
+     * - "normal": 정규 분포 (Box-Muller 변환 사용)
+     * - "uniform": 균등 분포
+     * - "skewed": 왜도 분포 (향후 확장 예정)
+     */
     distributionType: "normal" as const, // 정규 분포
   },
 };

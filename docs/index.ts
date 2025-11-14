@@ -5,9 +5,9 @@
  * 이 파일은 BIDIX 프로젝트의 전체 아키텍처와 데이터 흐름을 한눈에 볼 수 있는 구조도입니다.
  * 프로젝트 구조가 변경되면 반드시 이 파일을 업데이트해야 합니다.
  *
- * @version 2.6
+ * @version 2.7
  * @lastUpdated 2025-01-28
- * @lastModified 2025-01-28 (구조 업데이트 - app/action/savehistory.ts 추가, docs/verification 추가, docs/engine/auth-error-handling.md 추가, supabase/migrations 업데이트)
+ * @lastModified 2025-01-28 (구조 업데이트 - components/result/CompetitorAnalysis.tsx 추가)
  */
 
 /**
@@ -100,6 +100,7 @@
  * │   │   └── SaleStatementReport.tsx
  * │   ├── result/                    # 결과 페이지 컴포넌트
  * │   │   ├── BidOutcomeBlock.tsx
+ * │   │   ├── CompetitorAnalysis.tsx
  * │   │   ├── ExitScenarioTable.tsx
  * │   │   ├── MetricsStrip.tsx
  * │   │   ├── PremiumReportCTA.tsx

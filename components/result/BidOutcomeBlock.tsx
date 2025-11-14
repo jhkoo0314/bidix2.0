@@ -31,7 +31,7 @@
  * @see {@link /docs/ui/design-system.md} - Accent Colors 사용 규칙
  */
 
-import { AuctionSummary, Profit } from "@/lib/types";
+import { AuctionSummary, Profit, DifficultyMode } from "@/lib/types";
 import { Badge } from "@/components/common/Badge";
 
 export interface BidOutcomeBlockProps {
@@ -39,6 +39,8 @@ export interface BidOutcomeBlockProps {
   userBid: number;
   minBid: number;
   profit: Profit; // isProfitable3m/6m/12m 판단용
+  competitorBids?: number[]; // 경쟁자 입찰가 배열 (Optional)
+  difficulty?: DifficultyMode; // 난이도 모드 (Optional)
 }
 
 export function BidOutcomeBlock({
@@ -46,6 +48,8 @@ export function BidOutcomeBlock({
   userBid,
   minBid,
   profit,
+  competitorBids,
+  difficulty,
 }: BidOutcomeBlockProps) {
   console.group("BidOutcomeBlock Component");
   console.log("Bid outcome analysis:", {
@@ -56,7 +60,15 @@ export function BidOutcomeBlock({
     riskLabel: summary.riskLabel,
   });
 
-  const isSuccess = userBid >= minBid;
+  // 경쟁자 정보 계산
+  const competitorCount = competitorBids?.length ?? 0;
+  const maxCompetitorBid =
+    competitorBids && competitorBids.length > 0
+      ? Math.max(...competitorBids)
+      : 0;
+
+  // 경쟁자 고려한 성공 여부 판단
+  const isSuccess = userBid >= minBid && (competitorCount === 0 || userBid > maxCompetitorBid);
   const isClose = !isSuccess && userBid >= minBid * 0.9;
 
   // 실패 시 적정가 대비 차이 계산
@@ -97,6 +109,29 @@ export function BidOutcomeBlock({
 
     return (
       <div className="mt-4 space-y-2">
+        {competitorCount > 0 && maxCompetitorBid > 0 && (
+          <div className="p-3 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 mb-3">
+            <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              경쟁 상황 분석
+            </p>
+            <p className="text-sm text-gray-700 dark:text-gray-300">
+              총 <span className="font-semibold">{competitorCount}명</span>의 경쟁자가 참여했습니다.
+            </p>
+            {userBid <= maxCompetitorBid && (
+              <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">
+                최고 경쟁자 입찰가:{" "}
+                <span className="font-semibold">
+                  {maxCompetitorBid.toLocaleString()}원
+                </span>
+                <br />
+                당신의 입찰가와의 차이:{" "}
+                <span className="font-semibold text-red-600 dark:text-red-400">
+                  {(maxCompetitorBid - userBid).toLocaleString()}원
+                </span>
+              </p>
+            )}
+          </div>
+        )}
         <p className="text-sm text-gray-700 dark:text-gray-300">
           당신의 입찰가는 적정가보다{" "}
           <span className="font-semibold">
@@ -155,7 +190,25 @@ export function BidOutcomeBlock({
       )}
 
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">입찰 결과</h2>
+        <div>
+          <h2 className="text-2xl font-semibold">입찰 결과</h2>
+          <div className="flex items-center gap-2 mt-1">
+            {difficulty && (
+              <span className="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded">
+                {difficulty === DifficultyMode.Easy
+                  ? "Easy 모드"
+                  : difficulty === DifficultyMode.Normal
+                    ? "Normal 모드"
+                    : "Hard 모드"}
+              </span>
+            )}
+            {competitorCount > 0 && (
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                경쟁자 {competitorCount}명 참여
+              </p>
+            )}
+          </div>
+        </div>
         <Badge type="grade" value={summary.grade} />
       </div>
 

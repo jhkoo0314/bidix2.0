@@ -44,11 +44,30 @@ export const easyModePolicy: PolicyOverrides = {
   },
 
   competitor: {
-    /** 경쟁자 수 감소 (튜토리얼 모드) */
+    /** Easy 모드: 경쟁자 수 감소 (튜토리얼 모드)
+     * - todov3.md 4.5.5 설계표 기준: 2명
+     * - 낮은 경쟁 강도로 성공 경험 제공
+     */
     count: 2,
-    /** 보수적 입찰 범위 (minBid 대비 98%~108%) */
+    /** 보수적 입찰 범위 (minBid 대비 98%~108%)
+     * - todov3.md 4.5.5 설계표 기준: 98%~108%
+     * - 보수적 입찰로 안전한 학습 환경 제공
+     */
     bidRange: { min: 0.98, max: 1.08 },
-    /** 난이도별 경쟁 강도 배수 (기본값 유지) */
+    /** 난이도별 경쟁 강도 배수
+     * - Easy: 0.6 (경쟁 강도 60%) - 범위 폭 축소로 보수적 입찰 유도
+     * - Normal: 1.0 (경쟁 강도 100%) - 기본 범위 유지
+     * - Hard: 1.5 (경쟁 강도 150%) - 범위 폭 확대로 공격적 입찰 가능
+     * 
+     * 적용 방식:
+     * adjustedRangeMax = rangeMin + (rangeMax - rangeMin) * difficultyMultiplier
+     * 
+     * 예시 (minBid = 100,000,000원 기준):
+     * - Easy: rangeMin = 98M, rangeMax = 108M
+     *   → adjustedRangeMax = 98M + (108M - 98M) * 0.6 = 104M (범위 축소)
+     * - Normal: adjustedRangeMax = 108M (기본 범위)
+     * - Hard: adjustedRangeMax = 98M + (108M - 98M) * 1.5 = 113M (범위 확대)
+     */
     difficultyMultiplier: {
       easy: 0.6,
       normal: 1.0,
@@ -100,11 +119,30 @@ export const hardModePolicy: PolicyOverrides = {
   },
 
   competitor: {
-    /** 경쟁자 수 증가 (고화 챌린지) */
+    /** Hard 모드: 경쟁자 수 증가 (고화 챌린지)
+     * - todov3.md 4.5.5 설계표 기준: 6명
+     * - 높은 경쟁 강도로 전문가 수준 훈련 제공
+     */
     count: 6,
-    /** 공격적 입찰 범위 (minBid 대비 92%~120%) */
+    /** 공격적 입찰 범위 (minBid 대비 92%~120%)
+     * - todov3.md 4.5.5 설계표 기준: 92%~120%
+     * - 공격적 입찰로 리스크 관리 훈련 제공
+     */
     bidRange: { min: 0.92, max: 1.2 },
-    /** 난이도별 경쟁 강도 배수 (기본값 유지) */
+    /** 난이도별 경쟁 강도 배수
+     * - Easy: 0.6 (경쟁 강도 60%) - 범위 폭 축소로 보수적 입찰 유도
+     * - Normal: 1.0 (경쟁 강도 100%) - 기본 범위 유지
+     * - Hard: 1.5 (경쟁 강도 150%) - 범위 폭 확대로 공격적 입찰 가능
+     * 
+     * 적용 방식:
+     * adjustedRangeMax = rangeMin + (rangeMax - rangeMin) * difficultyMultiplier
+     * 
+     * 예시 (minBid = 100,000,000원 기준):
+     * - Easy: rangeMin = 98M, rangeMax = 108M
+     *   → adjustedRangeMax = 98M + (108M - 98M) * 0.6 = 104M (범위 축소)
+     * - Normal: adjustedRangeMax = 108M (기본 범위)
+     * - Hard: adjustedRangeMax = 92M + (120M - 92M) * 1.5 = 134M (범위 확대)
+     */
     difficultyMultiplier: {
       easy: 0.6,
       normal: 1.0,

@@ -1124,7 +1124,7 @@
 
 #### 4.5.3 determineOutcome 함수 수정
 
-- [ ] `lib/services/simulationservice.ts` - determineOutcome 함수 수정
+- [x] `lib/services/simulationservice.ts` - determineOutcome 함수 수정
 
   ```typescript
   function determineOutcome(
@@ -1161,7 +1161,7 @@
   }
   ```
 
-- [ ] `submitBid` 함수에서 determineOutcome 호출 시 시드와 정책 전달
+- [x] `submitBid` 함수에서 determineOutcome 호출 시 시드와 정책 전달
   ```typescript
   // submitBid 함수 내부
   const outcome = determineOutcome(
@@ -1174,25 +1174,27 @@
 
 #### 4.5.4 경쟁자 데이터 저장 및 UI 표시
 
-- [ ] DB 스키마 확장 (선택적)
+- [x] DB 스키마 확장 (선택적)
 
   - `simulations` 테이블에 `competitor_bids_json` 필드 추가 고려
   - 또는 `result_json` 내부에 경쟁자 정보 포함
+  - **구현 방식**: 경쟁자 입찰가는 동적으로 생성 (시드 기반 일관성 보장)하여 저장 불필요
 
-- [ ] UI 컴포넌트 추가/수정
+- [x] UI 컴포넌트 추가/수정
 
-  - [ ] `components/result/BidOutcomeBlock.tsx` - 경쟁자 정보 표시 추가
-    - 경쟁자 수 표시
-    - 최고 경쟁자 입찰가 표시 (낙찰 실패 시)
+  - [x] `components/result/BidOutcomeBlock.tsx` - 경쟁자 정보 표시 추가
+    - 경쟁자 수 표시 (193-197줄)
+    - 최고 경쟁자 입찰가 표시 (낙찰 실패 시) (110-131줄)
     - 경쟁자 입찰가 분포 시각화 (선택적)
-  - [ ] `components/result/CompetitorAnalysis.tsx` (신규 컴포넌트)
+  - [x] `components/result/CompetitorAnalysis.tsx` (신규 컴포넌트)
     - 경쟁자 6명 시나리오 각각 표시 (component-architecture.md 참조)
-    - 입찰가 분포 차트
-    - "당신의 입찰가는 X번째로 높았습니다" 메시지
+    - 입찰가 분포 차트 (124-133줄)
+    - "당신의 입찰가는 X번째로 높았습니다" 메시지 (71-76줄)
 
-- [ ] Result Page (`app/simulations/[id]/result/page.tsx`) 수정
-  - 경쟁자 정보를 BidOutcomeBlock에 전달
-  - CompetitorAnalysis 컴포넌트 배치 (Premium 리포트 섹션 근처)
+- [x] Result Page (`app/simulations/[id]/result/page.tsx`) 수정
+  - 경쟁자 정보를 BidOutcomeBlock에 전달 (386줄)
+  - CompetitorAnalysis 컴포넌트 배치 (Premium 리포트 섹션 근처) (415-426줄)
+  - 경쟁자 입찰가 생성 로직 구현 (297-301줄)
 
 #### 4.5.5 난이도별 경쟁 강도 설계
 
@@ -1203,6 +1205,13 @@
 | **Easy**   | 2명       | 98%~108%                  | 낮음      | 튜토리얼 모드, 보수적 입찰 |
 | **Normal** | 4명       | 95%~115%                  | 중간      | 현실적인 경쟁 환경         |
 | **Hard**   | 6명       | 92%~120%                  | 높음      | 고화 챌린지, 공격적 입찰   |
+
+**구현 확인**:
+
+- ✅ Easy 모드: `difficultypolicy.ts` - count: 2, bidRange: { min: 0.98, max: 1.08 }
+- ✅ Normal 모드: `defaultpolicy.ts` - count: 4, bidRange: { min: 0.95, max: 1.15 }
+- ✅ Hard 모드: `difficultypolicy.ts` - count: 6, bidRange: { min: 0.92, max: 1.2 }
+- ✅ 모든 난이도에 difficultyMultiplier 적용 (Easy: 0.6, Normal: 1.0, Hard: 1.5)
 
 #### 4.5.6 테스트 및 검증
 
