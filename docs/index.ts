@@ -5,9 +5,9 @@
  * 이 파일은 BIDIX 프로젝트의 전체 아키텍처와 데이터 흐름을 한눈에 볼 수 있는 구조도입니다.
  * 프로젝트 구조가 변경되면 반드시 이 파일을 업데이트해야 합니다.
  *
- * @version 2.5
+ * @version 2.6
  * @lastUpdated 2025-01-28
- * @lastModified 2025-01-28 (구조 업데이트 - app/api/history 추가, components/history 추가, lib/utils 확장)
+ * @lastModified 2025-01-28 (구조 업데이트 - app/action/savehistory.ts 추가, docs/verification 추가, docs/engine/auth-error-handling.md 추가, supabase/migrations 업데이트)
  */
 
 /**
@@ -21,6 +21,7 @@
  * ├── app/                          # Next.js App Router (루트 레벨)
  * │   ├── action/                   # Server Actions
  * │   │   ├── generatesimulation.ts  # 시뮬레이션 생성 액션
+ * │   │   ├── savehistory.ts         # 히스토리 저장 액션
  * │   │   └── submitbid.ts          # 입찰 제출 액션
  * │   ├── api/                      # API Routes
  * │   │   ├── history/              # 히스토리 조회 API
@@ -178,6 +179,8 @@
  * ├── supabase/                    # Supabase 설정 및 마이그레이션
  * │   ├── config.toml              # Supabase 프로젝트 설정
  * │   └── migrations/              # SQL 마이그레이션 파일
+ * │       ├── 20250128000000_add_pinned_to_simulations.sql
+ * │       ├── 20250128000001_add_free_report_to_simulations.sql
  * │       ├── mvp_schema.sql
  * │       ├── setup_schema.sql
  * │       └── setup_storage.sql
@@ -194,6 +197,7 @@
  * │   ├── engine/                  # 엔진 명세
  * │   │   ├── api-contracts.md
  * │   │   ├── auction-flow.md
+ * │   │   ├── auth-error-handling.md
  * │   │   ├── cost-profit-logic.md
  * │   │   ├── fixtures-spec.md
  * │   │   └── json-schema.md
@@ -216,6 +220,10 @@
  * │   │   ├── component-architecture.md
  * │   │   ├── component-spec.md
  * │   │   └── design-system.md
+ * │   ├── verification/            # 검증 문서
+ * │   │   ├── api-routes-verification.md
+ * │   │   ├── auth-error-handling-verification.md
+ * │   │   └── server-actions-verification.md
  * │   ├── DIR.md                   # 디렉토리 구조 설명
  * │   ├── TODO.md                  # 할 일 목록
  * │   └── index.ts                 # 프로젝트 구조도 (이 파일)

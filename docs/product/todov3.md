@@ -1021,7 +1021,7 @@
 
 #### 4.5.1 Policy 확장 (경쟁자 정책 추가)
 
-- [ ] `lib/policy/policy.ts` - Policy 인터페이스에 Optional 필드 추가
+- [x] `lib/policy/policy.ts` - Policy 인터페이스에 Optional 필드 추가
 
   ```typescript
   export interface Policy {
@@ -1045,7 +1045,7 @@
   }
   ```
 
-- [ ] `lib/policy/defaultpolicy.ts` - 기본 경쟁자 정책 값 추가
+- [x] `lib/policy/defaultpolicy.ts` - 기본 경쟁자 정책 값 추가
 
   ```typescript
   const defaultPolicy: Policy = {
@@ -1064,7 +1064,7 @@
   };
   ```
 
-- [ ] `lib/policy/difficultypolicy.ts` - 난이도별 경쟁자 정책 오버라이드 추가
+- [x] `lib/policy/difficultypolicy.ts` - 난이도별 경쟁자 정책 오버라이드 추가
 
   ```typescript
   // Easy 모드: 경쟁자 수 감소, 보수적 입찰
@@ -1088,7 +1088,7 @@
 
 #### 4.5.2 경쟁자 입찰가 생성 함수 구현
 
-- [ ] `lib/services/simulationservice.ts` - 경쟁자 입찰가 생성 함수 추가
+- [x] `lib/services/simulationservice.ts` - 경쟁자 입찰가 생성 함수 추가
 
   ```typescript
   /**
@@ -1117,7 +1117,7 @@
   }
   ```
 
-- [ ] 시드 기반 일관성 로직 구현
+- [x] 시드 기반 일관성 로직 구현
   - PropertySeed의 고유 값(주소, 감정가 등)을 시드로 사용
   - 같은 시뮬레이션에서 항상 동일한 경쟁자 입찰가 생성
   - `lib/utils/number.ts`에 시드 기반 랜덤 함수 추가 고려

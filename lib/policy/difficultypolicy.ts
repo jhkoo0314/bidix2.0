@@ -1,7 +1,7 @@
 // lib/policy/difficultypolicy.ts
 // BIDIX AI - Difficulty-based Policy Overrides (v2.2)
 // Version: 2.2
-// Last Updated: 2025-11-13
+// Last Updated: 2025-01-28
 
 import { PolicyOverrides } from "./policy";
 
@@ -41,6 +41,19 @@ export const easyModePolicy: PolicyOverrides = {
     targetMarginRate: 0.05,
     /** ROI 목표 완화 */
     targetAnnualRoi: 0.07,
+  },
+
+  competitor: {
+    /** 경쟁자 수 감소 (튜토리얼 모드) */
+    count: 2,
+    /** 보수적 입찰 범위 (minBid 대비 98%~108%) */
+    bidRange: { min: 0.98, max: 1.08 },
+    /** 난이도별 경쟁 강도 배수 (기본값 유지) */
+    difficultyMultiplier: {
+      easy: 0.6,
+      normal: 1.0,
+      hard: 1.5,
+    },
   },
 };
 
@@ -84,5 +97,18 @@ export const hardModePolicy: PolicyOverrides = {
     targetMarginRate: 0.15,
     /** 높은 ROI 목표 */
     targetAnnualRoi: 0.20,
+  },
+
+  competitor: {
+    /** 경쟁자 수 증가 (고화 챌린지) */
+    count: 6,
+    /** 공격적 입찰 범위 (minBid 대비 92%~120%) */
+    bidRange: { min: 0.92, max: 1.2 },
+    /** 난이도별 경쟁 강도 배수 (기본값 유지) */
+    difficultyMultiplier: {
+      easy: 0.6,
+      normal: 1.0,
+      hard: 1.5,
+    },
   },
 };

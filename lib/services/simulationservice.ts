@@ -1,7 +1,7 @@
 // lib/services/simulationservice.ts
 // BIDIX AI - Simulation Service (v2.2 Full Rewrite)
 // Version: 2.2
-// Last Updated: 2025-11-14
+// Last Updated: 2025-01-28
 
 import { createClient } from "@supabase/supabase-js";
 // import { Database } from "@/types/supabase"; // 타입 파일이 없으므로 주석 처리
@@ -19,7 +19,18 @@ import {
   DifficultyMode,
   PropertySeed,
   CourtDocsNormalized,
+  Valuation,
 } from "@/lib/types";
+
+// Policy
+import { Policy } from "@/lib/policy/policy";
+import defaultPolicy from "@/lib/policy/defaultpolicy";
+
+// Utils
+import {
+  seedBasedRandom,
+  generateSeedFromPropertySeed,
+} from "@/lib/utils/number";
 
 // Supabase Init
 const supabase = createClient(
@@ -177,7 +188,102 @@ async function submitBid(
 }
 
 /* ============================================================
-    [3] OUTCOME 판단 (v2.2에 맞게 재작성)
+    [3] 경쟁자 입찰가 생성 함수
+   ============================================================ */
+
+/**
+ * 경쟁자 입찰가 생성 함수
+ *
+ * @param seed - PropertySeed (시드 기반 일관성 보장)
+ * @param valuation - Valuation (minBid, recommendedBidRange 포함)
+ * @param policy - Policy (경쟁자 정책 포함)
+ * @returns 경쟁자 입찰가 배열 (내림차순 정렬)
+ *
+ * 핵심 로직:
+ * 1. 시드 기반 일관성: 같은 seed에서 항상 동일한 경쟁자 입찰가 생성
+ * 2. 난이도별 경쟁 강도: difficultyMultiplier 적용
+ * 3. 정규 분포 기반: minBid ~ maxRecommended 범위 내 분포
+ */
+function generateCompetitorBids(
+  seed: PropertySeed,
+  valuation: Valuation,
+  policy: Policy,
+): number[] {
+  // 1. 정책에서 경쟁자 수 확인 (기본값: 4)
+  const competitorPolicy = policy.competitor ?? defaultPolicy.competitor!;
+  const competitorCount = competitorPolicy.count;
+
+  // 2. 난이도별 경쟁 강도 배수 적용
+  const difficultyMultiplier =
+    competitorPolicy.difficultyMultiplier[seed.difficulty] ?? 1.0;
+
+  // 3. 입찰가 범위 계산
+  const minBid = valuation.minBid;
+  const maxRecommended = valuation.recommendedBidRange.max;
+  const bidRange = competitorPolicy.bidRange;
+
+  // minBid 대비 범위 계산
+  const rangeMin = minBid * bidRange.min;
+  const rangeMax = Math.min(
+    minBid * bidRange.max,
+    maxRecommended * 1.2, // maxRecommended * 1.2 이하로 제한
+  );
+
+  // 난이도별 경쟁 강도 배수 적용 (범위 조정)
+  const adjustedRangeMin = rangeMin;
+  const adjustedRangeMax =
+    rangeMin + (rangeMax - rangeMin) * difficultyMultiplier;
+
+  // 4. 분포 타입에 따라 입찰가 생성
+  const bids: number[] = [];
+  const distributionType = competitorPolicy.distributionType ?? "normal";
+
+  for (let i = 0; i < competitorCount; i++) {
+    // 각 경쟁자별 고유 시드 생성
+    const competitorSeed = generateSeedFromPropertySeed(seed, i);
+    let bid: number;
+
+    if (distributionType === "normal") {
+      // 정규 분포 근사 (Box-Muller 변환 사용)
+      // 두 개의 균등 분포를 사용하여 정규 분포 근사
+      const u1 = seedBasedRandom(competitorSeed + "_u1");
+      const u2 = seedBasedRandom(competitorSeed + "_u2");
+
+      // Box-Muller 변환
+      const z0 =
+        Math.sqrt(-2 * Math.log(u1 + 0.0001)) * Math.cos(2 * Math.PI * u2);
+
+      // 평균과 표준편차 설정 (범위의 중앙값을 평균으로)
+      const mean = (adjustedRangeMin + adjustedRangeMax) / 2;
+      const stdDev = (adjustedRangeMax - adjustedRangeMin) / 6; // 99.7% 범위
+
+      // 정규 분포 값 생성
+      const normalValue = mean + z0 * stdDev;
+
+      // 범위 내로 클램핑
+      bid = Math.max(adjustedRangeMin, Math.min(adjustedRangeMax, normalValue));
+    } else if (distributionType === "uniform") {
+      // 균등 분포
+      const random = seedBasedRandom(competitorSeed);
+      bid = adjustedRangeMin + random * (adjustedRangeMax - adjustedRangeMin);
+    } else {
+      // "skewed" 분포 (향후 확장, 현재는 균등 분포로 처리)
+      const random = seedBasedRandom(competitorSeed);
+      bid = adjustedRangeMin + random * (adjustedRangeMax - adjustedRangeMin);
+    }
+
+    // minBid 이상으로 보장
+    bid = Math.max(minBid, bid);
+
+    bids.push(Math.round(bid));
+  }
+
+  // 5. 내림차순 정렬 후 반환
+  return bids.sort((a, b) => b - a);
+}
+
+/* ============================================================
+    [4] OUTCOME 판단 (v2.2에 맞게 재작성)
    ============================================================ */
 
 function determineOutcome(
@@ -198,7 +304,7 @@ function determineOutcome(
 }
 
 /* ============================================================
-    [4] SAVE HISTORY (히스토리 저장)
+    [5] SAVE HISTORY (히스토리 저장)
    ============================================================ */
 
 async function saveHistory(simulationId: string, userId: string) {

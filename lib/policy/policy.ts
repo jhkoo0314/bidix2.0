@@ -1,7 +1,7 @@
 // lib/policy/policy.ts
 // Auction Engine v2.2 - Policy Interface (SSOT)
 // Version: 2.2
-// Last Updated: 2025-11-13
+// Last Updated: 2025-01-28
 
 import { PropertyType } from "@/lib/types";
 
@@ -72,6 +72,24 @@ export interface Policy {
   profit: {
     targetMarginRate: number;   // 목표 초기 안전마진
     targetAnnualRoi: number;    // 목표 연환산 ROI
+  };
+
+  /* ======================================================
+   * 5) 경쟁자 시뮬레이션 정책 (Competitor Layer) - Optional
+   * ====================================================== */
+  competitor?: {
+    /** 경쟁자 수 (난이도별 차등) */
+    count: number;
+    /** 경쟁자 입찰가 범위 (minBid 대비 %) */
+    bidRange: { min: number; max: number };
+    /** 난이도별 경쟁 강도 배수 */
+    difficultyMultiplier: {
+      easy: number;
+      normal: number;
+      hard: number;
+    };
+    /** 경쟁자 입찰가 분포 타입 */
+    distributionType: "normal" | "uniform" | "skewed";
   };
 }
 

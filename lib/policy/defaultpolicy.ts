@@ -1,7 +1,7 @@
 // lib/policy/defaultpolicy.ts
 // BIDIX Auction Engine v2.2 - Default Policy Values
 // Version: 2.2
-// Last Updated: 2025-11-13
+// Last Updated: 2025-01-28
 
 import { Policy } from "./policy";
 import { PropertyType } from "@/lib/types";
@@ -89,6 +89,24 @@ const defaultPolicy: Policy = {
   profit: {
     targetMarginRate: 0.08, // 초기 안전마진 목표 8%
     targetAnnualRoi: 0.10,  // 연환산 ROI 10%
+  },
+
+  /* ======================================================
+   * 5) Competitor (경쟁자 시뮬레이션 정책)
+   * ====================================================== */
+  competitor: {
+    /** 경쟁자 수 (Normal 모드 기본값) */
+    count: 4,
+    /** 경쟁자 입찰가 범위 (minBid 대비 %) */
+    bidRange: { min: 0.95, max: 1.15 }, // minBid 대비 95%~115%
+    /** 난이도별 경쟁 강도 배수 */
+    difficultyMultiplier: {
+      easy: 0.6,   // Easy: 경쟁 강도 60%
+      normal: 1.0, // Normal: 경쟁 강도 100%
+      hard: 1.5,   // Hard: 경쟁 강도 150%
+    },
+    /** 경쟁자 입찰가 분포 타입 */
+    distributionType: "normal" as const, // 정규 분포
   },
 };
 
