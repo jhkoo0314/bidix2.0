@@ -60,13 +60,17 @@ export function PropertyCard({ property, valuation }: PropertyCardProps) {
           <div>
             <p className="text-sm text-muted-foreground">감정가</p>
             <p className="text-lg numeric-highlight">
-              {property.appraisalValue.toLocaleString()}원
+              {property.appraisalValue
+                ? property.appraisalValue.toLocaleString()
+                : "정보 없음"}원
             </p>
           </div>
           <div>
             <p className="text-sm text-muted-foreground">최저 입찰가</p>
             <p className="text-lg numeric-highlight">
-              {valuation.minBid.toLocaleString()}원
+              {valuation.minBid
+                ? valuation.minBid.toLocaleString()
+                : "정보 없음"}원
             </p>
           </div>
         </div>

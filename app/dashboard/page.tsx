@@ -46,7 +46,7 @@ import { UsageIndicator } from "@/components/dashboard/UsageIndicator";
 import { DashboardStats } from "@/components/dashboard/DashboardStats";
 import { RecentSimulations } from "@/components/dashboard/RecentSimulations";
 import { CreateSimulationButton } from "@/components/dashboard/CreateSimulationButton";
-import { Property } from "@/lib/types";
+import { Property, PropertySeed, Valuation } from "@/lib/types";
 import type { SimulationListItem } from "@/components/dashboard/RecentSimulations";
 
 export default async function DashboardPage() {
@@ -139,13 +139,31 @@ export default async function DashboardPage() {
       recentSimulations = simulations
         .map((sim) => {
           try {
-            const property = sim.property_json as Property;
-            const valuation = sim.valuation_json as { minBid: number };
-            // Property에 id를 시뮬레이션 ID로 설정 (PropertyCard가 property.id를 사용)
+            const propertySeed = sim.property_json as PropertySeed;
+            const valuation = sim.valuation_json as Valuation;
+            
+            // PropertySeed와 Valuation을 합쳐서 완전한 Property 객체 생성
+            const property: Property = {
+              id: sim.id,
+              category: propertySeed.category,
+              type: propertySeed.type,
+              sizeM2: propertySeed.sizeM2,
+              landSizeM2: propertySeed.landSizeM2 ?? null,
+              yearBuilt: propertySeed.yearBuilt ?? null,
+              appraisalValue: valuation.appraisalValue, // Valuation에서 가져옴
+              auctionStep: propertySeed.auctionStep ?? 1,
+              address: propertySeed.address ?? "",
+              difficulty: propertySeed.difficulty,
+              floorInfo: propertySeed.floorInfo ?? { total: null, current: null },
+              buildingUse: propertySeed.buildingUse ?? "",
+            };
+            
             return {
               id: sim.id,
-              property: { ...property, id: sim.id },
-              valuation,
+              property,
+              valuation: {
+                minBid: valuation.minBid,
+              },
             };
           } catch (err) {
             console.error("시뮬레이션 데이터 변환 에러:", err);

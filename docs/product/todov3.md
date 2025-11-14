@@ -578,16 +578,16 @@
 - `docs/ui/component-spec.md` - PropertyCard, FilterBar Props
 - `docs/engine/json-schema.md` - Property, Valuation 타입 구조
 
-- [ ] **Hybrid:** Server Component (데이터 fetch) + Client Component (필터)
-- [ ] 데이터 Fetch
-  - [ ] Supabase에서 모든 시뮬레이션 조회
-  - [ ] Property 및 Valuation 데이터 포함
-  - [ ] `difficulty`, `property.type`, `address` 필드 포함
-- [ ] UI 구성
-  - [ ] 페이지 헤더
+- [x] **Hybrid:** Server Component (데이터 fetch) + Client Component (필터)
+- [x] 데이터 Fetch
+  - [x] Supabase에서 모든 시뮬레이션 조회
+  - [x] Property 및 Valuation 데이터 포함
+  - [x] `difficulty`, `property.type`, `address` 필드 포함
+- [x] UI 구성
+  - [x] 페이지 헤더
     - 제목: "시뮬레이션 목록"
     - 전체 개수 표시
-  - [ ] `<FilterBar />` (Client Component)
+  - [x] `<FilterBar />` (Client Component)
     - 난이도 필터: All / Easy / Normal / Hard
       - Easy: 🟢 튜토리얼
       - Normal: 🟡 일반 연습
@@ -595,7 +595,7 @@
     - 매물 타입 필터: All / Apartment / Officetel / Villa / Land 등
     - 지역별 필터 (선택적): 서울/경기/부천 등
     - 필터 상태를 URL query에 반영 (`?difficulty=easy&type=apartment`)
-  - [ ] `<PropertyCard />` 그리드 레이아웃
+  - [x] `<PropertyCard />` 그리드 레이아웃
     - 2-3열 그리드 레이아웃 (Desktop)
     - 1열 레이아웃 (Mobile)
     - 각 카드 표시 정보:
@@ -604,16 +604,16 @@
       - 최저 입찰가 (`minBid`)
       - 난이도 배지 (시각 구분)
     - 빈 상태: "시뮬레이션이 없습니다" EmptyState
-  - [ ] "새로운 시뮬레이션 생성" 버튼
+  - [x] "새로운 시뮬레이션 생성" 버튼
     - 페이지 하단 고정
     - 난이도 선택 드롭다운으로 이동
-- [ ] 필터링 로직 (Client)
-  - [ ] 난이도별 필터 (Easy/Normal/Hard)
+- [x] 필터링 로직 (Client)
+  - [x] 난이도별 필터 (Easy/Normal/Hard)
     - `difficulty-modes.md` 설명 툴팁 추가
-  - [ ] 매물 타입별 필터 (Apartment/Villa/Land...)
-  - [ ] 지역별 필터 (선택적)
-  - [ ] 필터 변경 시 즉시 반영
-- [ ] 클릭 시 `/simulations/[id]`로 이동
+  - [x] 매물 타입별 필터 (Apartment/Villa/Land...)
+  - [x] 지역별 필터 (선택적)
+  - [x] 필터 변경 시 즉시 반영
+- [x] 클릭 시 `/simulations/[id]`로 이동
 
 **예상 소요:** 5-6시간
 

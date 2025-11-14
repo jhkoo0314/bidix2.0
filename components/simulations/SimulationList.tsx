@@ -84,12 +84,18 @@ export function SimulationList({
     });
   }, [initialSimulations, filters]);
 
+  // 빈 상태 메시지 결정
+  const isEmpty = initialSimulations.length === 0;
+  const emptyMessage = isEmpty
+    ? "아직 시뮬레이션이 없습니다. 첫 시뮬레이션을 시작해보세요."
+    : "필터 조건에 맞는 시뮬레이션이 없습니다. 다른 조건으로 검색해보세요.";
+
   return (
     <div className="space-y-6">
       <FilterBar onFilterChange={setFilters} />
 
       {filteredSimulations.length === 0 ? (
-        <EmptyState message="필터 조건에 맞는 시뮬레이션이 없습니다. 다른 조건으로 검색해보세요." />
+        <EmptyState message={emptyMessage} />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredSimulations.map((simulation) => (
