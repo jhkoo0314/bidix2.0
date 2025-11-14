@@ -39,12 +39,14 @@ export interface BidAmountInputProps {
   initialValue?: number;
   minBid?: number;
   onSubmit: (bid: number) => void;
+  disabled?: boolean;
 }
 
 export function BidAmountInput({
   initialValue,
   minBid,
   onSubmit,
+  disabled = false,
 }: BidAmountInputProps) {
   const [bidAmount, setBidAmount] = useState<string>(
     initialValue?.toString() || ""
@@ -120,6 +122,7 @@ export function BidAmountInput({
           placeholder="입찰가를 입력하세요 (숫자만)"
           value={bidAmount ? Number(bidAmount).toLocaleString() : ""}
           onChange={handleInputChange}
+          disabled={disabled}
           className={error ? "border-red-500 focus-visible:ring-red-500" : ""}
         />
         {error && (
@@ -133,7 +136,7 @@ export function BidAmountInput({
           </p>
         )}
       </div>
-      <Button onClick={handleSubmit} size="lg" className="w-full">
+      <Button onClick={handleSubmit} size="lg" className="w-full" disabled={disabled}>
         입찰 제출
       </Button>
     </div>

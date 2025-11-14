@@ -10,38 +10,138 @@
  *
  * 핵심 구현 로직:
  * - Hybrid: Server Component (데이터) + Client Component (입력)
- * - Property, Valuation 데이터 조회
+ * - Supabase에서 Valuation 데이터 조회
+ * - PropertySeed → Property 변환 (선택적)
+ * - Valuation 데이터 파싱 및 타입 검증
  * - Server Action: submitBidAction 호출
  *
+ * 브랜드 통합:
+ * - 브랜드 메시지는 각 컴포넌트 내부에 이미 구현됨
+ * - Design System v2.2: SectionCard, 브랜드 Accent Colors 사용
+ * - Layout Rules: 간격 넓게, 경계 옅게
+ *
  * @dependencies
- * - @clerk/nextjs: 인증 확인
- * - @/lib/supabase/server: Supabase 서버 클라이언트
+ * - @clerk/nextjs/server: auth() 인증 확인
+ * - @/lib/supabase/server: createClerkSupabaseClient
+ * - @/lib/types: Valuation 타입 (SSOT)
+ * - @/components/bid/QuickFacts: 핵심 정보 표시
+ * - @/components/bid/BidGuidanceBox: 입찰 가이드
+ * - @/components/bid/BidAmountInput: 입찰가 입력 (Client Component)
  * - @/app/action/submitbid: submitBidAction
+ * - next/navigation: redirect, notFound, useRouter
  *
  * @see {@link /docs/ui/component-spec.md} - QuickFacts, BidAmountInput, BidGuidanceBox Props
- * @see {@link /docs/engine/json-schema.md} - Valuation 타입 (exitPrice3m/6m/12m)
- * @see {@link /docs/engine/api-contracts.md} - submitBidAction 명세
+ * @see {@link /docs/engine/json-schema.md} - Valuation 타입 구조 (exitPrice 객체 형태)
+ * @see {@link /docs/engine/api-contracts.md} - submitBidAction 명세 (FormData 기반)
+ * @see {@link /docs/engine/auction-flow.md} - 입찰 제출 시뮬레이션 흐름
+ * @see {@link /docs/product/prdv2.md} - 브랜드 메시지 및 사용자 경험 가이드
  */
 
 import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { redirect, notFound } from "next/navigation";
+import { createClerkSupabaseClient } from "@/lib/supabase/server";
+import { Valuation } from "@/lib/types";
+import { QuickFacts } from "@/components/bid/QuickFacts";
+import { BidGuidanceBox } from "@/components/bid/BidGuidanceBox";
+import { BidForm } from "@/components/bid/BidForm";
 
 interface BidPageProps {
   params: Promise<{ id: string }>;
 }
 
 export default async function BidPage({ params }: BidPageProps) {
+  console.group("Bid Page Render");
+  console.log("입찰 페이지 렌더링 시작");
+
   const { userId } = await auth();
 
   if (!userId) {
+    console.log("인증 실패: 리다이렉트");
+    console.groupEnd();
     redirect("/sign-in");
   }
 
-  const { id } = await params;
+  console.log("인증 성공:", userId);
 
-  // TODO: Property, Valuation 데이터 조회
-  // const simulation = await fetchSimulation(id, userId);
+  const { id } = await params;
+  console.log("시뮬레이션 ID:", id);
+
+  // 1. Supabase에서 시뮬레이션 데이터 조회
+  let valuation: Valuation | null = null;
+  let minBid: number = 0;
+
+  try {
+    console.group("Bid Page Fetch");
+    const supabase = createClerkSupabaseClient();
+    const { data: simulationRecord, error } = await supabase
+      .from("simulations")
+      .select("id, property_json, valuation_json")
+      .eq("id", id)
+      .eq("user_id", userId)
+      .single();
+
+    if (error) {
+      console.error("시뮬레이션 조회 에러:", error);
+      console.groupEnd();
+      console.groupEnd();
+      notFound();
+    }
+
+    if (!simulationRecord) {
+      console.log("시뮬레이션을 찾을 수 없음");
+      console.groupEnd();
+      console.groupEnd();
+      notFound();
+    }
+
+    console.log("시뮬레이션 조회 성공:", simulationRecord.id);
+    console.groupEnd();
+
+    // 2. Valuation 데이터 파싱 및 타입 검증
+    console.group("Valuation Parsing");
+    try {
+      valuation = simulationRecord.valuation_json as Valuation;
+
+      // 타입 검증
+      if (
+        !valuation ||
+        typeof valuation.adjustedFMV !== "number" ||
+        typeof valuation.minBid !== "number" ||
+        !valuation.exitPrice ||
+        typeof valuation.exitPrice["3m"] !== "number" ||
+        typeof valuation.exitPrice["6m"] !== "number" ||
+        typeof valuation.exitPrice["12m"] !== "number"
+      ) {
+        throw new Error("Valuation 데이터 형식 오류");
+      }
+
+      minBid = valuation.minBid;
+      console.log("Valuation 파싱 성공:");
+      console.log("- adjustedFMV:", valuation.adjustedFMV);
+      console.log("- minBid:", minBid);
+      console.log("- exitPrice 3m:", valuation.exitPrice["3m"]);
+      console.log("- exitPrice 6m:", valuation.exitPrice["6m"]);
+      console.log("- exitPrice 12m:", valuation.exitPrice["12m"]);
+    } catch (err) {
+      console.error("Valuation 파싱 에러:", err);
+      console.groupEnd();
+      console.groupEnd();
+      throw new Error("Valuation 데이터 파싱 실패");
+    }
+    console.groupEnd();
+
+    console.log("모든 데이터 준비 완료");
+    console.groupEnd();
+  } catch (err) {
+    console.error("예상치 못한 에러:", err);
+    console.groupEnd();
+    notFound();
+  }
+
+  // 데이터가 없으면 404
+  if (!valuation) {
+    notFound();
+  }
 
   return (
     <main className="min-h-[calc(100vh-80px)] px-8 py-16">
@@ -55,56 +155,13 @@ export default async function BidPage({ params }: BidPageProps) {
         </div>
 
         {/* QuickFacts */}
-        <section className="p-6 border rounded-lg">
-          <h2 className="text-xl font-semibold mb-4">핵심 정보</h2>
-          <div className="space-y-4">
-            <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                조정된 시세 (adjustedFMV)
-              </p>
-              <p className="text-2xl font-bold">TODO: 데이터 표시</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                최저 입찰가 (minBid)
-              </p>
-              <p className="text-2xl font-bold">TODO: 데이터 표시</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                예상 매각가 (3/6/12개월)
-              </p>
-              <p className="text-lg">TODO: exitPrice3m/6m/12m 표시</p>
-            </div>
-          </div>
-        </section>
+        <QuickFacts valuation={valuation} />
 
         {/* BidGuidanceBox */}
-        <section className="p-6 border rounded-lg bg-blue-50 dark:bg-blue-950">
-          <h2 className="text-xl font-semibold mb-4">입찰 가이드</h2>
-          <p className="text-gray-600 dark:text-gray-400">
-            TODO: 안전마진 설명 및 권장 입찰가 범위 표시
-          </p>
-        </section>
+        <BidGuidanceBox valuation={valuation} />
 
-        {/* BidAmountInput */}
-        <section className="p-6 border rounded-lg">
-          <h2 className="text-xl font-semibold mb-4">입찰가 입력</h2>
-          <p className="text-gray-500 mb-4">
-            TODO: BidAmountInput 컴포넌트 구현 (Client Component)
-          </p>
-          <div className="space-y-4">
-            <input
-              type="number"
-              placeholder="입찰가를 입력하세요"
-              className="w-full p-3 border rounded-lg"
-              disabled
-            />
-            <Button size="lg" className="w-full" disabled>
-              입찰 제출
-            </Button>
-          </div>
-        </section>
+        {/* BidForm (Client Component) */}
+        <BidForm simulationId={id} minBid={minBid} />
       </div>
     </main>
   );

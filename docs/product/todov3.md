@@ -659,28 +659,28 @@
 - `docs/engine/api-contracts.md` - `submitBidAction` 명세
 - `docs/engine/auction-flow.md` - 입찰 제출 시뮬레이션 흐름
 
-- [ ] **Hybrid:** Server Component (데이터) + Client Component (입력)
-- [ ] 데이터 Fetch
-  - [ ] Property, Valuation 데이터 조회
-- [ ] UI 구성
-  - [ ] 페이지 헤더
-  - [ ] `<QuickFacts valuation={} />`
-    - [ ] adjustedFMV 표시
-    - [ ] minBid 표시
-    - [ ] exitPrice3m/6m/12m 표시 (v2.2 핵심 변경)
-  - [ ] `<BidGuidanceBox valuation={} />`
-    - [ ] 안전마진 설명
-    - [ ] 권장 입찰가 범위
-  - [ ] `<BidAmountInput onSubmit={} />` (Client Component)
-    - [ ] 숫자 입력 검증
-    - [ ] 최저 입찰가 검증
-- [ ] Server Action 연결
-  - [ ] `submitBidAction(simulationId, userBid)` 호출
-  - [ ] 제출 시 `/simulations/[id]/result`로 리다이렉트
-- [ ] 로그 추가
-  - [ ] 입찰가 입력 로그
-  - [ ] Server Action 호출 로그
-  - [ ] 결과 리다이렉트 로그
+- [x] **Hybrid:** Server Component (데이터) + Client Component (입력)
+- [x] 데이터 Fetch
+  - [x] Property, Valuation 데이터 조회
+- [x] UI 구성
+  - [x] 페이지 헤더
+  - [x] `<QuickFacts valuation={} />`
+    - [x] adjustedFMV 표시
+    - [x] minBid 표시
+    - [x] exitPrice3m/6m/12m 표시 (v2.2 핵심 변경)
+  - [x] `<BidGuidanceBox valuation={} />`
+    - [x] 안전마진 설명
+    - [x] 권장 입찰가 범위
+  - [x] `<BidAmountInput onSubmit={} />` (Client Component)
+    - [x] 숫자 입력 검증
+    - [x] 최저 입찰가 검증
+- [x] Server Action 연결
+  - [x] `submitBidAction(simulationId, userBid)` 호출
+  - [x] 제출 시 `/simulations/[id]/result`로 리다이렉트
+- [x] 로그 추가
+  - [x] 입찰가 입력 로그
+  - [x] Server Action 호출 로그
+  - [x] 결과 리다이렉트 로그
 
 **예상 소요:** 5-6시간
 
