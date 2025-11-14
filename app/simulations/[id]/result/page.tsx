@@ -23,6 +23,7 @@
  * - @/lib/types: AuctionAnalysisResult 타입
  * - @/components/result/BidOutcomeBlock: 입찰 결과 컴포넌트
  * - @/components/result/MetricsStrip: 핵심 지표 컴포넌트
+ * - @/components/result/ExitScenarioTable: 보유기간별 수익 시나리오 테이블 컴포넌트
  *
  * @see {@link /docs/product/report-result.md} - 4종 리포트 상세 명세
  * @see {@link /docs/product/point-level-system.md} - 점수 계산 공식
@@ -50,6 +51,7 @@ import {
 } from "@/lib/types";
 import { BidOutcomeBlock } from "@/components/result/BidOutcomeBlock";
 import { MetricsStrip } from "@/components/result/MetricsStrip";
+import { ExitScenarioTable } from "@/components/result/ExitScenarioTable";
 
 interface ResultPageProps {
   params: Promise<{ id: string }>;
@@ -281,14 +283,7 @@ export default async function ResultPage({ params }: ResultPageProps) {
         )}
 
         {/* ExitScenarioTable */}
-        <section className="p-6 border rounded-lg">
-          <h2 className="text-xl font-semibold mb-4">보유기간별 수익 시나리오</h2>
-          <p className="text-gray-500">TODO: ExitScenarioTable 컴포넌트 구현</p>
-          <p className="text-sm text-gray-400 mt-2">
-            - 3개월/6개월/12개월 비교 테이블
-            <br />- exitPrice, totalCost, netProfit, ROI 표시
-          </p>
-        </section>
+        <ExitScenarioTable profit={result.profit} />
 
         {/* Premium Report CTAs */}
         <section className="space-y-6">
