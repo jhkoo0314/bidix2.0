@@ -5,9 +5,9 @@
  * 이 파일은 BIDIX 프로젝트의 전체 아키텍처와 데이터 흐름을 한눈에 볼 수 있는 구조도입니다.
  * 프로젝트 구조가 변경되면 반드시 이 파일을 업데이트해야 합니다.
  *
- * @version 2.7
+ * @version 2.8
  * @lastUpdated 2025-01-28
- * @lastModified 2025-01-28 (구조 업데이트 - components/result/CompetitorAnalysis.tsx 추가)
+ * @lastModified 2025-01-28 (구조 업데이트 - 테스트 구조 추가: tests/, vitest.config.ts, playwright.config.ts)
  */
 
 /**
@@ -160,6 +160,8 @@
  * │       │       └── land-hard.json
  * │       │
  * │       ├── services/             # 서비스 레이어 (비즈니스 로직 조합)
+ * │       │   ├── __tests__/        # 서비스 레이어 단위 테스트
+ * │       │   │   └── simulationservice.test.ts  # SimulationService 테스트
  * │       │   └── simulationservice.ts   # 시뮬레이션 서비스 (DB + 엔진)
  * │       │
  * │       ├── supabase/            # Supabase 클라이언트 (환경별 분리)
@@ -176,6 +178,14 @@
  * │       ├── utils.ts             # 공통 유틸리티 (cn 함수 등)
  * │       ├── supabase.ts           # 레거시 Supabase 클라이언트 (사용 지양)
  * │       └── NAMING_CONVENTION.md  # 파일명 규칙 문서
+ * │
+ * ├── tests/                       # 테스트 파일 (루트 레벨)
+ * │   ├── e2e/                     # E2E 테스트 (Playwright)
+ * │   │   └── competitor-analysis.spec.ts  # 경쟁자 분석 E2E 테스트
+ * │   ├── integration/             # 통합 테스트
+ * │   │   └── competitor-flow.test.ts     # 경쟁자 플로우 통합 테스트
+ * │   └── fixtures/                # 테스트 픽스처
+ * │       └── competitor-test-data.ts     # 경쟁자 테스트 데이터
  * │
  * ├── supabase/                    # Supabase 설정 및 마이그레이션
  * │   ├── config.toml              # Supabase 프로젝트 설정
@@ -243,6 +253,8 @@
  * ├── eslint.config.mjs            # ESLint 설정
  * ├── next.config.ts               # Next.js 설정
  * ├── postcss.config.mjs           # PostCSS 설정
+ * ├── playwright.config.ts         # Playwright E2E 테스트 설정
+ * ├── vitest.config.ts             # Vitest 단위/통합 테스트 설정
  * ├── package.json                 # 의존성 관리
  * ├── tsconfig.json                # TypeScript 설정
  * ├── AGENTS.md                    # AI 에이전트 가이드
@@ -379,7 +391,8 @@
  * - Tailwind CSS v4
  * - shadcn/ui
  * - TypeScript (strict mode)
- * - Vitest (테스트)
+ * - Vitest (단위/통합 테스트)
+ * - Playwright (E2E 테스트)
  *
  * ============================================================================
  * 📝 파일명 규칙 (Naming Conventions)
@@ -390,6 +403,8 @@
  * - 타입 파일: alllowercase.ts (예: property.ts)
  * - 컴포넌트: PascalCase.tsx (예: PropertyCard.tsx)
  * - Server Actions: kebab-case.ts (예: generatesimulation.ts)
+ * - 단위 테스트: camelCase.test.ts (예: simulationservice.test.ts)
+ * - E2E 테스트: kebab-case.spec.ts (예: competitor-analysis.spec.ts)
  *
  * ============================================================================
  * 🔗 관련 문서 (Related Documentation)

@@ -412,7 +412,7 @@ export function generateCompetitorBids(
     [5] OUTCOME 판단 (v2.2에 맞게 재작성)
    ============================================================ */
 
-function determineOutcome(
+export function determineOutcome(
   result: AuctionAnalysisResult,
   userBid: number,
   propertySeed: PropertySeed, // 시드 추가 (경쟁자 생성용)

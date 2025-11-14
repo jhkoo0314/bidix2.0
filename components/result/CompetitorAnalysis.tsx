@@ -4,7 +4,7 @@
  *
  * 주요 기능:
  * 1. 경쟁자 입찰가 리스트 표시 (각 경쟁자별)
- * 2. 사용자 입찰가 순위 표시 ("당신의 입찰가는 X번째로 높았습니다")
+ * 2. 사용자 입찰가 순위 표시 (1위: "최고 입찰가", 마지막: "가장 낮았습니다", 중간: "X번째로 높았습니다")
  * 3. 입찰가 분포 시각화 (간단한 바 차트)
  * 4. 최고 경쟁자 입찰가와의 차이 표시
  *
@@ -15,7 +15,7 @@
  * - 입찰가 분포를 시각적으로 표현
  *
  * 브랜드 통합:
- * - 브랜드 메시지: "당신의 입찰가는 X번째로 높았습니다"
+ * - 브랜드 메시지: 순위에 따라 동적 메시지 표시 (1위/중간/마지막)
  * - Design System v2.2: 브랜드 Accent Colors 사용
  * - Layout Rules: 모바일 친화적 리스트 레이아웃
  *
@@ -116,11 +116,31 @@ export function CompetitorAnalysis({
         {/* 순위 표시 */}
         <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
           <p className="text-lg font-semibold text-gray-900 dark:text-gray-100 text-center">
-            당신의 입찰가는{" "}
-            <span className="text-[hsl(var(--accent-blue))] dark:text-[hsl(var(--accent-blue))]">
-              {userRank}번째
-            </span>
-            로 높았습니다.
+            {userRank === 1 ? (
+              <>
+                당신의 입찰가는{" "}
+                <span className="text-[hsl(var(--accent-blue))] dark:text-[hsl(var(--accent-blue))]">
+                  최고
+                </span>
+                입찰가였습니다.
+              </>
+            ) : userRank === totalParticipants ? (
+              <>
+                당신의 입찰가는{" "}
+                <span className="text-[hsl(var(--accent-blue))] dark:text-[hsl(var(--accent-blue))]">
+                  {userRank}위
+                </span>
+                로 가장 낮았습니다.
+              </>
+            ) : (
+              <>
+                당신의 입찰가는{" "}
+                <span className="text-[hsl(var(--accent-blue))] dark:text-[hsl(var(--accent-blue))]">
+                  {userRank}번째
+                </span>
+                로 높았습니다.
+              </>
+            )}
           </p>
           <p className="text-sm text-gray-600 dark:text-gray-400 text-center mt-2">
             총 {totalParticipants}명 참여
