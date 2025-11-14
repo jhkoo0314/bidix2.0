@@ -11,21 +11,48 @@
  * 핵심 구현 로직:
  * - Server Component
  * - Supabase에서 시뮬레이션 데이터 조회
- * - Property, CourtDocs, Rights 데이터 포함
+ * - PropertySeed → Property 변환 (PropertyEngine.normalize)
+ * - JSON 데이터 파싱 (CourtDocsNormalized, Rights)
+ * - 브랜드 통합 디자인 시스템 v2.2 적용
+ *
+ * 브랜드 통합:
+ * - 브랜드 메시지: "사실을 먼저 이해한 다음, 분석이 시작됩니다."
+ * - Design System v2.2: SectionCard, 브랜드 Accent Colors 사용
+ * - Layout Rules: 좌측 메인 정보 → 우측 인사이트 구조 (Desktop)
+ * - 반응형: Desktop 2열, Mobile 1열
  *
  * @dependencies
- * - @clerk/nextjs: 인증 확인
- * - @/lib/supabase/server: Supabase 서버 클라이언트
- * - next/navigation: 동적 라우트 파라미터
+ * - @clerk/nextjs/server: auth() 인증 확인
+ * - @/lib/supabase/server: createClerkSupabaseClient
+ * - @/lib/engines/propertyengine: PropertyEngine.normalize
+ * - @/lib/types: PropertySeed, Property, CourtDocsNormalized, Rights
+ * - @/components/simulations/SaleStatementSummary: 매각물건명세서 요약
+ * - @/components/simulations/RightsSummary: 권리 분석 요약
+ * - @/components/common/Badge: 난이도 배지
+ * - next/navigation: redirect, notFound
  *
  * @see {@link /docs/ui/component-spec.md} - SaleStatementSummary, RightsSummary Props
  * @see {@link /docs/engine/json-schema.md} - Property, CourtDocsNormalized, Rights 타입
+ * @see {@link /docs/engine/auction-flow.md} - 입찰 전 초기 시뮬레이션 구조
+ * @see {@link /docs/product/prdv2.md} - 브랜드 메시지 및 무료 제공 정책
+ * @see {@link /docs/ui/design-system.md} - 브랜드 통합 디자인 시스템 v2.2
  */
 
 import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
+import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { createClerkSupabaseClient } from "@/lib/supabase/server";
+import { PropertyEngine } from "@/lib/engines/propertyengine";
+import {
+  PropertySeed,
+  Property,
+  CourtDocsNormalized,
+  Rights,
+} from "@/lib/types";
+import { SaleStatementSummary } from "@/components/simulations/SaleStatementSummary";
+import { RightsSummary } from "@/components/simulations/RightsSummary";
+import { Badge } from "@/components/common/Badge";
 
 interface SimulationDetailPageProps {
   params: Promise<{ id: string }>;
@@ -34,42 +61,151 @@ interface SimulationDetailPageProps {
 export default async function SimulationDetailPage({
   params,
 }: SimulationDetailPageProps) {
+  console.group("Simulation Detail Page Render");
+  console.log("시뮬레이션 상세 페이지 렌더링 시작");
+
   const { userId } = await auth();
 
   if (!userId) {
+    console.log("인증 실패: 리다이렉트");
+    console.groupEnd();
     redirect("/sign-in");
   }
 
-  const { id } = await params;
+  console.log("인증 성공:", userId);
 
-  // TODO: Supabase에서 시뮬레이션 데이터 조회
-  // const simulation = await fetchSimulation(id, userId);
+  const { id } = await params;
+  console.log("시뮬레이션 ID:", id);
+
+  // 1. Supabase에서 시뮬레이션 데이터 조회
+  let property: Property | null = null;
+  let courtDocs: CourtDocsNormalized | null = null;
+  let rights: Rights | null = null;
+  let caseNumber: string = "";
+  let difficulty: string = "";
+
+  try {
+    console.group("Simulation Detail Fetch");
+    const supabase = createClerkSupabaseClient();
+    const { data: simulationRecord, error } = await supabase
+      .from("simulations")
+      .select("id, property_json, court_docs_json, rights_json, difficulty")
+      .eq("id", id)
+      .eq("user_id", userId)
+      .single();
+
+    if (error) {
+      console.error("시뮬레이션 조회 에러:", error);
+      console.groupEnd();
+      console.groupEnd();
+      notFound();
+    }
+
+    if (!simulationRecord) {
+      console.log("시뮬레이션을 찾을 수 없음");
+      console.groupEnd();
+      console.groupEnd();
+      notFound();
+    }
+
+    console.log("시뮬레이션 조회 성공:", simulationRecord.id);
+    console.groupEnd();
+
+    // 2. PropertySeed → Property 변환
+    console.group("Property Conversion");
+    try {
+      const propertySeed = simulationRecord.property_json as PropertySeed;
+      property = PropertyEngine.normalize(propertySeed);
+      property.id = simulationRecord.id; // 시뮬레이션 ID로 설정
+      difficulty = simulationRecord.difficulty || property.difficulty;
+      console.log("Property 변환 성공:", property.type, property.address);
+    } catch (err) {
+      console.error("Property 변환 에러:", err);
+      console.groupEnd();
+      console.groupEnd();
+      throw new Error("Property 데이터 변환 실패");
+    }
+    console.groupEnd();
+
+    // 3. JSON 파싱 및 타입 검증
+    console.group("JSON Parsing");
+    try {
+      courtDocs = simulationRecord.court_docs_json as CourtDocsNormalized;
+      rights = simulationRecord.rights_json as Rights;
+
+      // 타입 검증
+      if (!courtDocs || !courtDocs.caseNumber) {
+        throw new Error("CourtDocs 데이터 형식 오류");
+      }
+      if (!rights || typeof rights.assumableRightsTotal !== "number") {
+        throw new Error("Rights 데이터 형식 오류");
+      }
+
+      caseNumber = courtDocs.caseNumber;
+      console.log("JSON 파싱 성공:");
+      console.log("- 사건번호:", caseNumber);
+      console.log("- 등기 권리 수:", courtDocs.registeredRights?.length || 0);
+      console.log("- 임차인 수:", courtDocs.occupants?.length || 0);
+      console.log("- 총 인수금액:", rights.assumableRightsTotal);
+    } catch (err) {
+      console.error("JSON 파싱 에러:", err);
+      console.groupEnd();
+      console.groupEnd();
+      throw new Error("데이터 파싱 실패");
+    }
+    console.groupEnd();
+
+    console.log("모든 데이터 준비 완료");
+    console.groupEnd();
+  } catch (err) {
+    console.error("예상치 못한 에러:", err);
+    console.groupEnd();
+    notFound();
+  }
+
+  // 데이터가 없으면 404
+  if (!property || !courtDocs || !rights) {
+    notFound();
+  }
 
   return (
     <main className="min-h-[calc(100vh-80px)] px-8 py-16">
       <div className="w-full max-w-7xl mx-auto space-y-8">
         {/* 헤더 */}
-        <div className="space-y-2">
-          <h1 className="text-4xl font-bold">시뮬레이션 상세</h1>
-          <p className="text-gray-600 dark:text-gray-400">사건번호: {id}</p>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="space-y-2">
+              <h1 className="text-4xl font-bold">시뮬레이션 상세</h1>
+              <p className="text-gray-600 dark:text-gray-400">
+                사건번호: {caseNumber}
+              </p>
+            </div>
+            <Badge type="difficulty" value={difficulty} />
+          </div>
+
+          {/* 브랜드 문구 */}
+          <div className="pt-4 border-t">
+            <p className="text-sm text-muted-foreground italic border-l-2 border-[hsl(var(--accent-blue))] pl-3 py-2">
+              사실을 먼저 이해한 다음, 분석이 시작됩니다.
+            </p>
+          </div>
         </div>
 
-        {/* 매각물건명세서 요약 */}
-        <section className="p-6 border rounded-lg">
-          <h2 className="text-xl font-semibold mb-4">매각물건명세서 요약</h2>
-          <p className="text-gray-500">
-            TODO: SaleStatementSummary 컴포넌트 구현
-          </p>
-        </section>
+        {/* 반응형 레이아웃: Desktop 2열, Mobile 1열 */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* 좌측: 매각물건명세서 요약 */}
+          <div>
+            <SaleStatementSummary property={property} courtDocs={courtDocs} />
+          </div>
 
-        {/* 권리 분석 요약 */}
-        <section className="p-6 border rounded-lg">
-          <h2 className="text-xl font-semibold mb-4">권리 분석 요약</h2>
-          <p className="text-gray-500">TODO: RightsSummary 컴포넌트 구현</p>
-        </section>
+          {/* 우측: 권리 분석 요약 */}
+          <div>
+            <RightsSummary rights={rights} />
+          </div>
+        </div>
 
         {/* 입찰하기 CTA */}
-        <section className="pt-8">
+        <section className="pt-8 flex justify-center lg:justify-start">
           <Link href={`/simulations/${id}/bid`}>
             <Button size="lg" className="w-full md:w-auto">
               입찰하기
@@ -80,4 +216,3 @@ export default async function SimulationDetailPage({
     </main>
   );
 }
-

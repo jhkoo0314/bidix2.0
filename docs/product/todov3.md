@@ -628,22 +628,22 @@
 - `docs/engine/json-schema.md` - Property, CourtDocsNormalized, Rights 타입
 - `docs/engine/auction-flow.md` - 입찰 전 초기 시뮬레이션 구조
 
-- [ ] **Server Component**
-- [ ] 데이터 Fetch
-  - [ ] Supabase에서 시뮬레이션 데이터 조회
-  - [ ] Property, CourtDocs, Rights 데이터 포함
-- [ ] UI 구성
-  - [ ] 헤더 (사건번호, 난이도 배지)
-  - [ ] 브랜드 문구 삽입
+- [x] **Server Component**
+- [x] 데이터 Fetch
+  - [x] Supabase에서 시뮬레이션 데이터 조회
+  - [x] Property, CourtDocs, Rights 데이터 포함
+- [x] UI 구성
+  - [x] 헤더 (사건번호, 난이도 배지)
+  - [x] 브랜드 문구 삽입
     - "사실을 먼저 이해한 다음, 분석이 시작됩니다."
-  - [ ] `<SaleStatementSummary property={} courtDocs={} />`
+  - [x] `<SaleStatementSummary property={} courtDocs={} />`
     - 모든 Summary 컴포넌트에 감성·멘토 톤의 한 줄 메시지 추가
-  - [ ] `<RightsSummary rights={} />`
+  - [x] `<RightsSummary rights={} />`
     - 모든 Summary 컴포넌트에 감성·멘토 톤의 한 줄 메시지 추가
-  - [ ] "입찰하기" CTA 버튼 → `/simulations/[id]/bid`
-- [ ] 반응형 레이아웃
-  - [ ] 2열 레이아웃 (Desktop)
-  - [ ] 1열 레이아웃 (Mobile)
+  - [x] "입찰하기" CTA 버튼 → `/simulations/[id]/bid`
+- [x] 반응형 레이아웃
+  - [x] 2열 레이아웃 (Desktop)
+  - [x] 1열 레이아웃 (Mobile)
 
 **예상 소요:** 4-5시간
 
