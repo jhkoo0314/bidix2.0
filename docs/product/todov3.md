@@ -392,7 +392,7 @@
 
 ### 2.5 Result Components
 
-- [ ] `components/result/BidOutcomeBlock.tsx`
+- [x] `components/result/BidOutcomeBlock.tsx`
 
   ```typescript
   import { AuctionSummary } from "@/lib/types";
@@ -405,7 +405,7 @@
   - 브랜드 패치: "실패는 자산입니다" 메시지 추가
   - Accent Colors 사용: Green(성공), Amber(경고), Red(실패)
 
-- [ ] `components/result/MetricsStrip.tsx`
+- [x] `components/result/MetricsStrip.tsx`
 
   ```typescript
   import { Profit, ScoreBreakdown } from "@/lib/types";
@@ -419,7 +419,7 @@
   - 브랜드 메시지: "당신의 경험은 숫자로 증명됩니다."
   - Data Mapping: `profit.initialSafetyMargin` → "당신의 안전마진은 X%였습니다."
 
-- [ ] `components/result/ExitScenarioTable.tsx`
+- [x] `components/result/ExitScenarioTable.tsx`
 
   ```typescript
   import { ProfitScenario } from "@/lib/types";
@@ -431,7 +431,7 @@
   - 브랜드 패치: Amber/Green 기준 색상 (브랜드 Accent Colors)
   - ROI 컬럼: Numeric Highlight 스타일 적용
 
-- [ ] `components/result/PremiumReportCTA.tsx`
+- [x] `components/result/PremiumReportCTA.tsx`
 
   ```typescript
   interface PremiumReportCTAProps {
@@ -443,7 +443,7 @@
   - 브랜드 메시지: "사실을 이해하셨습니다. 이제 분석을 시작할 준비가 되셨나요?"
   - 또는: "🔒 더 깊은 분석을 원하신가요?"
 
-- [ ] `components/result/ResultActions.tsx`
+- [x] `components/result/ResultActions.tsx`
   ```typescript
   interface ResultActionsProps {
     simulationId: string;
