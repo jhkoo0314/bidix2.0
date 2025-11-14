@@ -9,12 +9,17 @@
  * 핵심 구현 로직:
  * - 에러 메시지와 선택적 재시도 버튼 표시
  * - Design System v2.2 원칙 준수
- * - brand-story.md의 브랜드 보이스 반영 (격려하되 과장하지 않음)
+ * - 브랜드 보이스 반영: 단호하지만 따뜻하게, 사용자 평가 금지
+ *
+ * 브랜드 통합:
+ * - Design System v2.2: Error State 규칙 준수
+ * - 브랜드 보이스: 격려하되 과장하지 않음, 사용자를 평가하지 않음
+ * - 메시지 톤: "이 결과는 당신의 학습을 위한 데이터입니다." 스타일
  *
  * @dependencies
  * - @/components/ui/button: shadcn 버튼 컴포넌트
  *
- * @see {@link /docs/ui/design-system.md} - 에러 처리 가이드
+ * @see {@link /docs/ui/design-system.md} - 에러 처리 가이드 및 인터랙션 규칙
  * @see {@link /docs/product/brand-story.md} - 브랜드 보이스 가이드
  */
 
@@ -30,13 +35,14 @@ export function ErrorState({
   onRetry,
 }: ErrorStateProps) {
   // 브랜드 보이스에 맞는 기본 메시지
+  // 원칙: 단호하지만 따뜻하게, 사용자를 평가하지 않음
   const defaultMessage =
     message ||
     "문제가 발생했습니다. 괜찮습니다. 다시 시도해 주세요.";
 
   return (
     <div className="flex flex-col items-center justify-center p-8 text-center">
-      <p className="text-lg text-gray-600 dark:text-gray-400 mb-4">
+      <p className="text-lg text-muted-foreground mb-4">
         {defaultMessage}
       </p>
       {onRetry && (

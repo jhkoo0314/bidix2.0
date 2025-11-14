@@ -7,14 +7,19 @@
  * 2. 타입별 포맷팅 (텍스트/통화/백분율)
  *
  * 핵심 구현 로직:
- * - currency: toLocaleString() 적용
- * - percentage: % 기호 추가
+ * - currency: toLocaleString() 적용 + Numeric Highlight 스타일
+ * - percentage: % 기호 추가 + Numeric Highlight 스타일
  * - text: 그대로 표시
  *
- * @dependencies
- * - @/lib/utils/number: 숫자 포맷팅 유틸리티
+ * 브랜드 통합:
+ * - Design System v2.2: Numeric Highlight 스타일 적용 (currency/percentage)
+ * - 점수/금액/ROI는 두껍고 선명하게 표시
  *
- * @see {@link /docs/ui/design-system.md} - 금액 표시 포맷팅 규칙
+ * @dependencies
+ * - tailwindcss: numeric-highlight 유틸리티 클래스
+ *
+ * @see {@link /docs/ui/design-system.md} - 금액 표시 포맷팅 규칙 및 Numeric Highlight
+ * @see {@link /app/globals.css} - .numeric-highlight 유틸리티 클래스 정의
  */
 
 export interface DataRowProps {
@@ -34,11 +39,17 @@ export function DataRow({ label, value, type = "text" }: DataRowProps) {
     return value;
   };
 
+  // currency와 percentage 타입에 Numeric Highlight 스타일 적용
+  const shouldHighlight = type === "currency" || type === "percentage";
+
   return (
     <div className="flex justify-between items-center py-2">
       <span className="text-gray-600 dark:text-gray-400">{label}</span>
-      <span className="font-semibold">{formatValue()}</span>
+      <span
+        className={`${shouldHighlight ? "numeric-highlight" : "font-semibold"}`}
+      >
+        {formatValue()}
+      </span>
     </div>
   );
 }
-

@@ -10,10 +10,17 @@
  * - 제목과 선택적 설명을 받아 표시
  * - Design System v2.2 준수
  *
+ * 브랜드 통합:
+ * - Design System v2.2: Typography 규칙 준수
+ * - Heading 폰트: Inter / Poppins (기하학적, 안정감)
+ * - Body 폰트: Pretendard / Noto Sans KR (높은 가독성)
+ * - 브랜드 문구 스타일: 넓은 letter-spacing + 얇은 weight (선택적)
+ *
  * @dependencies
  * - tailwindcss: 스타일링
+ * - 브랜드 Typography: Heading은 Inter/Poppins, Body는 Pretendard/Noto Sans KR
  *
- * @see {@link /docs/ui/design-system.md} - UI/UX 디자인 토큰
+ * @see {@link /docs/ui/design-system.md} - UI/UX 디자인 토큰 및 Typography 규칙
  */
 
 export interface SectionHeaderProps {
@@ -26,7 +33,7 @@ export function SectionHeader({ title, description }: SectionHeaderProps) {
     <div className="space-y-2">
       <h2 className="text-2xl font-semibold">{title}</h2>
       {description && (
-        <p className="text-gray-600 dark:text-gray-400">{description}</p>
+        <p className="text-muted-foreground">{description}</p>
       )}
     </div>
   );

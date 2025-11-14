@@ -129,12 +129,12 @@
 
 **브랜드 보이스 → UI 표현 매핑**:
 
-| 브랜드 가이드 | UI 표현 방식 |
-|------------|------------|
-| "실패는 자산입니다." | ResultPage 실패 화면 상단의 브랜드 메시지 |
-| "당신의 성장은 숫자로 증명됩니다." | MetricsStrip와 Score 표시에 강조 문구 |
-| "당신은 이미 충분히 공부했습니다." | 랜딩 페이지 첫 문구 |
-| "생각하는 과정을 훈련한다." | 권리/수익/경매 분석의 단계별 구조 |
+| 브랜드 가이드                      | UI 표현 방식                              |
+| ---------------------------------- | ----------------------------------------- |
+| "실패는 자산입니다."               | ResultPage 실패 화면 상단의 브랜드 메시지 |
+| "당신의 성장은 숫자로 증명됩니다." | MetricsStrip와 Score 표시에 강조 문구     |
+| "당신은 이미 충분히 공부했습니다." | 랜딩 페이지 첫 문구                       |
+| "생각하는 과정을 훈련한다."        | 권리/수익/경매 분석의 단계별 구조         |
 
 ---
 
@@ -253,21 +253,23 @@
 
 ### 2.1 Common Components (공통)
 
-- [ ] `components/common/SectionHeader.tsx`
+- [x] `components/common/SectionHeader.tsx`
   ```typescript
   interface SectionHeaderProps {
     title: string;
     description?: string;
   }
   ```
-- [ ] `components/common/SectionCard.tsx`
+  - 브랜드 통합: Typography 규칙 문서화, 브랜드 Color Tokens 적용
+- [x] `components/common/SectionCard.tsx`
   ```typescript
   interface SectionCardProps {
     children: React.ReactNode;
     title?: string;
   }
   ```
-- [ ] `components/common/DataRow.tsx`
+  - 브랜드 통합: Layout Rules 문서화, 브랜드 Color Tokens 검증 완료
+- [x] `components/common/DataRow.tsx`
   ```typescript
   interface DataRowProps {
     label: string;
@@ -275,13 +277,18 @@
     type?: "text" | "currency" | "percentage";
   }
   ```
-- [ ] `components/common/Badge.tsx` (난이도/등급 표시)
-- [ ] `components/common/ErrorState.tsx`
-- [ ] `components/common/EmptyState.tsx`
+  - 브랜드 통합: Numeric Highlight 스타일 적용 (currency/percentage)
+- [x] `components/common/Badge.tsx` (난이도/등급 표시)
+  - 브랜드 통합: 브랜드 Accent Colors 적용 (Green/Amber/Blue)
+- [x] `components/common/ErrorState.tsx`
+  - 브랜드 통합: 브랜드 보이스 메시지 개선, Design System v2.2 규칙 반영
+- [x] `components/common/EmptyState.tsx`
+  - 브랜드 통합: 브랜드 보이스 메시지 개선, Design System v2.2 규칙 반영
 
 ### 2.2 Dashboard Components
 
-- [ ] `components/dashboard/QuickStats.tsx`
+- [x] `components/dashboard/QuickStats.tsx`
+
   ```typescript
   interface QuickStatsProps {
     level: number;
@@ -289,22 +296,23 @@
     simulationCount: number;
   }
   ```
+
   - 브랜드 패치: 점수/금액은 Numeric Highlight 스타일 적용
 
-- [ ] `components/dashboard/RecentSimulations.tsx`
+- [x] `components/dashboard/RecentSimulations.tsx`
   ```typescript
   interface RecentSimulationsProps {
     simulations: SimulationListItem[];
   }
   ```
-- [ ] `components/dashboard/UsageIndicator.tsx`
+- [x] `components/dashboard/UsageIndicator.tsx`
   ```typescript
   interface UsageIndicatorProps {
     used: number;
     limit: number;
   }
   ```
-- [ ] `components/dashboard/DashboardStats.tsx` (브랜드 Value Chain 반영)
+- [x] `components/dashboard/DashboardStats.tsx` (브랜드 Value Chain 반영)
   ```typescript
   interface DashboardStatsProps {
     experience: { count: number }; // Experience Module
@@ -324,6 +332,7 @@
   }
   ```
 - [ ] `components/simulations/PropertyCard.tsx`
+
   ```typescript
   import { Property } from "@/lib/types";
   interface PropertyCardProps {
@@ -331,9 +340,11 @@
     valuation: { minBid: number };
   }
   ```
+
   - 금액 표시: Numeric Highlight 스타일 적용
 
 - [ ] `components/simulations/SaleStatementSummary.tsx`
+
   ```typescript
   import { Property, CourtDocsNormalized } from "@/lib/types";
   interface SaleStatementSummaryProps {
@@ -341,6 +352,7 @@
     courtDocs: CourtDocsNormalized;
   }
   ```
+
   - 브랜드 패치: 감성·멘토 톤의 한 줄 메시지 추가
   - Data Mapping: `valuation.adjustedFMV` → "현재 시장가 기준 판단 정확도는 XX%입니다."
 
@@ -381,6 +393,7 @@
 ### 2.5 Result Components
 
 - [ ] `components/result/BidOutcomeBlock.tsx`
+
   ```typescript
   import { AuctionSummary } from "@/lib/types";
   interface BidOutcomeBlockProps {
@@ -388,10 +401,12 @@
     userBid: number;
   }
   ```
+
   - 브랜드 패치: "실패는 자산입니다" 메시지 추가
   - Accent Colors 사용: Green(성공), Amber(경고), Red(실패)
 
 - [ ] `components/result/MetricsStrip.tsx`
+
   ```typescript
   import { Profit, ScoreBreakdown } from "@/lib/types";
   interface MetricsStripProps {
@@ -399,26 +414,31 @@
     score: ScoreBreakdown;
   }
   ```
+
   - 브랜드 패치: 브랜드 Numeric Highlight 적용 (Score / ROI / MoS)
   - 브랜드 메시지: "당신의 경험은 숫자로 증명됩니다."
   - Data Mapping: `profit.initialSafetyMargin` → "당신의 안전마진은 X%였습니다."
 
 - [ ] `components/result/ExitScenarioTable.tsx`
+
   ```typescript
   import { ProfitScenario } from "@/lib/types";
   interface ExitScenarioTableProps {
     scenarios: ProfitScenario[]; // 3개 보유기간 모두 표시
   }
   ```
+
   - 브랜드 패치: Amber/Green 기준 색상 (브랜드 Accent Colors)
   - ROI 컬럼: Numeric Highlight 스타일 적용
 
 - [ ] `components/result/PremiumReportCTA.tsx`
+
   ```typescript
   interface PremiumReportCTAProps {
     type: "rights" | "profit" | "auction";
   }
   ```
+
   - 브랜드 패치: 브랜드 tone + blue accent
   - 브랜드 메시지: "사실을 이해하셨습니다. 이제 분석을 시작할 준비가 되셨나요?"
   - 또는: "🔒 더 깊은 분석을 원하신가요?"
@@ -483,7 +503,7 @@
     - Insight (날카로운 통찰)
     - Index (성장의 지표: 정확성/수익성/안정성)
 - [ ] Hard 모드 소개 (브랜드 규칙)
-  - [ ] Hard 모드 소개 문구: *"실패는 비용이 아닙니다. 여기서는 데이터가 됩니다."*
+  - [ ] Hard 모드 소개 문구: _"실패는 비용이 아닙니다. 여기서는 데이터가 됩니다."_
 - [ ] Footer
 
 **예상 소요:** 2-3시간
@@ -688,7 +708,7 @@
 - [ ] UI 구성 (단계별 순서 - 브랜드 핵심이 가장 드러나는 페이지)
 
   **브랜드 메시지 layer 추가** (페이지 최상단):
-  
+
   - [ ] 브랜드 메시지 섹션
     - **"실패는 비용이 아니라, 자산입니다."**
     - 브랜드 문구 스타일: 넓은 letter-spacing + 얇은 weight
@@ -971,27 +991,28 @@
 **Color Tokens (브랜드 통합)**:
 
 - [ ] `app/globals.css`에 브랜드 Color Tokens 설정
+
   ```css
   :root {
     /* Backgrounds */
     --background: 0 0% 100%;
     --foreground: 222 84% 5%;
-    
+
     /* Brand Primary */
     --primary: 222 47% 11%;
     --primary-foreground: 0 0% 98%;
-    
+
     /* Brand Accent Colors */
     --accent-green: 142 70% 45%; /* 성장 Growth */
     --accent-amber: 38 92% 55%; /* 경고 / 학습 시그널 */
     --accent-blue: 222 85% 55%; /* Financial clarity 핵심 */
-    
+
     /* Functional Colors */
     --success: 142 76% 36%;
     --warning: 48 96% 53%;
     --danger: 0 84% 60%;
     --info: 212 100% 50%;
-    
+
     /* Border / Card */
     --border: 214 32% 91%;
     --card: 0 0% 100%;
@@ -1007,6 +1028,7 @@
 **Typography (브랜드 톤)**:
 
 - [ ] 글꼴 설정
+
   - Heading (H1–H4): Inter / Poppins — 기하학적, 안정감
   - Body: Pretendard / Noto Sans KR — 높은 가독성
   - Numeric Highlight: tabular-nums 지원 글꼴 필수
@@ -1019,6 +1041,7 @@
 **Layout Rules (브랜드 원칙)**:
 
 - [ ] 레이아웃 구조
+
   - **좌측 메인 정보 → 우측 인사이트 구조**
   - **간격은 넓게, 경계는 옅게 (눈이 시리지 않게)**
   - **요약 → 상세 → 인사이트** 순서
@@ -1356,12 +1379,12 @@ UI → Server Action → Service → SimulationGenerator
 
 **Data Mapping (엔진 → 브랜드 경험)**:
 
-| 엔진 원천 데이터 | UI 메시지/표현 |
-|------------|------------|
-| `profit.initialSafetyMargin` | "당신의 안전마진은 X%였습니다." |
-| `rights.evictionRisk` | "이 리스크는 Hard 모드에서 자주 등장합니다." |
-| `valuation.adjustedFMV` | "현재 시장가 기준 판단 정확도는 XX%입니다." |
-| Score | "당신의 경험은 숫자로 증명됩니다." |
+| 엔진 원천 데이터             | UI 메시지/표현                               |
+| ---------------------------- | -------------------------------------------- |
+| `profit.initialSafetyMargin` | "당신의 안전마진은 X%였습니다."              |
+| `rights.evictionRisk`        | "이 리스크는 Hard 모드에서 자주 등장합니다." |
+| `valuation.adjustedFMV`      | "현재 시장가 기준 판단 정확도는 XX%입니다."  |
+| Score                        | "당신의 경험은 숫자로 증명됩니다."           |
 
 ### 7. v2.2 핵심 변경사항
 

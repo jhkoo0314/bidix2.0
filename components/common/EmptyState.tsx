@@ -9,11 +9,18 @@
  * 핵심 구현 로직:
  * - 메시지와 선택적 액션 버튼 표시
  * - Design System v2.2 원칙 준수
+ * - 브랜드 보이스 반영: 격려하되 과장하지 않음
+ *
+ * 브랜드 통합:
+ * - Design System v2.2: Empty State 규칙 준수
+ * - 브랜드 보이스: 격려하되 과장하지 않음, 사용자를 평가하지 않음
+ * - 메시지 톤 예시: "아직 데이터가 없습니다. 첫 시뮬레이션을 시작해보세요."
  *
  * @dependencies
  * - @/components/ui/button: shadcn 버튼 컴포넌트
  *
- * @see {@link /docs/ui/design-system.md} - 빈 상태 처리 가이드
+ * @see {@link /docs/ui/design-system.md} - 빈 상태 처리 가이드 및 인터랙션 규칙
+ * @see {@link /docs/product/brand-story.md} - 브랜드 보이스 가이드
  */
 
 import { Button } from "@/components/ui/button";
@@ -31,7 +38,7 @@ export function EmptyState({
 }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center p-8 text-center">
-      <p className="text-lg text-gray-600 dark:text-gray-400 mb-4">
+      <p className="text-lg text-muted-foreground mb-4">
         {message}
       </p>
       {actionLabel && onAction && (
