@@ -520,50 +520,50 @@
 - `docs/engine/api-contracts.md` - `/api/scores`, `/api/usage` 명세
 - `docs/ui/component-spec.md` - QuickStats, UsageIndicator Props
 
-- [ ] **Server Component로 구현**
-- [ ] 데이터 Fetch
-  - [ ] 사용자 통계 (레벨, 점수, 총 시뮬레이션 수)
+- [x] **Server Component로 구현**
+- [x] 데이터 Fetch
+  - [x] 사용자 통계 (레벨, 점수, 총 시뮬레이션 수)
     - API 호출: `GET /api/scores`
     - 표시: 레벨, 티어(Bronze/Silver/Gold...), 총 점수
-  - [ ] 최근 시뮬레이션 3개
+  - [x] 최근 시뮬레이션 3개
     - Supabase `simulations` 테이블에서 조회
     - `ORDER BY created_at DESC LIMIT 3`
-  - [ ] 일일 사용량 (5회 제한)
+  - [x] 일일 사용량 (5회 제한)
     - API 호출: `GET /api/usage`
     - 표시: `used / limit` (예: 2/5)
-- [ ] UI 구성
-  - [ ] 환영 메시지 헤더
+- [x] UI 구성
+  - [x] 환영 메시지 헤더
     - 브랜드 보이스 메시지: **"안녕하세요. 당신은 이미 경매를 공부했습니다. 이제 BIDIX에서 안전하게 경험할 차례입니다."** (브랜드 스토리 시나리오 1 참조)
     - 사용자 이름 표시: "{userName}님"
     - 현재 레벨 및 티어 표시
-  - [ ] `<UsageIndicator used={2} limit={5} />` 배치
+  - [x] `<UsageIndicator used={2} limit={5} />` 배치
     - 프로그레스바 형태
     - 남은 횟수 강조
     - 5회 초과 시 "일일 표시 제도해주세요" 메시지
-  - [ ] 브랜드 Value Chain 반영: 3개 모듈 구조
-    - [ ] Experience Module - 이번 주 시뮬레이션 횟수
-    - [ ] Insight Module - 무료 리포트 조회 수
-    - [ ] Index Module - 점수/레벨/히스토리
+  - [x] 브랜드 Value Chain 반영: 3개 모듈 구조
+    - [x] Experience Module - 이번 주 시뮬레이션 횟수
+    - [x] Insight Module - 무료 리포트 조회 수
+    - [x] Index Module - 점수/레벨/히스토리
     - 이 3개 모듈은 브랜드 가치 IX 그대로 UI로 표현
-  - [ ] `<QuickStats level={3} totalScore={1240} simulationCount={47} />` 배치
+  - [x] `<QuickStats level={3} totalScore={1240} simulationCount={47} />` 배치
     - 3개 카드 레이아웃 (레벨 / 점수 / 총 시뮬레이션 수)
     - 점수 계산 공식: `point-level-system.md` 참조
     - 점수/금액은 Numeric Highlight 스타일 적용
-  - [ ] `<RecentSimulations simulations={[...]} />` 배치
+  - [x] `<RecentSimulations simulations={[...]} />` 배치
     - PropertyCard 형태로 표시
     - 클릭 시 결과 페이지로 이동
-  - [ ] "새로운 시뮬레이션 생성" 버튼 (Server Action 연결)
+  - [x] "새로운 시뮬레이션 생성" 버튼 (Server Action 연결)
     - 난이도 선택 드롭다운 (Easy/Normal/Hard)
     - 사용량 체크 (5회 초과 시 비활성화)
-- [ ] Server Action 연결
-  - [ ] `generateSimulationAction(difficulty)` 호출
-  - [ ] 로딩 상태 표시
-  - [ ] 생성 시 `/simulations/[id]`로 리다이렉트
-  - [ ] 에러 처리 (사용량 초과, 네트워크 에러 등)
-- [ ] 로그 추가
-  - [ ] 사용량 조회 로그
-  - [ ] 시뮬레이션 생성 요청 로그
-  - [ ] 리다이렉트 로그
+- [x] Server Action 연결
+  - [x] `generateSimulationAction(difficulty)` 호출
+  - [x] 로딩 상태 표시
+  - [x] 생성 시 `/simulations/[id]`로 리다이렉트
+  - [x] 에러 처리 (사용량 초과, 네트워크 에러 등)
+- [x] 로그 추가
+  - [x] 사용량 조회 로그
+  - [x] 시뮬레이션 생성 요청 로그
+  - [x] 리다이렉트 로그
 
 **예상 소요:** 4-5시간
 
