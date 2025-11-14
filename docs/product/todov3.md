@@ -698,40 +698,40 @@
 - `docs/ui/component-spec.md` - 모든 Result 컴포넌트 Props
 - `docs/ui/design-system.md` - 색상 토큰 (등급별 색상: S/A/B/C/D)
 
-- [ ] **Server Component**
-- [ ] 데이터 Fetch
-  - [ ] Supabase에서 시뮬레이션 결과 조회
-  - [ ] 필수 데이터 `AuctionAnalysisResult` 전체
+- [x] **Server Component**
+- [x] 데이터 Fetch
+  - [x] Supabase에서 시뮬레이션 결과 조회
+  - [x] 필수 데이터 `AuctionAnalysisResult` 전체
     - property, valuation, rights, costs, profit, courtDocs, summary
-  - [ ] userBid, score 데이터 포함
-  - [ ] 데이터 검증 `json-schema.md` 구조 확인
-- [ ] UI 구성 (단계별 순서 - 브랜드 핵심이 가장 드러나는 페이지)
+  - [x] userBid, score 데이터 포함
+  - [x] 데이터 검증 `json-schema.md` 구조 확인
+- [x] UI 구성 (단계별 순서 - 브랜드 핵심이 가장 드러나는 페이지)
 
   **브랜드 메시지 layer 추가** (페이지 최상단):
 
-  - [ ] 브랜드 메시지 섹션
+  - [x] 브랜드 메시지 섹션
     - **"실패는 비용이 아니라, 자산입니다."**
     - 브랜드 문구 스타일: 넓은 letter-spacing + 얇은 weight
     - Failure 메시지는 따뜻함 + 데이터 기반 톤
 
-  1. [ ] `<BidOutcomeBlock summary={} userBid={} />`
+  1. [x] `<BidOutcomeBlock summary={} userBid={} />`
 
-     - [ ] 입찰 성공/실패/근접 표시
+     - [x] 입찰 성공/실패/근접 표시
        - userBid vs minBid 비교
        - 상태별 색상 (success: green, fail: red, close: yellow)
        - Accent Colors 사용: Green(성공), Amber(경고/근접), Red(실패)
-     - [ ] summary.grade 표시 (S/A/B/C/D)
+     - [x] summary.grade 표시 (S/A/B/C/D)
        - 등급별 색상: `point-level-system.md` 참조
-     - [ ] summary.isProfitable3m/6m/12m 표시
+     - [x] summary.isProfitable3m/6m/12m 표시
        - 3개 체크마크 (✅/ ❌)
-     - [ ] 브랜드 메시지 표시 (브랜드 스토리 시나리오 2 참조)
+     - [x] 브랜드 메시지 표시 (브랜드 스토리 시나리오 2 참조)
        - 성공: "축하합니다! 입찰에 성공하셨습니다."
        - 실패: **"낙찰에 실패했습니다. 하지만 괜찮습니다. 이것이 바로 BIDIX가 존재하는 이유입니다."**
          - 추가 메시지: "당신의 입찰가는 적정가보다 X% 낮았고, 숨겨진 임차인 리스크를 놓쳤습니다. 이제 이 데이터를 가지고 다시 도전하세요. **실패는 비용이 아니라 자산입니다.**"
 
-  2. [ ] `<MetricsStrip profit={} score={} />`
+  2. [x] `<MetricsStrip profit={} score={} />`
 
-     - [ ] 3개 주요 지표 카드
+     - [x] 3개 주요 지표 카드
        - 초기 안전마진 (profit.initialSafetyMargin)
          - 백분율 표시 (예: 7.8%)
          - 설명: "FMV 대비 초기 마진"
@@ -745,47 +745,47 @@
          - 등급 표시 (S/A/B/C/D)
          - 브랜드 메시지: "당신의 경험은 숫자로 증명됩니다."
          - Numeric Highlight 스타일 적용
-     - [ ] 점수 구성 상세 (접기/펼치기)
+     - [x] 점수 구성 상세 (접기/펼치기)
        - Accuracy Score: X/400
        - Profitability Score: X/400
        - Risk Control Score: X/200
        - 총 점수 계산 근거: `point-level-system.md`
-     - [ ] 브랜드 Numeric Highlight 적용 (Score / ROI / MoS)
+     - [x] 브랜드 Numeric Highlight 적용 (Score / ROI / MoS)
 
-  3. [ ] `<ExitScenarioTable scenarios={profit.scenarios} />`
+  3. [x] `<ExitScenarioTable scenarios={profit.scenarios} />`
 
-     - [ ] 3개월/6개월/12개월 비교 테이블
-     - [ ] 컬럼:
+     - [x] 3개월/6개월/12개월 비교 테이블
+     - [x] 컬럼:
        - 보유기간 (months)
        - 매각가 (exitPrice)
        - 총비용 (totalCost)
        - 순이익 (netProfit)
        - ROI (roi) - Numeric Highlight 스타일
        - 연환산 ROI (annualizedRoi) - Numeric Highlight 스타일
-     - [ ] 최적 시나리오 하이라이트
+     - [x] 최적 시나리오 하이라이트
        - bestHoldingPeriod 강조
        - Amber/Green 기준 색상 (브랜드 Accent Colors)
-     - [ ] 금액 포맷: `toLocaleString()`
-     - [ ] 모바일 스크롤 가능한 테이블
+     - [x] 금액 포맷: `toLocaleString()`
+     - [x] 모바일 스크롤 가능한 테이블
 
-  4. [ ] Premium Report CTAs
+  4. [x] Premium Report CTAs
 
-     - [ ] `<PremiumReportCTA type="rights" />` 섹션
+     - [x] `<PremiumReportCTA type="rights" />` 섹션
        - 제목: "권리 분석 상세 리포트"
        - 설명: "임대 권리 관계, 우선순위 분석, 명도비용 상세"
        - 미리보기: `report-result.md` Section 1 참조
-     - [ ] `<PremiumReportCTA type="profit" />` 섹션
+     - [x] `<PremiumReportCTA type="profit" />` 섹션
        - 제목: "수익 분석 상세 리포트"
        - 설명: "비용 구조, 수익 시나리오, 수익분기점 분석"
        - 미리보기: `report-result.md` Section 2 참조
-     - [ ] `<PremiumReportCTA type="auction" />` 섹션
+     - [x] `<PremiumReportCTA type="auction" />` 섹션
        - 제목: "경매 분석 상세 리포트"
        - 설명: "입찰 전략의 점수 상세, 개선 포인트"
        - 미리보기: `report-result.md` Section 3 참조
-     - [ ] 무료 리포트 1회 제공
+     - [x] 무료 리포트 1회 제공
        - "매각물건명세서 해설판" 첫 1회 무료
        - 사용량 체크 (`GET /api/usage`)
-     - [ ] 잠금 UI
+     - [x] 잠금 UI
        - 🔒 아이콘
        - "로그인하기" 버튼 (v2.2에서는 비활성)
        - 브랜드 메시지: **"사실을 이해하셨습니다. 이제 분석을 시작할 준비가 되셨나요?"** (브랜드 톤)
@@ -793,38 +793,38 @@
        - 브랜드 Accent Color (blue/amber) 적용
        - 브랜드 보이스 준수: 격려하되 과장하지 않음, 데이터 기반 강조
 
-  5. [ ] `<ResultActions simulationId={} />`
-     - [ ] "히스토리 저장" 버튼
+  5. [x] `<ResultActions simulationId={} />`
+     - [x] "히스토리 저장" 버튼
        - `saveHistoryAction(simulationId)` 호출
        - 이미 저장된 경우: "저장됨" 표시
-     - [ ] "다음 연습" 버튼
+     - [x] "다음 연습" 버튼
        - 새로운 시뮬레이션 생성 플로우로 이동
        - Dashboard로 리다이렉트
 
-- [ ] 스타일링
+- [x] 스타일링
 
-  - [ ] Design System v2.2 엄격 준수
+  - [x] Design System v2.2 엄격 준수
     - `design-system.md` 색상 토큰 사용
     - Financial Clarity 원칙 준수
-  - [ ] 섹션 및 Separator
+  - [x] 섹션 및 Separator
     - `<Separator />` 컴포넌트 사용
-  - [ ] 카드 레이아웃
+  - [x] 카드 레이아웃
     - shadcn/ui `<Card />` 사용
     - 섹션별 헤딩 및 그림자
-  - [ ] 반응형
+  - [x] 반응형
     - Desktop: 2열 레이아웃 (지표 카드)
     - Mobile: 1열 레이아웃
 
-- [ ] 로그 추가
-  - [ ] 결과 페이지 로드 로그
+- [x] 로그 추가
+  - [x] 결과 페이지 로드 로그
     - `console.group("Result Page Data")`
     - 전체 데이터 구조 출력
-  - [ ] 각 섹션 헤더별 로그
+  - [x] 각 섹션 헤더별 로그
     - BidOutcomeBlock 헤더
     - MetricsStrip 계산 값
     - ExitScenarioTable 데이터
-  - [ ] Premium CTA 클릭 로그
-  - [ ] 에러 로그 (데이터 없음, 형식 오류 등)
+  - [x] Premium CTA 클릭 로그
+  - [x] 에러 로그 (데이터 없음, 형식 오류 등)
 
 **예상 소요:** 8-10시간
 

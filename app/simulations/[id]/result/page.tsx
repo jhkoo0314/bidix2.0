@@ -26,6 +26,8 @@
  * - @/components/result/ExitScenarioTable: 보유기간별 수익 시나리오 테이블 컴포넌트
  * - @/components/result/PremiumReportCTA: 프리미엄 리포트 CTA 컴포넌트
  * - @/components/reports/SaleStatementReport: 매각물건명세서 해설판 리포트 컴포넌트
+ * - @/components/result/ResultActions: 결과 페이지 액션 컴포넌트
+ * - @/components/ui/separator: 섹션 구분선 컴포넌트
  *
  * @see {@link /docs/product/report-result.md} - 4종 리포트 상세 명세
  * @see {@link /docs/product/point-level-system.md} - 점수 계산 공식
@@ -35,8 +37,6 @@
 
 import { auth } from "@clerk/nextjs/server";
 import { redirect, notFound } from "next/navigation";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { createClerkSupabaseClient } from "@/lib/supabase/server";
 import { PropertyEngine } from "@/lib/engines/propertyengine";
 import { ScoreEngine, type ScoreBreakdown } from "@/lib/engines/scoreengine";
@@ -56,6 +56,8 @@ import { MetricsStrip } from "@/components/result/MetricsStrip";
 import { ExitScenarioTable } from "@/components/result/ExitScenarioTable";
 import { PremiumReportCTA } from "@/components/result/PremiumReportCTA";
 import { SaleStatementReport } from "@/components/reports/SaleStatementReport";
+import { ResultActions } from "@/components/result/ResultActions";
+import { Separator } from "@/components/ui/separator";
 
 interface ResultPageProps {
   params: Promise<{ id: string }>;
@@ -84,6 +86,7 @@ export default async function ResultPage({ params }: ResultPageProps) {
   let score: number | null = null;
   let scoreBreakdown: ScoreBreakdown | null = null;
   let freeReportAvailable = false;
+  let isHistorySaved = false; // 히스토리 저장 여부 (현재는 false, 추후 DB 조회 필요)
 
   try {
     console.group("Result Page Data Fetch");
@@ -178,6 +181,38 @@ export default async function ResultPage({ params }: ResultPageProps) {
       console.log("- Valuation minBid:", valuation.minBid);
       console.log("- Summary grade:", summary.grade);
       console.log("- Profit scenarios:", Object.keys(profit.scenarios));
+
+      // 전체 데이터 구조 로그 출력
+      console.group("Result Page Data");
+      console.log("Property:", {
+        type: property.type,
+        address: property.address,
+        difficulty: property.difficulty,
+      });
+      console.log("Valuation:", {
+        minBid: valuation.minBid,
+        adjustedFMV: valuation.adjustedFMV,
+        recommendedBidRange: valuation.recommendedBidRange,
+      });
+      console.log("Rights:", {
+        assumableRightsTotal: rights.assumableRightsTotal,
+        evictionRisk: rights.evictionRisk,
+      });
+      console.log("Costs:", {
+        totalAcquisition: costs.acquisition.totalAcquisition,
+        ownCash: costs.acquisition.ownCash,
+      });
+      console.log("Profit:", {
+        initialSafetyMargin: profit.initialSafetyMargin,
+        scenarios: Object.keys(profit.scenarios),
+      });
+      console.log("Summary:", {
+        grade: summary.grade,
+        isProfitable: summary.isProfitable,
+        bestHoldingPeriod: summary.bestHoldingPeriod,
+        riskLabel: summary.riskLabel,
+      });
+      console.groupEnd();
 
       // AuctionAnalysisResult 구성
       result = {
@@ -276,10 +311,19 @@ export default async function ResultPage({ params }: ResultPageProps) {
   console.log("입찰 실패 여부:", isBidFailed);
   if (scoreBreakdown) {
     console.log("ScoreBreakdown 준비 완료:", scoreBreakdown.finalScore);
+    console.group("ScoreBreakdown Details");
+    console.log("Accuracy Score:", scoreBreakdown.accuracyScore, "/ 400");
+    console.log("Profitability Score:", scoreBreakdown.profitabilityScore, "/ 400");
+    console.log("Risk Control Score:", scoreBreakdown.riskControlScore, "/ 200");
+    console.log("Final Score:", scoreBreakdown.finalScore, "/ 1000");
+    console.log("Grade:", scoreBreakdown.grade);
+    console.log("EXP Gain:", scoreBreakdown.expGain);
+    console.groupEnd();
   } else {
     console.log("ScoreBreakdown 없음 (점수 계산 실패 또는 입찰 전)");
   }
   console.log("무료 리포트 사용 가능:", freeReportAvailable);
+  console.log("히스토리 저장 여부:", isHistorySaved);
   console.groupEnd();
 
   return (
@@ -304,48 +348,76 @@ export default async function ResultPage({ params }: ResultPageProps) {
         )}
 
         {/* BidOutcomeBlock */}
-        <BidOutcomeBlock
-          summary={result.summary}
-          userBid={userBid}
-          minBid={result.valuation.minBid}
-          profit={result.profit}
-        />
+        {(() => {
+          console.log("Rendering BidOutcomeBlock");
+          return (
+            <BidOutcomeBlock
+              summary={result.summary}
+              userBid={userBid}
+              minBid={result.valuation.minBid}
+              profit={result.profit}
+            />
+          );
+        })()}
+
+        <Separator />
 
         {/* MetricsStrip */}
         {scoreBreakdown && (
-          <MetricsStrip profit={result.profit} score={scoreBreakdown} />
+          <>
+            {(() => {
+              console.log("Rendering MetricsStrip");
+              return (
+                <MetricsStrip profit={result.profit} score={scoreBreakdown} />
+              );
+            })()}
+            <Separator />
+          </>
         )}
 
         {/* ExitScenarioTable */}
-        <ExitScenarioTable profit={result.profit} />
+        {(() => {
+          console.log("Rendering ExitScenarioTable");
+          return <ExitScenarioTable profit={result.profit} />;
+        })()}
+
+        <Separator />
 
         {/* Premium Report CTAs */}
         <section className="space-y-6">
-          {/* 매각물건명세서 해설판 (무료 리포트) */}
-          {result.courtDocs && (
-            <div className="space-y-4">
-              <SaleStatementReport
-                courtDocs={result.courtDocs}
-                isFreeAvailable={freeReportAvailable}
-              />
-            </div>
-          )}
+          {(() => {
+            console.log("Rendering Premium Report CTAs");
+            return (
+              <>
+                {/* 매각물건명세서 해설판 (무료 리포트) */}
+                {result.courtDocs && (
+                  <div className="space-y-4">
+                    <SaleStatementReport
+                      courtDocs={result.courtDocs}
+                      isFreeAvailable={freeReportAvailable}
+                    />
+                  </div>
+                )}
 
-          {/* Premium Report CTAs */}
-          <PremiumReportCTA type="rights" />
-          <PremiumReportCTA type="profit" />
-          <PremiumReportCTA type="auction" />
+                {/* Premium Report CTAs */}
+                <PremiumReportCTA type="rights" />
+                <PremiumReportCTA type="profit" />
+                <PremiumReportCTA type="auction" />
+              </>
+            );
+          })()}
         </section>
 
         {/* ResultActions */}
-        <section className="pt-8 flex gap-4">
-          <Button variant="outline" disabled>
-            히스토리 저장
-          </Button>
-          <Link href="/dashboard">
-            <Button>다음 연습</Button>
-          </Link>
-        </section>
+        {(() => {
+          console.log("Rendering ResultActions");
+          return (
+            <ResultActions
+              simulationId={id}
+              isSaved={isHistorySaved}
+            />
+          );
+        })()}
       </div>
     </main>
   );
