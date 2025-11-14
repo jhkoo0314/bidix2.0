@@ -140,19 +140,26 @@ export function createMockCosts(
         months: 3,
         holdingCost: userBid * 0.0009 * 3, // 월 보유비용 * 3
         interestCost: loanPrincipal * 0.055 * (3 / 12), // 연 이자율 * 3/12
-        totalCost: totalAcquisition + userBid * 0.0009 * 3 + loanPrincipal * 0.055 * (3 / 12),
+        totalCost:
+          totalAcquisition +
+          userBid * 0.0009 * 3 +
+          loanPrincipal * 0.055 * (3 / 12),
       },
       "6m": {
         months: 6,
         holdingCost: userBid * 0.0009 * 6,
         interestCost: loanPrincipal * 0.055 * (6 / 12),
-        totalCost: totalAcquisition + userBid * 0.0009 * 6 + loanPrincipal * 0.055 * (6 / 12),
+        totalCost:
+          totalAcquisition +
+          userBid * 0.0009 * 6 +
+          loanPrincipal * 0.055 * (6 / 12),
       },
       "12m": {
         months: 12,
         holdingCost: userBid * 0.0009 * 12,
         interestCost: loanPrincipal * 0.055,
-        totalCost: totalAcquisition + userBid * 0.0009 * 12 + loanPrincipal * 0.055,
+        totalCost:
+          totalAcquisition + userBid * 0.0009 * 12 + loanPrincipal * 0.055,
       },
     },
     ...overrides,
@@ -297,11 +304,12 @@ export function createMockProperty(
     sizeM2: seed.sizeM2,
     landSizeM2: seed.landSizeM2 || null,
     yearBuilt: seed.yearBuilt || null,
+    appraisalValue: overrides?.appraisalValue ?? 100000000, // 기본 감정가 1억원
     floorInfo: seed.floorInfo || { total: null, current: null },
     address: seed.address || "",
     auctionStep: seed.auctionStep || 1,
     difficulty: seed.difficulty,
-    buildingUse: seed.buildingUse || null,
+    buildingUse: seed.buildingUse || "",
     ...overrides,
   };
 }
@@ -361,4 +369,3 @@ export function getDefaultPolicyForDifficulty(
       return defaultPolicy;
   }
 }
-
