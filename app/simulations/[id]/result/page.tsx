@@ -19,8 +19,10 @@
  * - @clerk/nextjs: 인증 확인
  * - @/lib/supabase/server: Supabase 서버 클라이언트
  * - @/lib/engines/propertyengine: PropertySeed → Property 변환
+ * - @/lib/engines/scoreengine: ScoreBreakdown 계산
  * - @/lib/types: AuctionAnalysisResult 타입
  * - @/components/result/BidOutcomeBlock: 입찰 결과 컴포넌트
+ * - @/components/result/MetricsStrip: 핵심 지표 컴포넌트
  *
  * @see {@link /docs/product/report-result.md} - 4종 리포트 상세 명세
  * @see {@link /docs/product/point-level-system.md} - 점수 계산 공식
@@ -34,6 +36,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { createClerkSupabaseClient } from "@/lib/supabase/server";
 import { PropertyEngine } from "@/lib/engines/propertyengine";
+import { ScoreEngine, type ScoreBreakdown } from "@/lib/engines/scoreengine";
 import {
   AuctionAnalysisResult,
   Property,
@@ -46,6 +49,7 @@ import {
   AuctionSummary,
 } from "@/lib/types";
 import { BidOutcomeBlock } from "@/components/result/BidOutcomeBlock";
+import { MetricsStrip } from "@/components/result/MetricsStrip";
 
 interface ResultPageProps {
   params: Promise<{ id: string }>;
@@ -72,6 +76,7 @@ export default async function ResultPage({ params }: ResultPageProps) {
   let result: AuctionAnalysisResult | null = null;
   let userBid: number = 0;
   let score: number | null = null;
+  let scoreBreakdown: ScoreBreakdown | null = null;
 
   try {
     console.group("Result Page Data Fetch");
@@ -179,6 +184,37 @@ export default async function ResultPage({ params }: ResultPageProps) {
       };
 
       console.log("AuctionAnalysisResult 구성 완료");
+
+      // 3. ScoreBreakdown 계산
+      console.group("Score Calculation");
+      try {
+        const scoreResult = ScoreEngine.calculate({
+          result,
+          userBid,
+        });
+
+        scoreBreakdown = {
+          accuracyScore: scoreResult.accuracyScore,
+          profitabilityScore: scoreResult.profitabilityScore,
+          riskControlScore: scoreResult.riskControlScore,
+          finalScore: scoreResult.finalScore,
+          grade: scoreResult.grade,
+          expGain: scoreResult.expGain,
+        };
+
+        console.log("ScoreBreakdown 계산 성공:");
+        console.log("- Accuracy Score:", scoreBreakdown.accuracyScore, "/ 400");
+        console.log("- Profitability Score:", scoreBreakdown.profitabilityScore, "/ 400");
+        console.log("- Risk Control Score:", scoreBreakdown.riskControlScore, "/ 200");
+        console.log("- Final Score:", scoreBreakdown.finalScore, "/ 1000");
+        console.log("- Grade:", scoreBreakdown.grade);
+        console.log("- EXP Gain:", scoreBreakdown.expGain);
+      } catch (err) {
+        console.error("ScoreBreakdown 계산 에러:", err);
+        // 에러 발생 시에도 계속 진행 (점수 없이 표시)
+        console.log("점수 계산 실패, 점수 없이 진행");
+      }
+      console.groupEnd();
     } catch (err) {
       console.error("데이터 구조 재구성 에러:", err);
       console.groupEnd();
@@ -203,6 +239,11 @@ export default async function ResultPage({ params }: ResultPageProps) {
 
   console.log("렌더링 준비 완료");
   console.log("입찰 실패 여부:", isBidFailed);
+  if (scoreBreakdown) {
+    console.log("ScoreBreakdown 준비 완료:", scoreBreakdown.finalScore);
+  } else {
+    console.log("ScoreBreakdown 없음 (점수 계산 실패 또는 입찰 전)");
+  }
   console.groupEnd();
 
   return (
@@ -235,29 +276,9 @@ export default async function ResultPage({ params }: ResultPageProps) {
         />
 
         {/* MetricsStrip */}
-        <section className="p-6 border rounded-lg">
-          <h2 className="text-xl font-semibold mb-4">핵심 지표</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 border rounded">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                초기 안전마진
-              </p>
-              <p className="text-2xl font-bold">TODO</p>
-            </div>
-            <div className="p-4 border rounded">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                최적 ROI
-              </p>
-              <p className="text-2xl font-bold">TODO</p>
-            </div>
-            <div className="p-4 border rounded">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                최종 점수
-              </p>
-              <p className="text-2xl font-bold">TODO</p>
-            </div>
-          </div>
-        </section>
+        {scoreBreakdown && (
+          <MetricsStrip profit={result.profit} score={scoreBreakdown} />
+        )}
 
         {/* ExitScenarioTable */}
         <section className="p-6 border rounded-lg">
