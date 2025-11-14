@@ -149,23 +149,23 @@
 
 ### 1.2 공통 레이아웃 구성
 
-- [ ] RootLayout 확인 및 개선 (`app/layout.tsx`)
+- [x] RootLayout 확인 및 개선 (`app/layout.tsx`)
 
   - [x] Navbar 통합 확인
   - [x] ClerkProvider 확인
   - [x] SyncUserProvider 확인
-  - [ ] 메타데이터 업데이트 (BIDIX 브랜드)
-  - [ ] 다크모드 Provider (선택적)
+  - [x] 메타데이터 업데이트 (BIDIX 브랜드)
+  - [x] 다크모드 Provider (선택적)
 
-- [ ] Navbar 컴포넌트 개선 (`components/Navbar.tsx`)
-  - [ ] 로고 및 브랜드명 표시 ("BIDIX")
-  - [ ] 내비게이션 링크 (Dashboard, Simulations, History)
-  - [ ] 사용자 정보 및 로그아웃
+- [x] Navbar 컴포넌트 개선 (`components/Navbar.tsx`)
+  - [x] 로고 및 브랜드명 표시 ("BIDIX")
+  - [x] 내비게이션 링크 (Dashboard, Simulations, History)
+  - [x] 사용자 정보 및 로그아웃
   - [ ] 사용량 표시 (예: 5회 제한) - 선택적
 
 ### 1.3 shadcn/ui 컴포넌트 설치 확인
 
-- [ ] 이미 설치된 컴포넌트 확인
+- [x] 이미 설치된 컴포넌트 확인
   - [x] Button
   - [x] Card
   - [x] Input
@@ -174,13 +174,13 @@
   - [x] Dialog
   - [x] Accordion
   - [x] Textarea
-- [ ] 추가 필요 컴포넌트 설치
-  - [ ] `npx shadcn@latest add table`
-  - [ ] `npx shadcn@latest add badge`
-  - [ ] `npx shadcn@latest add separator`
-  - [ ] `npx shadcn@latest add tabs`
-  - [ ] `npx shadcn@latest add alert`
-  - [ ] `npx shadcn@latest add skeleton`
+- [x] 추가 필요 컴포넌트 설치
+  - [x] `npx shadcn@latest add table`
+  - [x] `npx shadcn@latest add badge`
+  - [x] `npx shadcn@latest add separator`
+  - [x] `npx shadcn@latest add tabs`
+  - [x] `npx shadcn@latest add alert`
+  - [x] `npx shadcn@latest add skeleton`
 
 ---
 

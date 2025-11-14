@@ -7,7 +7,7 @@
  *
  * @version 2.2
  * @lastUpdated 2025-01-28
- * @lastModified 2025-01-28 (구조 업데이트)
+ * @lastModified 2025-01-28 (구조 업데이트 - app/, components/ 디렉토리 확장 반영)
  */
 
 /**
@@ -27,6 +27,18 @@
  * │   │       └── route.ts
  * │   ├── auth-test/                # 인증 테스트 페이지
  * │   │   └── page.tsx
+ * │   ├── dashboard/                # 대시보드 페이지
+ * │   │   └── page.tsx
+ * │   ├── history/                  # 시뮬레이션 히스토리 페이지
+ * │   │   └── page.tsx
+ * │   ├── simulations/             # 시뮬레이션 관련 페이지
+ * │   │   ├── page.tsx              # 시뮬레이션 목록
+ * │   │   └── [id]/                 # 동적 라우트 (시뮬레이션 상세)
+ * │   │       ├── page.tsx          # 시뮬레이션 상세 페이지
+ * │   │       ├── bid/              # 입찰 페이지
+ * │   │       │   └── page.tsx
+ * │   │       └── result/           # 결과 페이지
+ * │   │           └── page.tsx
  * │   ├── storage-test/             # 스토리지 테스트 페이지
  * │   │   └── page.tsx
  * │   ├── layout.tsx                # Root Layout (ClerkProvider + SyncUserProvider)
@@ -38,27 +50,60 @@
  * │   ├── ui/                       # shadcn/ui 컴포넌트
  * │   │   ├── accordion.tsx
  * │   │   ├── button.tsx
+ * │   │   ├── card.tsx
  * │   │   ├── dialog.tsx
  * │   │   ├── form.tsx
  * │   │   ├── input.tsx
  * │   │   ├── label.tsx
  * │   │   └── textarea.tsx
+ * │   ├── bid/                      # 입찰 관련 컴포넌트
+ * │   │   ├── BidAmountInput.tsx
+ * │   │   ├── BidGuidanceBox.tsx
+ * │   │   └── QuickFacts.tsx
+ * │   ├── common/                    # 공통 컴포넌트
+ * │   │   ├── Badge.tsx
+ * │   │   ├── DataRow.tsx
+ * │   │   ├── EmptyState.tsx
+ * │   │   ├── ErrorState.tsx
+ * │   │   ├── SectionCard.tsx
+ * │   │   └── SectionHeader.tsx
+ * │   ├── dashboard/                 # 대시보드 컴포넌트
+ * │   │   ├── QuickStats.tsx
+ * │   │   ├── RecentSimulations.tsx
+ * │   │   └── UsageIndicator.tsx
  * │   ├── providers/                # React Context Providers
  * │   │   └── sync-user-provider.tsx
- * │   └── Navbar.tsx                # 네비게이션 바
+ * │   ├── reports/                   # 리포트 컴포넌트
+ * │   │   ├── AuctionAnalysisReport.tsx
+ * │   │   ├── ProfitAnalysisReport.tsx
+ * │   │   ├── RightsAnalysisReport.tsx
+ * │   │   └── SaleStatementReport.tsx
+ * │   ├── result/                    # 결과 페이지 컴포넌트
+ * │   │   ├── BidOutcomeBlock.tsx
+ * │   │   ├── ExitScenarioTable.tsx
+ * │   │   ├── MetricsStrip.tsx
+ * │   │   ├── PremiumReportCTA.tsx
+ * │   │   └── ResultActions.tsx
+ * │   ├── simulations/               # 시뮬레이션 관련 컴포넌트
+ * │   │   ├── FilterBar.tsx
+ * │   │   ├── PropertyCard.tsx
+ * │   │   ├── RightsSummary.tsx
+ * │   │   ├── SaleStatementSummary.tsx
+ * │   │   └── SimulationList.tsx
+ * │   └── Navbar.tsx                 # 네비게이션 바
  * │
  * ├── hooks/                        # 커스텀 React Hooks
  * │   └── use-sync-user.ts          # Clerk 사용자 동기화 훅
  * │
  * ├── lib/                          # 핵심 비즈니스 로직 (SSOT) - 도메인 레이어 (UI와 100% 분리)
  * │       ├── types/                # 📌 타입 SSOT (8개 파일)
- * │       │   ├── Property.ts       # 매물 타입
+ * │       │   ├── property.ts        # 매물 타입
  * │       │   ├── valuation.ts      # 감정가/평가 타입
- * │       │   ├── rights.ts          # 권리 타입 (18종)
+ * │       │   ├── rights.ts            # 권리 타입 (18종)
  * │       │   ├── cost.ts            # 비용 타입
  * │       │   ├── profit.ts          # 수익 타입
- * │       │   ├── courtdocs.ts      # 법원문서 타입
- * │       │   ├── result.ts         # 결과 타입
+ * │       │   ├── courtdocs.ts       # 법원문서 타입
+ * │       │   ├── result.ts          # 결과 타입
  * │       │   └── index.ts           # Barrel export
  * │       │
  * │       ├── policy/               # 정책 레이어 (계산 로직의 숫자/규칙)
@@ -83,7 +128,7 @@
  * │       │   ├── generatorhelpers.ts     # 난수/가중치/ID 유틸
  * │       │   ├── propertygenerator.ts    # 매물 생성기 (±5% 가격 변동)
  * │       │   ├── courtdocsmocker.ts      # 법원문서 모킹
- * │       │   └── Simulationgenerator.ts  # 시뮬레이션 생성기
+ * │       │   └── simulationgenerator.ts  # 시뮬레이션 생성기
  * │       │
  * │       ├── fixtures/            # 실제 JSON 샘플 데이터 (테스트/데모용)
  * │       │   ├── index.ts
@@ -186,7 +231,7 @@
  *      ↓
  *    Service Layer (lib/services/simulationservice.ts)
  *      ↓
- *    Generator Layer (lib/generators/Simulationgenerator.ts)
+ *    Generator Layer (lib/generators/simulationgenerator.ts)
  *      ├── PropertyGenerator → PropertySeed 생성 (±5% 가격 변동)
  *      └── CourtDocsMocker → CourtDocs 생성
  *      ↓
@@ -311,8 +356,8 @@
  * ============================================================================
  *
  * - 일반 소스 코드: alllowercase.ts (예: auctionengine.ts)
- * - 특정 생성기: PascalCase.ts (예: Simulationgenerator.ts)
- * - 타입 파일: PascalCase.ts (예: Property.ts)
+ * - 생성기: alllowercase.ts (예: simulationgenerator.ts)
+ * - 타입 파일: alllowercase.ts (예: property.ts)
  * - 컴포넌트: PascalCase.tsx (예: PropertyCard.tsx)
  * - Server Actions: kebab-case.ts (예: generatesimulation.ts)
  *
