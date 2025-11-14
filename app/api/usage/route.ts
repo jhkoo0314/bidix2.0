@@ -11,8 +11,8 @@
  * - Clerk 인증 확인
  * - Supabase simulations 테이블에서 오늘 날짜 기준 집계
  * - 입찰 횟수: outcome이 "pending"이 아닌 시뮬레이션 수 (입찰 완료된 것만)
- * - 무료 리포트: 별도 추적 필요 (현재는 0으로 설정)
- * - 일일 리셋 로직: 자정 기준 (현재 날짜로 필터링)
+ * - 무료 리포트: free_report_used_at 필드로 일일 사용 여부 추적
+ * - 일일 리셋 로직: 자정 기준 (UTC 기준 날짜로 필터링)
  *
  * 브랜드 통합:
  * - Freemium 전략 반영 (prdv2.md): 일 5회 입찰, 일 1회 무료 리포트
@@ -41,7 +41,7 @@ export async function GET() {
       console.log("인증 실패: userId 없음");
       console.groupEnd();
       return NextResponse.json(
-        { error: "인증이 필요합니다." },
+        { error: "로그인이 필요합니다." },
         { status: 401 },
       );
     }
@@ -73,6 +73,16 @@ export async function GET() {
       .lte("created_at", todayEnd.toISOString())
       .neq("outcome", "pending"); // 입찰 전 상태는 제외
 
+    // 5. 오늘 무료 리포트 사용 여부 조회
+    const { data: freeReportUsage, error: freeReportError } = await supabase
+      .from("simulations")
+      .select("free_report_used_at")
+      .eq("user_id", userId)
+      .gte("free_report_used_at", todayStart.toISOString())
+      .lte("free_report_used_at", todayEnd.toISOString())
+      .not("free_report_used_at", "is", null)
+      .limit(1);
+
     if (error) {
       console.error("Supabase 조회 에러:", error);
       console.groupEnd();
@@ -82,15 +92,21 @@ export async function GET() {
       );
     }
 
-    console.log("오늘 입찰 완료된 시뮬레이션:", simulations?.length || 0, "개");
+    if (freeReportError) {
+      console.error("무료 리포트 조회 에러:", freeReportError);
+      // 무료 리포트 조회 실패는 치명적이지 않으므로 계속 진행
+    }
 
-    // 5. 입찰 횟수 계산
+    console.log("오늘 입찰 완료된 시뮬레이션:", simulations?.length || 0, "개");
+    console.log("오늘 무료 리포트 사용 여부:", freeReportUsage?.length || 0, "개");
+
+    // 6. 입찰 횟수 계산
     const bidsUsed = simulations?.length || 0;
     const bidsLimit = 5;
     const bidsRemaining = Math.max(0, bidsLimit - bidsUsed);
 
-    // 6. 무료 리포트 사용 여부 (현재는 0으로 설정, 추후 구현)
-    const freeReportViewed = false;
+    // 7. 무료 리포트 사용 여부 확인
+    const freeReportViewed = (freeReportUsage?.length || 0) > 0;
     const freeReportLimit = 1;
     const freeReportRemaining = freeReportViewed ? 0 : freeReportLimit;
 

@@ -3,12 +3,7 @@
 // Based on: /docs/system/point-level-system.md
 // Last Updated: 2025-11-09
 
-import {
-  AuctionAnalysisResult,
-  Valuation,
-  Rights,
-  Profit,
-} from "@/lib/types"; // barrel: /src/lib/types/index.ts
+import { AuctionAnalysisResult, Valuation, Rights, Profit } from "@/lib/types"; // barrel: /src/lib/types/index.ts
 
 /* ============================================================
  * Public Types
@@ -60,7 +55,7 @@ export const ScoreEngine = {
     const finalScore = clamp(
       Math.round(accuracyScore + profitabilityScore + riskControlScore),
       0,
-      1000
+      1000,
     );
 
     const grade = mapScoreToGrade(finalScore);
@@ -133,7 +128,7 @@ function calcProfitabilityScore(val: Valuation, pf: Profit): number {
     0,
     0.3,
     0,
-    50
+    50,
   );
 
   // [수정] pf.safetyMargin -> pf.initialSafetyMargin
@@ -143,7 +138,7 @@ function calcProfitabilityScore(val: Valuation, pf: Profit): number {
     0,
     0.2,
     0,
-    30
+    30,
   );
 
   let beBonus = 0;
@@ -164,9 +159,17 @@ function calcProfitabilityScore(val: Valuation, pf: Profit): number {
  * ============================================================ */
 function calcRiskControlScore(val: Valuation, rights: Rights): number {
   const fmv = Math.max(1, safeNumber(val.adjustedFMV));
-  const rightsTotal = clamp(safeNumber(rights.assumableRightsTotal), 0, Infinity);
+  const rightsTotal = clamp(
+    safeNumber(rights.assumableRightsTotal),
+    0,
+    Infinity,
+  );
   const risk = clamp(safeNumber(rights.evictionRisk), 0, 5);
-  const evictCost = clamp(safeNumber(rights.evictionCostEstimated), 0, Infinity);
+  const evictCost = clamp(
+    safeNumber(rights.evictionCostEstimated),
+    0,
+    Infinity,
+  );
 
   // Rights burden: ratio 0 -> 120, 1.0 -> 0
   const ratio = clamp(rightsTotal / fmv, 0, 1.0);
@@ -209,7 +212,12 @@ function expToTierLevel(totalExp: number, prevTotalExp: number): LevelInfo {
   };
 }
 
-function expToTier(exp: number): LevelInfo["tier"] {
+/**
+ * EXP를 티어로 변환 (export for API Routes)
+ * @param exp - 누적 경험치
+ * @returns 티어 (Bronze/Silver/Gold/Platinum/Diamond)
+ */
+export function expToTier(exp: number): LevelInfo["tier"] {
   if (exp >= 30000) return "Diamond";
   if (exp >= 18001) return "Platinum";
   if (exp >= 9001) return "Gold";
@@ -217,7 +225,12 @@ function expToTier(exp: number): LevelInfo["tier"] {
   return "Bronze";
 }
 
-function expToLevel(exp: number): number {
+/**
+ * EXP를 레벨로 변환 (export for API Routes)
+ * @param exp - 누적 경험치
+ * @returns 레벨 (1-99)
+ */
+export function expToLevel(exp: number): number {
   // Simple mapping: 300 EXP per level up to 10, then wider steps.
   if (exp <= 0) return 1;
   if (exp <= 3000) return Math.min(10, Math.max(1, Math.floor(exp / 300) + 1));
@@ -234,13 +247,25 @@ function clamp(n: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, n));
 }
 
-function lerp(x0: number, x1: number, y0: number, y1: number, x: number): number {
+function lerp(
+  x0: number,
+  x1: number,
+  y0: number,
+  y1: number,
+  x: number,
+): number {
   if (x1 === x0) return (y0 + y1) / 2;
   const t = (x - x0) / (x1 - x0);
   return y0 + t * (y1 - y0);
 }
 
-function mapRange(x: number, inMin: number, inMax: number, outMin: number, outMax: number): number {
+function mapRange(
+  x: number,
+  inMin: number,
+  inMax: number,
+  outMin: number,
+  outMax: number,
+): number {
   const t = clamp((x - inMin) / (inMax - inMin || 1), 0, 1);
   return outMin + t * (outMax - outMin);
 }
@@ -256,7 +281,7 @@ function safeNumber(n: unknown, fallback = 0): number {
 export function scoreFromResult(
   result: AuctionAnalysisResult,
   userBid: number,
-  prevTotalExp?: number
+  prevTotalExp?: number,
 ): ScoreEngineResult {
   return ScoreEngine.calculate({ result, userBid, prevTotalExp });
 }

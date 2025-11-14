@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
       console.log("인증 실패: userId 없음");
       console.groupEnd();
       return NextResponse.json(
-        { error: "인증이 필요합니다." },
+        { error: "로그인이 필요합니다." },
         { status: 401 },
       );
     }
@@ -100,7 +100,7 @@ export async function GET(request: NextRequest) {
     let query = supabase
       .from("simulations")
       .select(
-        "id, my_bid, outcome, score_awarded, property_json, property_type, difficulty, created_at, profit_json",
+        "id, my_bid, outcome, score_awarded, property_json, property_type, difficulty, created_at, profit_json, pinned",
       )
       .eq("user_id", userId)
       .neq("outcome", "pending"); // 입찰 완료된 것만
@@ -171,7 +171,7 @@ export async function GET(request: NextRequest) {
       return {
         historyId: sim.id,
         simulationId: sim.id,
-        pinned: false, // 현재는 항상 false (추후 구현)
+        pinned: sim.pinned || false, // DB에서 실제 pinned 필드 조회
         savedAt: sim.created_at,
         propertyType: sim.property_type || "unknown",
         address: propertyJson?.address || "주소 없음",

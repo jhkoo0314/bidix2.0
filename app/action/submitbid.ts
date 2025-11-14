@@ -36,7 +36,7 @@ export async function submitBidAction(formData: FormData) {
      * ---------------------------------------------------- */
     const { userId } = await auth();
     if (!userId) {
-      return { ok: false, error: "사용자 인증이 필요합니다." };
+      return { ok: false, error: "로그인이 필요합니다." };
     }
 
     /* ----------------------------------------------------

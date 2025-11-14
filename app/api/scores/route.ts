@@ -30,24 +30,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { createClerkSupabaseClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
-
-// ScoreEngine의 expToLevel, expToTier 함수를 직접 구현 (import 경로 문제 방지)
-function expToLevel(exp: number): number {
-  if (exp <= 0) return 1;
-  if (exp <= 3000) return Math.min(10, Math.max(1, Math.floor(exp / 300) + 1));
-  if (exp <= 9000) return Math.min(20, 11 + Math.floor((exp - 3001) / 600));
-  if (exp <= 18000) return Math.min(30, 21 + Math.floor((exp - 9001) / 900));
-  if (exp <= 30000) return Math.min(40, 31 + Math.floor((exp - 18001) / 1200));
-  return Math.min(99, 41 + Math.floor((exp - 30001) / 2000));
-}
-
-function expToTier(exp: number): "Bronze" | "Silver" | "Gold" | "Platinum" | "Diamond" {
-  if (exp >= 30000) return "Diamond";
-  if (exp >= 18001) return "Platinum";
-  if (exp >= 9001) return "Gold";
-  if (exp >= 3001) return "Silver";
-  return "Bronze";
-}
+import { expToLevel, expToTier } from "@/lib/engines/scoreengine";
+import type { DifficultyMode } from "@/lib/types";
 
 export async function GET() {
   console.group("Dashboard Scores API");
@@ -59,7 +43,7 @@ export async function GET() {
     if (!userId) {
       console.log("인증 실패: userId 없음");
       console.groupEnd();
-      return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
+      return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
     }
 
     console.log("인증 성공:", userId);
@@ -67,10 +51,10 @@ export async function GET() {
     // 2. Supabase 클라이언트 생성
     const supabase = createClerkSupabaseClient();
 
-    // 3. simulations 테이블에서 사용자별 집계
+    // 3. simulations 테이블에서 사용자별 집계 (난이도 포함)
     const { data: simulations, error } = await supabase
       .from("simulations")
-      .select("score_awarded")
+      .select("score_awarded, difficulty")
       .eq("user_id", userId);
 
     if (error) {
@@ -92,8 +76,29 @@ export async function GET() {
     // 5. 총 시뮬레이션 수
     const totalSimulations = simulations?.length || 0;
 
-    // 6. 총 경험치 계산 (각 점수 * 0.6)
-    const totalExp = Math.round(totalScore * 0.6);
+    // 6. 총 경험치 계산 (난이도별 배수 적용)
+    // 공식: expGain = round(finalScore * 0.6 * difficultyMultiplier)
+    // difficultyMultiplier: Easy=0.8, Normal=1.0, Hard=1.2
+    const difficultyMultipliers: Record<DifficultyMode, number> = {
+      easy: 0.8,
+      normal: 1.0,
+      hard: 1.2,
+    };
+
+    const totalExp = Math.round(
+      simulations
+        ?.filter((s) => s.score_awarded !== null && s.score_awarded !== undefined)
+        .reduce((sum, s) => {
+          const score = s.score_awarded || 0;
+          const difficulty = (s.difficulty as DifficultyMode) || "normal";
+          const multiplier = difficultyMultipliers[difficulty] || 1.0;
+          const expGain = Math.round(score * 0.6 * multiplier);
+          return sum + expGain;
+        }, 0) || 0,
+    );
+
+    console.log("총 점수:", totalScore);
+    console.log("총 경험치:", totalExp, "(난이도별 배수 적용)");
 
     // 7. 레벨 및 티어 계산
     const level = expToLevel(totalExp);

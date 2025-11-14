@@ -943,7 +943,7 @@
   - [x] 페이지네이션 처리
   - [x] 에러 처리
 
-- [ ] `app/api/scores/route.ts`
+- [x] `app/api/scores/route.ts`
 
   ```typescript
   // GET /api/scores
@@ -951,30 +951,40 @@
   // Response: { level, score, tier, totalSimulations }
   ```
 
-  - [ ] Clerk `auth()` 인증 확인
-  - [ ] Supabase `scores` 테이블 조회
-  - [ ] Point & Level System 공식 사용
-  - [ ] 에러 처리
+  - [x] Clerk `auth()` 인증 확인
+  - [x] Supabase `simulations` 테이블에서 집계 (score_awarded 합계)
+  - [x] Point & Level System 공식 사용 (expToLevel, expToTier)
+  - [x] 에러 처리
 
-- [ ] `app/api/usage/route.ts`
+- [x] `app/api/usage/route.ts`
   ```typescript
   // GET /api/usage
   // 오늘 사용량 및 제도 정보 조회
   // Response: { date, bids: { used, limit, remaining }, freeReport: {...} }
   ```
-  - [ ] Clerk `auth()` 인증 확인
-  - [ ] Supabase `usage` 테이블 조회
-  - [ ] 일일 리셋 로직 (자정 기준)
-  - [ ] 에러 처리
+  - [x] Clerk `auth()` 인증 확인
+  - [x] Supabase `simulations` 테이블에서 일일 집계
+  - [x] 일일 리셋 로직 (자정 기준, UTC 날짜 필터링)
+  - [x] 에러 처리
 
 ### 4.4 인증 및 에러 처리 공통 규칙
 
 **참조**: `docs/engine/api-contracts.md` Section 3
 
-- [ ] 모든 Server Actions/API Routes에서 Clerk `auth()` 사용
-- [ ] 미인증 요청 에러 처리
-- [ ] Server Actions: `{ ok: false, error: "..." }` 형식
-- [ ] API Routes: `{ "error": "..." }` + 4xx/5xx 상태 코드
+- [x] 모든 Server Actions/API Routes에서 Clerk `auth()` 사용
+  - `app/action/generatesimulation.ts` ✅
+  - `app/action/submitbid.ts` ✅
+  - `app/action/savehistory.ts` ✅
+  - `app/api/history/route.ts` ✅
+  - `app/api/scores/route.ts` ✅
+  - `app/api/usage/route.ts` ✅
+- [x] 미인증 요청 에러 처리
+  - 모든 파일에서 `userId` 체크 후 적절한 에러 반환
+- [x] Server Actions: `{ ok: false, error: "..." }` 형식
+  - 모든 Server Actions에서 일관된 형식 사용
+- [x] API Routes: `{ "error": "..." }` + 4xx/5xx 상태 코드
+  - 401 (Unauthorized): 미인증 요청
+  - 500 (Internal Server Error): 서버 오류
 
 ### 4.5 경쟁자 시뮬레이션 구현 (Competitor Logic)
 
