@@ -24,6 +24,8 @@
  * - @/components/result/BidOutcomeBlock: 입찰 결과 컴포넌트
  * - @/components/result/MetricsStrip: 핵심 지표 컴포넌트
  * - @/components/result/ExitScenarioTable: 보유기간별 수익 시나리오 테이블 컴포넌트
+ * - @/components/result/PremiumReportCTA: 프리미엄 리포트 CTA 컴포넌트
+ * - @/components/reports/SaleStatementReport: 매각물건명세서 해설판 리포트 컴포넌트
  *
  * @see {@link /docs/product/report-result.md} - 4종 리포트 상세 명세
  * @see {@link /docs/product/point-level-system.md} - 점수 계산 공식
@@ -52,6 +54,8 @@ import {
 import { BidOutcomeBlock } from "@/components/result/BidOutcomeBlock";
 import { MetricsStrip } from "@/components/result/MetricsStrip";
 import { ExitScenarioTable } from "@/components/result/ExitScenarioTable";
+import { PremiumReportCTA } from "@/components/result/PremiumReportCTA";
+import { SaleStatementReport } from "@/components/reports/SaleStatementReport";
 
 interface ResultPageProps {
   params: Promise<{ id: string }>;
@@ -79,6 +83,7 @@ export default async function ResultPage({ params }: ResultPageProps) {
   let userBid: number = 0;
   let score: number | null = null;
   let scoreBreakdown: ScoreBreakdown | null = null;
+  let freeReportAvailable = false;
 
   try {
     console.group("Result Page Data Fetch");
@@ -217,6 +222,34 @@ export default async function ResultPage({ params }: ResultPageProps) {
         console.log("점수 계산 실패, 점수 없이 진행");
       }
       console.groupEnd();
+
+      // 4. Usage API 호출 (무료 리포트 사용량 체크)
+      console.group("Usage Check");
+      try {
+        const baseUrl =
+          process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+        const usageResponse = await fetch(`${baseUrl}/api/usage`, {
+          cache: "no-store",
+        });
+
+        if (usageResponse.ok) {
+          const usageData = await usageResponse.json();
+          freeReportAvailable = (usageData.freeReport?.remaining || 0) > 0;
+          console.log("사용량 조회 성공:", {
+            freeReportRemaining: usageData.freeReport?.remaining || 0,
+            freeReportAvailable,
+          });
+        } else {
+          console.log("사용량 조회 실패:", usageResponse.status);
+          // 실패 시 기본값 사용 (무료 리포트 사용 불가)
+          freeReportAvailable = false;
+        }
+      } catch (err) {
+        console.error("사용량 조회 에러:", err);
+        // 에러 발생 시 기본값 사용 (무료 리포트 사용 불가)
+        freeReportAvailable = false;
+      }
+      console.groupEnd();
     } catch (err) {
       console.error("데이터 구조 재구성 에러:", err);
       console.groupEnd();
@@ -246,6 +279,7 @@ export default async function ResultPage({ params }: ResultPageProps) {
   } else {
     console.log("ScoreBreakdown 없음 (점수 계산 실패 또는 입찰 전)");
   }
+  console.log("무료 리포트 사용 가능:", freeReportAvailable);
   console.groupEnd();
 
   return (
@@ -287,48 +321,20 @@ export default async function ResultPage({ params }: ResultPageProps) {
 
         {/* Premium Report CTAs */}
         <section className="space-y-6">
-          <div className="p-6 border rounded-lg border-dashed">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-2xl">🔒</span>
-              <h3 className="text-xl font-semibold">권리 분석 상세 리포트</h3>
+          {/* 매각물건명세서 해설판 (무료 리포트) */}
+          {result.courtDocs && (
+            <div className="space-y-4">
+              <SaleStatementReport
+                courtDocs={result.courtDocs}
+                isFreeAvailable={freeReportAvailable}
+              />
             </div>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              임대 권리 관계, 우선순위 분석, 명도비용 상세
-            </p>
-            <p className="text-sm text-gray-500 italic mb-4">
-              &quot;당신은 이미 물건의 &apos;사실&apos;을 파악했습니다. 이제 &apos;분석&apos;을 시작할
-              준비가 되셨나요?&quot;
-            </p>
-            <Button variant="outline" disabled>
-              프리미엄 해설판 보기
-            </Button>
-          </div>
+          )}
 
-          <div className="p-6 border rounded-lg border-dashed">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-2xl">🔒</span>
-              <h3 className="text-xl font-semibold">수익 분석 상세 리포트</h3>
-            </div>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              비용 구조, 수익 시나리오, 수익분기점 분석
-            </p>
-            <Button variant="outline" disabled>
-              프리미엄 해설판 보기
-            </Button>
-          </div>
-
-          <div className="p-6 border rounded-lg border-dashed">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-2xl">🔒</span>
-              <h3 className="text-xl font-semibold">경매 분석 상세 리포트</h3>
-            </div>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              입찰 전략의 점수 상세, 개선 포인트
-            </p>
-            <Button variant="outline" disabled>
-              프리미엄 해설판 보기
-            </Button>
-          </div>
+          {/* Premium Report CTAs */}
+          <PremiumReportCTA type="rights" />
+          <PremiumReportCTA type="profit" />
+          <PremiumReportCTA type="auction" />
         </section>
 
         {/* ResultActions */}
