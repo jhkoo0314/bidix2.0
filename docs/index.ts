@@ -5,9 +5,9 @@
  * 이 파일은 BIDIX 프로젝트의 전체 아키텍처와 데이터 흐름을 한눈에 볼 수 있는 구조도입니다.
  * 프로젝트 구조가 변경되면 반드시 이 파일을 업데이트해야 합니다.
  *
- * @version 2.2
+ * @version 2.3
  * @lastUpdated 2025-01-28
- * @lastModified 2025-01-28 (구조 업데이트 - app/, components/ 디렉토리 확장 반영)
+ * @lastModified 2025-01-28 (구조 업데이트 - components/ui 확장, providers 추가, docs/product/brand-story.md 추가)
  */
 
 /**
@@ -49,12 +49,18 @@
  * ├── components/                   # React 컴포넌트 (루트 레벨)
  * │   ├── ui/                       # shadcn/ui 컴포넌트
  * │   │   ├── accordion.tsx
+ * │   │   ├── alert.tsx
+ * │   │   ├── badge.tsx
  * │   │   ├── button.tsx
  * │   │   ├── card.tsx
  * │   │   ├── dialog.tsx
  * │   │   ├── form.tsx
  * │   │   ├── input.tsx
  * │   │   ├── label.tsx
+ * │   │   ├── separator.tsx
+ * │   │   ├── skeleton.tsx
+ * │   │   ├── table.tsx
+ * │   │   ├── tabs.tsx
  * │   │   └── textarea.tsx
  * │   ├── bid/                      # 입찰 관련 컴포넌트
  * │   │   ├── BidAmountInput.tsx
@@ -72,7 +78,8 @@
  * │   │   ├── RecentSimulations.tsx
  * │   │   └── UsageIndicator.tsx
  * │   ├── providers/                # React Context Providers
- * │   │   └── sync-user-provider.tsx
+ * │   │   ├── sync-user-provider.tsx
+ * │   │   └── theme-provider.tsx
  * │   ├── reports/                   # 리포트 컴포넌트
  * │   │   ├── AuctionAnalysisReport.tsx
  * │   │   ├── ProfitAnalysisReport.tsx
@@ -181,6 +188,7 @@
  * │   │   ├── changelog.md
  * │   │   └── index.md
  * │   ├── product/                 # 제품 기획
+ * │   │   ├── brand-story.md
  * │   │   ├── plan.md
  * │   │   ├── point-level-system.md
  * │   │   ├── prdv2.md

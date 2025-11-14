@@ -5,7 +5,7 @@
  * 주요 기능:
  * 1. 브랜드 슬로건 및 핵심 가치 제안 표시
  * 2. 서비스 소개 및 주요 기능 안내
- * 3. CTA 버튼 (원가로 시작하기)
+ * 3. CTA 버튼 (첫 입찰 시작)
  *
  * 핵심 구현 로직:
  * - prdv2.md의 브랜드 메시지 반영
@@ -54,7 +54,7 @@ export default function LandingPage() {
         <div className="pt-8">
           <Link href="/dashboard">
             <Button size="lg" className="text-lg px-8 py-6">
-              원가로 시작하기
+              첫 입찰을 시작하시겠습니까?
             </Button>
           </Link>
         </div>

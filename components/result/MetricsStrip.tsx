@@ -19,6 +19,7 @@
  *
  * @see {@link /docs/ui/component-spec.md} - MetricsStrip Props 명세
  * @see {@link /docs/product/point-level-system.md} - 점수 계산 공식
+ * @see {@link /docs/product/brand-story.md} - 브랜드 메시지 (정확성/수익성/안정성)
  */
 
 "use client";
@@ -88,34 +89,54 @@ export function MetricsStrip({ profit, score }: MetricsStripProps) {
 
         {/* 점수 구성 상세 (접기/펼치기) */}
         <div className="pt-4 border-t">
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
-          >
-            {isExpanded ? "접기" : "점수 구성 상세 보기"}
-          </button>
+          <div className="mb-3">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+              당신의 성장은 느낌이 아니라, 숫자로 증명됩니다.
+            </p>
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+            >
+              {isExpanded ? "접기" : "점수 구성 상세 보기"}
+            </button>
+          </div>
           {isExpanded && (
-            <div className="mt-4 space-y-2">
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  Accuracy Score
-                </span>
+            <div className="mt-4 space-y-3">
+              <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                <div>
+                  <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                    정확성
+                  </span>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    Accuracy Score
+                  </p>
+                </div>
                 <span className="text-sm font-semibold">
                   {score.accuracyScore} / 400
                 </span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  Profitability Score
-                </span>
+              <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                <div>
+                  <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                    수익성
+                  </span>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    Profitability Score
+                  </p>
+                </div>
                 <span className="text-sm font-semibold">
                   {score.profitabilityScore} / 400
                 </span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  Risk Control Score
-                </span>
+              <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                <div>
+                  <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                    안정성
+                  </span>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    Risk Control Score
+                  </p>
+                </div>
                 <span className="text-sm font-semibold">
                   {score.riskControlScore} / 200
                 </span>
