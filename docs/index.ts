@@ -5,9 +5,9 @@
  * 이 파일은 BIDIX 프로젝트의 전체 아키텍처와 데이터 흐름을 한눈에 볼 수 있는 구조도입니다.
  * 프로젝트 구조가 변경되면 반드시 이 파일을 업데이트해야 합니다.
  *
- * @version 2.3
+ * @version 2.4
  * @lastUpdated 2025-01-28
- * @lastModified 2025-01-28 (구조 업데이트 - components/ui 확장, providers 추가, docs/product/brand-story.md 추가)
+ * @lastModified 2025-01-28 (구조 업데이트 - app/api 경로 추가, components/bid 및 components/dashboard 컴포넌트 추가)
  */
 
 /**
@@ -23,7 +23,11 @@
  * │   │   ├── generatesimulation.ts  # 시뮬레이션 생성 액션
  * │   │   └── submitbid.ts          # 입찰 제출 액션
  * │   ├── api/                      # API Routes
- * │   │   └── sync-user/           # Clerk → Supabase 사용자 동기화
+ * │   │   ├── scores/              # 점수 조회 API
+ * │   │   │   └── route.ts
+ * │   │   ├── sync-user/           # Clerk → Supabase 사용자 동기화
+ * │   │   │   └── route.ts
+ * │   │   └── usage/               # 사용량 조회 API
  * │   │       └── route.ts
  * │   ├── auth-test/                # 인증 테스트 페이지
  * │   │   └── page.tsx
@@ -64,6 +68,7 @@
  * │   │   └── textarea.tsx
  * │   ├── bid/                      # 입찰 관련 컴포넌트
  * │   │   ├── BidAmountInput.tsx
+ * │   │   ├── BidForm.tsx
  * │   │   ├── BidGuidanceBox.tsx
  * │   │   └── QuickFacts.tsx
  * │   ├── common/                    # 공통 컴포넌트
@@ -74,6 +79,8 @@
  * │   │   ├── SectionCard.tsx
  * │   │   └── SectionHeader.tsx
  * │   ├── dashboard/                 # 대시보드 컴포넌트
+ * │   │   ├── CreateSimulationButton.tsx
+ * │   │   ├── DashboardStats.tsx
  * │   │   ├── QuickStats.tsx
  * │   │   ├── RecentSimulations.tsx
  * │   │   └── UsageIndicator.tsx
