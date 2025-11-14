@@ -47,6 +47,7 @@ type SimulationUpdate = {
   profit_json?: any;
   result_json?: any;
   score_awarded?: number;
+  pinned?: boolean;
 };
 
 /* ============================================================
@@ -197,10 +198,49 @@ function determineOutcome(
 }
 
 /* ============================================================
+    [4] SAVE HISTORY (히스토리 저장)
+   ============================================================ */
+
+async function saveHistory(simulationId: string, userId: string) {
+  /* 1) 시뮬레이션 존재 및 소유권 확인 */
+  const { data: simulation, error: fetchError } = await supabase
+    .from("simulations")
+    .select("id, user_id, outcome")
+    .eq("id", simulationId)
+    .eq("user_id", userId)
+    .single();
+
+  if (fetchError || !simulation) {
+    console.error("[SimulationService.saveHistory] Simulation not found:", fetchError);
+    throw new Error("시뮬레이션을 찾을 수 없습니다.");
+  }
+
+  /* 2) 입찰 완료 여부 확인 (pending 상태는 저장 불가) */
+  if (simulation.outcome === "pending") {
+    throw new Error("입찰이 완료되지 않은 시뮬레이션은 저장할 수 없습니다.");
+  }
+
+  /* 3) pinned 필드 업데이트 */
+  const { error: updateError } = await supabase
+    .from("simulations")
+    .update({ pinned: true })
+    .eq("id", simulationId)
+    .eq("user_id", userId);
+
+  if (updateError) {
+    console.error("[SimulationService.saveHistory] Update error:", updateError);
+    throw new Error("히스토리 저장에 실패했습니다.");
+  }
+
+  return { success: true };
+}
+
+/* ============================================================
     EXPORT
    ============================================================ */
 
 export const simulationService = {
   create,
   submitBid,
+  saveHistory,
 };

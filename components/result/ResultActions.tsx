@@ -34,6 +34,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { saveHistoryAction } from "@/app/action/savehistory";
 
 export interface ResultActionsProps {
   simulationId: string;
@@ -58,21 +59,10 @@ export function ResultActions({
     setError("");
 
     try {
-      // TODO: saveHistoryAction 구현 후 연결
-      // import { saveHistoryAction } from "@/app/action/savehistory";
-      // const result = await saveHistoryAction(simulationId);
-      
-      // 임시 구현 (실제 Server Action 연결 필요)
-      const response = await fetch("/api/history", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ simulationId }),
-      });
+      const result = await saveHistoryAction(simulationId);
 
-      if (!response.ok) {
-        throw new Error("히스토리 저장에 실패했습니다.");
+      if (!result.ok) {
+        throw new Error(result.error || "히스토리 저장에 실패했습니다.");
       }
 
       console.log("History saved successfully");

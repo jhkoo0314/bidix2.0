@@ -917,7 +917,7 @@
 
 ### 4.2 추가 필요 Server Actions
 
-- [ ] `app/action/savehistory.ts`
+- [x] `app/action/savehistory.ts`
   ```typescript
   export async function saveHistoryAction(simulationId: string) {
     // DB에 히스토리 저장

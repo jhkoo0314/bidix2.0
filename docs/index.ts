@@ -5,9 +5,9 @@
  * 이 파일은 BIDIX 프로젝트의 전체 아키텍처와 데이터 흐름을 한눈에 볼 수 있는 구조도입니다.
  * 프로젝트 구조가 변경되면 반드시 이 파일을 업데이트해야 합니다.
  *
- * @version 2.4
+ * @version 2.5
  * @lastUpdated 2025-01-28
- * @lastModified 2025-01-28 (구조 업데이트 - app/api 경로 추가, components/bid 및 components/dashboard 컴포넌트 추가)
+ * @lastModified 2025-01-28 (구조 업데이트 - app/api/history 추가, components/history 추가, lib/utils 확장)
  */
 
 /**
@@ -23,6 +23,8 @@
  * │   │   ├── generatesimulation.ts  # 시뮬레이션 생성 액션
  * │   │   └── submitbid.ts          # 입찰 제출 액션
  * │   ├── api/                      # API Routes
+ * │   │   ├── history/              # 히스토리 조회 API
+ * │   │   │   └── route.ts
  * │   │   ├── scores/              # 점수 조회 API
  * │   │   │   └── route.ts
  * │   │   ├── sync-user/           # Clerk → Supabase 사용자 동기화
@@ -84,6 +86,9 @@
  * │   │   ├── QuickStats.tsx
  * │   │   ├── RecentSimulations.tsx
  * │   │   └── UsageIndicator.tsx
+ * │   ├── history/                   # 히스토리 관련 컴포넌트
+ * │   │   ├── HistoryFilterBar.tsx
+ * │   │   └── HistoryPagination.tsx
  * │   ├── providers/                # React Context Providers
  * │   │   ├── sync-user-provider.tsx
  * │   │   └── theme-provider.tsx
@@ -163,7 +168,8 @@
  * │       │
  * │       ├── utils/               # 유틸리티 함수
  * │       │   ├── number.ts              # 숫자 관련 유틸리티
- * │       │   └── ... (추가 유틸리티)
+ * │       │   ├── outcome.ts             # 입찰 결과 관련 유틸리티
+ * │       │   └── score.ts               # 점수 관련 유틸리티
  * │       │
  * │       ├── utils.ts             # 공통 유틸리티 (cn 함수 등)
  * │       ├── supabase.ts           # 레거시 Supabase 클라이언트 (사용 지양)
