@@ -42,16 +42,10 @@ import { createClerkSupabaseClient } from "@/lib/supabase/server";
 import { PropertyEngine } from "@/lib/engines/propertyengine";
 import { SimulationList } from "@/components/simulations/SimulationList";
 import { CreateSimulationButton } from "@/components/dashboard/CreateSimulationButton";
-import { PropertySeed, Property, Valuation } from "@/lib/types";
+import { PropertySeed, Valuation } from "@/lib/types";
 import type { SimulationListItem } from "@/components/simulations/SimulationList";
 
-interface SimulationsListPageProps {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}
-
-export default async function SimulationsListPage({
-  searchParams,
-}: SimulationsListPageProps) {
+export default async function SimulationsListPage() {
   console.group("Simulation List Page Render");
   console.log("시뮬레이션 목록 페이지 렌더링 시작");
 

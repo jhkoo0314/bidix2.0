@@ -83,10 +83,9 @@ export default async function ResultPage({ params }: ResultPageProps) {
   // 1. Supabase에서 시뮬레이션 결과 조회
   let result: AuctionAnalysisResult | null = null;
   let userBid: number = 0;
-  let score: number | null = null;
   let scoreBreakdown: ScoreBreakdown | null = null;
   let freeReportAvailable = false;
-  let isHistorySaved = false; // 히스토리 저장 여부 (현재는 false, 추후 DB 조회 필요)
+  const isHistorySaved = false; // 히스토리 저장 여부 (현재는 false, 추후 DB 조회 필요)
 
   try {
     console.group("Result Page Data Fetch");
@@ -120,7 +119,6 @@ export default async function ResultPage({ params }: ResultPageProps) {
     console.log("점수:", simulationRecord.score_awarded);
 
     userBid = simulationRecord.my_bid || 0;
-    score = simulationRecord.score_awarded || null;
 
     // 2. 데이터 구조 재구성 및 검증
     console.group("Data Structure Reconstruction");
