@@ -324,14 +324,14 @@
 
 ### 2.3 Simulation Components
 
-- [ ] `components/simulations/SimulationList.tsx` (Client Component)
-- [ ] `components/simulations/FilterBar.tsx`
+- [x] `components/simulations/SimulationList.tsx` (Client Component)
+- [x] `components/simulations/FilterBar.tsx`
   ```typescript
   interface FilterBarProps {
     onFilterChange: (filters: FilterState) => void;
   }
   ```
-- [ ] `components/simulations/PropertyCard.tsx`
+- [x] `components/simulations/PropertyCard.tsx`
 
   ```typescript
   import { Property } from "@/lib/types";
@@ -343,7 +343,7 @@
 
   - 금액 표시: Numeric Highlight 스타일 적용
 
-- [ ] `components/simulations/SaleStatementSummary.tsx`
+- [x] `components/simulations/SaleStatementSummary.tsx`
 
   ```typescript
   import { Property, CourtDocsNormalized } from "@/lib/types";
@@ -354,9 +354,9 @@
   ```
 
   - 브랜드 패치: 감성·멘토 톤의 한 줄 메시지 추가
-  - Data Mapping: `valuation.adjustedFMV` → "현재 시장가 기준 판단 정확도는 XX%입니다."
+  - Data Mapping: `valuation.adjustedFMV` → "현재 시장가 기준 판단 정확도는 XX%입니다." (향후 Valuation Props 추가 시 구현 예정)
 
-- [ ] `components/simulations/RightsSummary.tsx`
+- [x] `components/simulations/RightsSummary.tsx`
   ```typescript
   import { Rights } from "@/lib/types";
   interface RightsSummaryProps {
@@ -364,7 +364,7 @@
   }
   ```
   - 브랜드 패치: 감성·멘토 톤의 한 줄 메시지 추가
-  - Data Mapping: `rights.evictionRisk` → "이 리스크는 Hard 모드에서 자주 등장합니다."
+  - Data Mapping: `rights.evictionRisk` → "이 리스크는 Hard 모드에서 자주 등장합니다." (향후 Property difficulty Props 추가 시 구현 예정)
 
 ### 2.4 Bid Components
 
