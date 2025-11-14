@@ -10,3 +10,7 @@ export * from "./cost";
 export * from "./profit";
 export * from "./courtdocs";
 export * from "./result";
+
+// Explicit re-exports for commonly used types (to ensure TypeScript resolution)
+export { DifficultyMode, PropertyCategory, PropertyType } from "./property";
+export type { PropertySeed, Property } from "./property";
