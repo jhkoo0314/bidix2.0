@@ -368,21 +368,21 @@
 
 ### 2.4 Bid Components
 
-- [ ] `components/bid/QuickFacts.tsx`
+- [x] `components/bid/QuickFacts.tsx`
   ```typescript
   import { Valuation } from "@/lib/types";
   interface QuickFactsProps {
     valuation: Valuation; // exitPrice3m/6m/12m 포함
   }
   ```
-- [ ] `components/bid/BidAmountInput.tsx`
+- [x] `components/bid/BidAmountInput.tsx`
   ```typescript
   interface BidAmountInputProps {
     initialValue?: number;
     onSubmit: (bid: number) => void;
   }
   ```
-- [ ] `components/bid/BidGuidanceBox.tsx`
+- [x] `components/bid/BidGuidanceBox.tsx`
   ```typescript
   import { Valuation } from "@/lib/types";
   interface BidGuidanceBoxProps {

@@ -19,18 +19,22 @@
  *
  * @dependencies
  * - tailwindcss: 브랜드 Accent Colors (accent-green, accent-amber, accent-blue)
+ * - @/lib/utils: cn 함수 (클래스 병합)
  *
  * @see {@link /docs/product/point-level-system.md} - 등급별 색상 체계
  * @see {@link /docs/system/difficulty-modes.md} - 난이도 설명
  * @see {@link /docs/ui/design-system.md} - 브랜드 Accent Colors 사용 규칙
  */
 
+import { cn } from "@/lib/utils";
+
 export interface BadgeProps {
   type: "difficulty" | "grade";
   value: string;
+  className?: string;
 }
 
-export function Badge({ type, value }: BadgeProps) {
+export function Badge({ type, value, className }: BadgeProps) {
   const getColorClass = () => {
     if (type === "difficulty") {
       switch (value.toLowerCase()) {
@@ -72,7 +76,11 @@ export function Badge({ type, value }: BadgeProps) {
 
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getColorClass()}`}
+      className={cn(
+        "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium",
+        getColorClass(),
+        className
+      )}
     >
       {value}
     </span>
