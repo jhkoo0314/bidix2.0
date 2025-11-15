@@ -5,9 +5,9 @@
  * 이 파일은 BIDIX 프로젝트의 전체 아키텍처와 데이터 흐름을 한눈에 볼 수 있는 구조도입니다.
  * 프로젝트 구조가 변경되면 반드시 이 파일을 업데이트해야 합니다.
  *
- * @version 2.9
+ * @version 2.10
  * @lastUpdated 2025-01-28
- * @lastModified 2025-01-28 (구조 업데이트 - components/ui/sheet.tsx 추가, 전체 구조 검증 완료)
+ * @lastModified 2025-01-28 (구조 업데이트 - components/common/BrandTooltip.tsx, components/ui/tooltip.tsx 추가)
  */
 
 /**
@@ -69,7 +69,8 @@
  * │   │   ├── skeleton.tsx
  * │   │   ├── table.tsx
  * │   │   ├── tabs.tsx
- * │   │   └── textarea.tsx
+ * │   │   ├── textarea.tsx
+ * │   │   └── tooltip.tsx
  * │   ├── bid/                      # 입찰 관련 컴포넌트
  * │   │   ├── BidAmountInput.tsx
  * │   │   ├── BidForm.tsx
@@ -77,6 +78,7 @@
  * │   │   └── QuickFacts.tsx
  * │   ├── common/                    # 공통 컴포넌트
  * │   │   ├── Badge.tsx
+ * │   │   ├── BrandTooltip.tsx
  * │   │   ├── DataRow.tsx
  * │   │   ├── EmptyState.tsx
  * │   │   ├── ErrorState.tsx

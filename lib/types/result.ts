@@ -2,7 +2,7 @@
 // Auction Engine v2.2 – Final Output Types
 // Last Updated: 2025-11-13
 
-import type { Property } from "@/lib/types/property";
+import type { Property } from "@/lib/types/property_temp";
 import type { Valuation } from "@/lib/types/valuation";
 import type { Rights } from "@/lib/types/rights";
 import type { Costs } from "@/lib/types/cost";
