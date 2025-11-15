@@ -40,6 +40,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PropertyType } from "@/lib/types";
 import { Badge } from "@/components/common/Badge";
+import { getPropertyTypeLabel } from "@/lib/utils/property-labels";
 
 export interface FilterState {
   difficulty?: "easy" | "normal" | "hard";
@@ -50,16 +51,6 @@ export interface FilterState {
 export interface FilterBarProps {
   onFilterChange: (filters: FilterState) => void;
 }
-
-// 매물 타입 한글명 매핑
-const PROPERTY_TYPE_LABELS: Record<string, string> = {
-  apartment: "아파트",
-  villa: "빌라/다세대",
-  officetel: "오피스텔",
-  multi_house: "다가구주택",
-  detached: "단독주택",
-  res_land: "대지(주거)",
-};
 
 // 주거용 매물 타입만 필터에 표시 (MVP)
 const RESIDENTIAL_TYPES: PropertyType[] = [
@@ -186,7 +177,7 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
               size="sm"
               onClick={() => handleTypeChange(type)}
             >
-              {PROPERTY_TYPE_LABELS[type] || type}
+              {getPropertyTypeLabel(type)}
             </Button>
           ))}
         </div>

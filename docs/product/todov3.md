@@ -790,14 +790,15 @@
       - Easy: 🟢 튜토리얼
       - Normal: 🟡 일반 연습
       - Hard: 🔴 고화 챌린지
-    - 매물 타입 필터: All / Apartment / Officetel / Villa / Land 등
+    - 매물 타입 필터: All / 아파트 / 오피스텔 / 빌라/다세대 / 대지(주거) 등 (한글 표시)
+      - `getPropertyTypeLabel()` 유틸리티 사용하여 한글로 표시
     - 지역별 필터 (선택적): 서울/경기/부천 등
     - 필터 상태를 URL query에 반영 (`?difficulty=easy&type=apartment`)
   - [x] `<PropertyCard />` 그리드 레이아웃
     - 2-3열 그리드 레이아웃 (Desktop)
     - 1열 레이아웃 (Mobile)
     - 각 카드 표시 정보:
-      - 매물 타입 및 주소
+      - 매물 타입 및 주소 (한글 표시: `getPropertyTypeLabel()` 사용)
       - 감정가 (`appraisalValue`)
       - 최저 입찰가 (`minBid`)
       - 난이도 배지 (시각 구분)
@@ -808,7 +809,8 @@
 - [x] 필터링 로직 (Client)
   - [x] 난이도별 필터 (Easy/Normal/Hard)
     - `difficulty-modes.md` 설명 툴팁 추가
-  - [x] 매물 타입별 필터 (Apartment/Villa/Land...)
+  - [x] 매물 타입별 필터 (아파트/빌라/다세대/대지 등 - 한글 표시)
+    - `getPropertyTypeLabel()` 유틸리티 사용하여 필터 버튼에 한글 표시
   - [x] 지역별 필터 (선택적)
   - [x] 필터 변경 시 즉시 반영
 - [x] 클릭 시 `/simulations/[id]`로 이동

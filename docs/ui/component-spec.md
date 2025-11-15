@@ -67,6 +67,7 @@
 
 ```ts
 import { Property } from "@/lib/types";
+import { getPropertyTypeLabel } from "@/lib/utils/property-labels";
 
 export interface PropertyCardProps {
   property: Property;      // 엔진 Property 100% 그대로
@@ -79,6 +80,8 @@ export interface PropertyCardProps {
 **표시 요소**
 
 * 유형/주소
+  - 매물 타입은 `getPropertyTypeLabel(property.type)` 사용하여 한글로 표시
+  - 예: "아파트", "빌라/다세대", "오피스텔" 등
 * 감정가(appraisalValue)
 * 최저입찰가(minBid)
 * 난이도(difficulty)
@@ -92,6 +95,7 @@ export interface PropertyCardProps {
 
 ```ts
 import { Property, CourtDocsNormalized } from "@/lib/types";
+import { getPropertyTypeLabel } from "@/lib/utils/property-labels";
 
 export interface SaleStatementSummaryProps {
   property: Property;
@@ -102,6 +106,8 @@ export interface SaleStatementSummaryProps {
 **표시**
 
 * 부동산의 표시
+  - 매물 타입은 `getPropertyTypeLabel(property.type)` 사용하여 한글로 표시
+  - 형식: "{한글타입명} · {면적}㎡" (예: "아파트 · 84㎡")
 * 비고란 요약
 * 주요 권리 수
 * 임차인 존재 여부

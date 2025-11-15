@@ -8,6 +8,7 @@
 > **생성기 기준:** `/lib/generators/datasetpresets.ts`  
 > **감정가/시세 기준:** `propertyengine.ts` + `valuationengine.ts`  
 > **정책 기준:** `/lib/policy/defaultpolicy.ts`
+> **한글 라벨 기준:** `/lib/utils/property-labels.ts`
 
 ---
 
@@ -86,7 +87,45 @@ export enum PropertyType {
   Warehouse       = "warehouse",
   CommercialLand  = "com_land",
 }
-6. FMV & 안전마진 관점에서의 타입 중요도
+```
+
+---
+
+## 6. UI 표시 및 한글 라벨
+
+> UI에서 PropertyType enum을 표시할 때는 반드시 한글 라벨 유틸리티를 사용해야 합니다.
+
+### 한글 라벨 유틸리티
+
+**파일 경로:** `/lib/utils/property-labels.ts`
+
+**사용 방법:**
+```ts
+import { getPropertyTypeLabel } from "@/lib/utils/property-labels";
+
+// PropertyType enum 값을 한글 라벨로 변환
+const label = getPropertyTypeLabel(PropertyType.Apartment); // "아파트"
+```
+
+**매핑 규칙:**
+- 모든 PropertyType enum은 `PROPERTY_TYPE_LABELS` 객체에 한글 라벨이 정의되어 있음
+- 타입 안전성 보장: `Record<PropertyType, string>` 사용
+- Fallback 처리: 매핑이 없으면 enum 값 그대로 반환
+
+**적용 위치:**
+- `components/simulations/PropertyCard.tsx` - 매물 타입 표시
+- `components/simulations/SaleStatementSummary.tsx` - 부동산 표시
+- `components/simulations/FilterBar.tsx` - 필터 버튼
+- `app/simulations/[id]/page.tsx` - 메타데이터
+- `app/simulations/[id]/result/page.tsx` - 메타데이터
+
+**주의사항:**
+- ❌ `property.type`을 직접 표시하지 않음 (영어 enum 값이 그대로 표시됨)
+- ✅ 항상 `getPropertyTypeLabel(property.type)` 사용
+
+---
+
+## 7. FMV & 안전마진 관점에서의 타입 중요도
 아파트/오피스텔
 
 FMV 및 ExitPrice의 예측 가능성이 높음

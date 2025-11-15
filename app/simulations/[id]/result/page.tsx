@@ -75,6 +75,7 @@ import { Separator } from "@/components/ui/separator";
 import { BackButton } from "@/components/common/BackButton";
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getPropertyTypeLabel } from "@/lib/utils/property-labels";
 
 // Premium 리포트 컴포넌트 동적 로딩 (개발자 모드에서만 필요)
 const RightsAnalysisReport = dynamic(
@@ -169,17 +170,7 @@ export async function generateMetadata({
       const property = PropertyEngine.normalize(propertySeed);
       const summary = simulationRecord.result_json as AuctionSummary | null;
 
-      const propertyTypeLabels: Record<string, string> = {
-        apartment: "아파트",
-        villa: "빌라/다세대",
-        officetel: "오피스텔",
-        multi_house: "다가구주택",
-        detached: "단독주택",
-        res_land: "대지(주거)",
-      };
-
-      const propertyTypeLabel =
-        propertyTypeLabels[property.type] || property.type;
+      const propertyTypeLabel = getPropertyTypeLabel(property.type);
       const outcomeLabels: Record<string, string> = {
         success: "성공",
         failed: "실패",

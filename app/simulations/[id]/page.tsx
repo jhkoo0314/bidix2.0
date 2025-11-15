@@ -55,6 +55,7 @@ import { SaleStatementSummary } from "@/components/simulations/SaleStatementSumm
 import { RightsSummary } from "@/components/simulations/RightsSummary";
 import { Badge } from "@/components/common/Badge";
 import { BackButton } from "@/components/common/BackButton";
+import { getPropertyTypeLabel } from "@/lib/utils/property-labels";
 
 interface SimulationDetailPageProps {
   params: Promise<{ id: string }>;
@@ -87,16 +88,7 @@ export async function generateMetadata({
       const property = PropertyEngine.normalize(propertySeed);
       const difficulty = simulationRecord.difficulty || property.difficulty;
 
-      const propertyTypeLabels: Record<string, string> = {
-        apartment: "아파트",
-        villa: "빌라/다세대",
-        officetel: "오피스텔",
-        multi_house: "다가구주택",
-        detached: "단독주택",
-        res_land: "대지(주거)",
-      };
-
-      const propertyTypeLabel = propertyTypeLabels[property.type] || property.type;
+      const propertyTypeLabel = getPropertyTypeLabel(property.type);
       const difficultyLabels: Record<string, string> = {
         easy: "Easy",
         normal: "Normal",

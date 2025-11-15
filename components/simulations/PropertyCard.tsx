@@ -30,6 +30,7 @@ import Link from "next/link";
 import { memo } from "react";
 import { Property } from "@/lib/types";
 import { Badge } from "@/components/common/Badge";
+import { getPropertyTypeLabel } from "@/lib/utils/property-labels";
 
 export interface PropertyCardProps {
   property: Property;
@@ -48,7 +49,9 @@ export const PropertyCard = memo(function PropertyCard({ property, valuation }: 
         {/* 헤더 */}
         <div className="flex justify-between items-start">
           <div>
-            <h3 className="text-xl font-semibold font-[var(--font-inter)]">{property.type}</h3>
+            <h3 className="text-xl font-semibold font-[var(--font-inter)]">
+              {getPropertyTypeLabel(property.type)}
+            </h3>
             <p className="text-sm text-muted-foreground mt-1 font-[var(--font-noto-sans-kr)]">
               {property.address}
             </p>

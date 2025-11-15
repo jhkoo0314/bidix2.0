@@ -30,6 +30,7 @@
 
 import { Property, CourtDocsNormalized } from "@/lib/types";
 import { SectionCard } from "@/components/common/SectionCard";
+import { getPropertyTypeLabel } from "@/lib/utils/property-labels";
 
 export interface SaleStatementSummaryProps {
   property: Property;
@@ -56,7 +57,7 @@ export function SaleStatementSummary({
           <h4 className="font-semibold mb-2 font-[var(--font-inter)]">부동산 표시</h4>
           <p className="text-sm text-muted-foreground font-[var(--font-noto-sans-kr)]">{property.address}</p>
           <p className="text-sm text-muted-foreground font-[var(--font-noto-sans-kr)]">
-            {property.type} · {property.sizeM2}㎡
+            {getPropertyTypeLabel(property.type)} · {property.sizeM2}㎡
           </p>
         </div>
 
