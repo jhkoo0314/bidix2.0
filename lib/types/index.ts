@@ -14,3 +14,6 @@ export * from "./result";
 // Explicit re-exports for commonly used types (to ensure TypeScript resolution)
 export { DifficultyMode, PropertyCategory, PropertyType } from "./property";
 export type { PropertySeed, Property } from "./property";
+
+// Policy types (SSOT re-export)
+export type { Policy, PolicyOverrides } from "@/lib/policy/policy";
