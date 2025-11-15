@@ -11,7 +11,7 @@ import { AuctionEngine } from "@/lib/engines/auctionengine";
 import { ScoreEngine } from "@/lib/engines/scoreengine";
 
 // Generators
-import { generateSimulationScenario } from "@/lib/generators/simulationgenerator";
+import { generateSimulationScenario } from "@/lib/generators/simulationgenerator_temp";
 
 // Types
 import {
