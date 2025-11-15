@@ -33,7 +33,7 @@ import { auth } from "@clerk/nextjs/server";
 import { createClerkSupabaseClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { mapScoreToGrade } from "@/lib/utils/score";
-import type { PropertySeed } from "@/lib/types/property_temp";
+import type { PropertySeed } from "@/lib/types/property";
 import type { Profit } from "@/lib/types/profit";
 
 interface HistoryItem {
