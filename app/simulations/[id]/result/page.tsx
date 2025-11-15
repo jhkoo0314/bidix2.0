@@ -72,6 +72,7 @@ import { PremiumReportCTA } from "@/components/result/PremiumReportCTA";
 import { SaleStatementReport } from "@/components/reports/SaleStatementReport";
 import { ResultActions } from "@/components/result/ResultActions";
 import { Separator } from "@/components/ui/separator";
+import { BackButton } from "@/components/common/BackButton";
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -572,6 +573,9 @@ export default async function ResultPage({ params }: ResultPageProps) {
   return (
     <main className="min-h-[calc(100vh-80px)] px-4 md:px-8 py-8 md:py-16">
       <div className="w-full max-w-7xl mx-auto space-y-6 md:space-y-8">
+        {/* 뒤로가기 버튼 */}
+        <BackButton href={`/simulations/${id}`} />
+
         {/* 헤더 */}
         <div className="space-y-2 animate-in fade-in slide-in-from-top-4 duration-500">
           <h1 className="text-3xl md:text-4xl font-bold font-[var(--font-inter)]">

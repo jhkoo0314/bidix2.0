@@ -43,6 +43,7 @@ import { createClerkSupabaseClient } from "@/lib/supabase/server";
 import { PropertyEngine } from "@/lib/engines/propertyengine";
 import { SimulationList } from "@/components/simulations/SimulationList";
 import { CreateSimulationButton } from "@/components/dashboard/CreateSimulationButton";
+import { BackButton } from "@/components/common/BackButton";
 import { PropertySeed, Valuation } from "@/lib/types";
 import type { SimulationListItem } from "@/components/simulations/SimulationList";
 
@@ -173,6 +174,9 @@ export default async function SimulationsListPage() {
   return (
     <main className="min-h-[calc(100vh-80px)] px-4 md:px-8 py-8 md:py-16">
       <div className="w-full max-w-7xl mx-auto space-y-6 md:space-y-8">
+        {/* 뒤로가기 버튼 */}
+        <BackButton href="/dashboard" />
+
         {/* 헤더 */}
         <div className="space-y-2">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold font-[var(--font-inter)]">

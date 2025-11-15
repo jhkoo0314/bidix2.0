@@ -45,6 +45,7 @@ import { Valuation } from "@/lib/types";
 import { QuickFacts } from "@/components/bid/QuickFacts";
 import { BidGuidanceBox } from "@/components/bid/BidGuidanceBox";
 import { BidForm } from "@/components/bid/BidForm";
+import { BackButton } from "@/components/common/BackButton";
 
 interface BidPageProps {
   params: Promise<{ id: string }>;
@@ -169,6 +170,9 @@ export default async function BidPage({ params }: BidPageProps) {
   return (
     <main className="min-h-[calc(100vh-80px)] px-4 md:px-8 py-8 md:py-16">
       <div className="w-full max-w-4xl mx-auto space-y-6 md:space-y-8">
+        {/* 뒤로가기 버튼 */}
+        <BackButton href={`/simulations/${id}`} />
+
         {/* 헤더 */}
         <div className="space-y-2">
           <h1 className="text-3xl md:text-4xl font-bold font-[var(--font-inter)]">입찰하기</h1>

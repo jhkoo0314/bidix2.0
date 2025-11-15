@@ -47,6 +47,7 @@ import { UsageIndicator } from "@/components/dashboard/UsageIndicator";
 import { DashboardStats } from "@/components/dashboard/DashboardStats";
 import { RecentSimulations } from "@/components/dashboard/RecentSimulations";
 import { CreateSimulationButton } from "@/components/dashboard/CreateSimulationButton";
+import { BackButton } from "@/components/common/BackButton";
 import { Property, PropertySeed, Valuation } from "@/lib/types";
 import type { SimulationListItem } from "@/components/dashboard/RecentSimulations";
 
@@ -231,6 +232,9 @@ export default async function DashboardPage() {
   return (
     <main className="min-h-[calc(100vh-80px)] px-4 md:px-8 py-8 md:py-16">
       <div className="w-full max-w-7xl mx-auto space-y-6 md:space-y-8">
+        {/* 뒤로가기 버튼 */}
+        <BackButton href="/" />
+
         {/* 환영 메시지 헤더 */}
         <div className="space-y-2">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold font-[var(--font-inter)]">

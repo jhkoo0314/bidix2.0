@@ -54,6 +54,7 @@ import {
 import { SaleStatementSummary } from "@/components/simulations/SaleStatementSummary";
 import { RightsSummary } from "@/components/simulations/RightsSummary";
 import { Badge } from "@/components/common/Badge";
+import { BackButton } from "@/components/common/BackButton";
 
 interface SimulationDetailPageProps {
   params: Promise<{ id: string }>;
@@ -250,6 +251,9 @@ export default async function SimulationDetailPage({
   return (
     <main className="min-h-[calc(100vh-80px)] px-4 md:px-8 py-8 md:py-16">
       <div className="w-full max-w-7xl mx-auto space-y-6 md:space-y-8">
+        {/* 뒤로가기 버튼 */}
+        <BackButton href="/simulations" />
+
         {/* 헤더 */}
         <div className="space-y-4">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
