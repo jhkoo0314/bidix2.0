@@ -6,11 +6,11 @@
     "noImplicitAny": false, // any 타입 허용
     "skipLibCheck": true,
     "strict": false, // 엄격한 타입 검사 비활성화
-    "forceConsistentCasingInFileNames": false, // 파일 이름의 대소문자 일관성 비활성화
+    "forceConsistentCasingInFileNames": true, // Vercel 빌드 환경 호환성을 위해 활성화
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
