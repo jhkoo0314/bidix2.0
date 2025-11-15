@@ -6,6 +6,10 @@ const isPublicRoute = createRouteMatcher([
   "/guide", // 가이드 (원하면)
   "/properties", // 매물리스트 (원하면)
   "/simulation", // 테스트 페이지 (원하면)
+  // Clerk 인증 경로 (필수! - 무한 리디렉션 방지)
+  "/sign-in(.*)", // 로그인 페이지
+  "/sign-up(.*)", // 회원가입 페이지
+  "/sso-callback(.*)", // SSO 콜백
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
