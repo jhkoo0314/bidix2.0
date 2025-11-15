@@ -69,11 +69,21 @@ totalAcquisition =
 
 ## 3.2 자금 조달 (Loan vs Own Cash)
 
+**기본 계산식** (정책 기본값 사용 시):
 ```
 loanPrincipal = min(userBid * loanLtvDefault, userBid)
 ownCash = totalAcquisition - loanPrincipal
 ```
 
+**사용자 입력 사용 시**:
+```
+loanPrincipal = min(userLoan, userBid)  // 사용자 입력 대출
+requiredCash = totalAcquisition - loanPrincipal
+ownCash = max(userCash, requiredCash)  // 사용자 입력 현금과 필요 현금 중 큰 값
+```
+
+* 사용자 입력이 없으면 정책 기본값 사용
+* 사용자 입력이 있으면 사용자 입력 우선 사용
 * Easy: loanLtvDefault ↑ (완화 정책)
 * Hard: loanLtvDefault ↓ (보수적)
 

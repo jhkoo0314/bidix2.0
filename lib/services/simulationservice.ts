@@ -126,6 +126,8 @@ async function submitBid(
   simulationId: string,
   userId: string,
   userBid: number,
+  userCash?: number,
+  userLoan?: number,
 ) {
   /* 1) 기존 데이터 가져오기 */
   const { data: original, error } = await supabase
@@ -145,6 +147,8 @@ async function submitBid(
     seed: propertySeed,
     courtDocs,
     userBid,
+    userCash,
+    userLoan,
   });
 
   /* 3) 점수 계산 */

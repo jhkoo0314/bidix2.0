@@ -129,7 +129,41 @@ export interface RightsSummaryProps {
 
 ---
 
-## 3.4 📊 **QuickFacts.tsx**
+## 3.4 📝 **BidAmountInput.tsx**
+
+> 입찰가 및 자금 구성 입력 컴포넌트
+
+```ts
+export interface BidAmountInputProps {
+  initialValue?: number;
+  minBid?: number;
+  onSubmit: (data: {
+    bidAmount: number;
+    cashAmount?: number;
+    loanAmount?: number;
+  }) => void;
+  disabled?: boolean;
+}
+```
+
+**표시 요소**
+
+* 입찰가 입력 필드
+* 현금 입력 필드 (항상 수동 입력)
+* 대출 입력 방식 선택:
+  * 비율 선택: 드롭다운(10%~100%, 10% 단위) → 입찰가 기준 자동 계산
+  * 수동 입력: 직접 금액 입력
+* 실시간 합계 계산 및 검증 (현금 + 대출 = 입찰가)
+
+**검증 규칙**
+
+* 현금과 대출을 모두 입력한 경우: 합이 입찰가와 일치해야 함
+* 현금과 대출을 모두 비운 경우: 정책 기본값 사용 (허용)
+* 하나만 입력한 경우: 에러 표시
+
+---
+
+## 3.5 📊 **QuickFacts.tsx**
 
 > 입찰 페이지 핵심 정보(FMV·minBid·ExitPrice)
 
@@ -148,7 +182,7 @@ export interface QuickFactsProps {
 
 ---
 
-## 3.5 📈 **ExitScenarioTable.tsx**
+## 3.6 📈 **ExitScenarioTable.tsx**
 
 > 수익/총비용 3·6·12개월 비교 테이블
 

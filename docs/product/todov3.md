@@ -379,9 +379,20 @@
   ```typescript
   interface BidAmountInputProps {
     initialValue?: number;
-    onSubmit: (bid: number) => void;
+    minBid?: number;
+    onSubmit: (data: {
+      bidAmount: number;
+      cashAmount?: number;
+      loanAmount?: number;
+    }) => void;
+    disabled?: boolean;
   }
   ```
+  - 현금 입력 시 대출 자동 계산 (입찰가 - 현금)
+  - 대출 입력 시 현금 자동 계산 (입찰가 - 대출)
+  - 대출 금액 옆에 입찰가 대비 비율(%) 표시
+  - 무한 루프 방지: `useRef`로 마지막 변경 필드 추적
+  - 둘 다 입력하면 검증만 수행, 둘 다 비우면 정책 기본값 사용
 - [x] `components/bid/BidGuidanceBox.tsx`
   ```typescript
   import { Valuation } from "@/lib/types";
@@ -859,10 +870,17 @@
     - [x] 안전마진 설명
     - [x] 권장 입찰가 범위
   - [x] `<BidAmountInput onSubmit={} />` (Client Component)
+    - [x] 입찰가 수동 입력
+    - [x] 현금 입력 시 대출 자동 계산 (입찰가 - 현금)
+    - [x] 대출 입력 시 현금 자동 계산 (입찰가 - 대출)
+    - [x] 대출 금액 옆에 입찰가 대비 비율(%) 표시
     - [x] 숫자 입력 검증
     - [x] 최저 입찰가 검증
+    - [x] 현금 + 대출 = 입찰가 검증
+    - [x] 무한 루프 방지 로직 (`useRef` 기반)
 - [x] Server Action 연결
-  - [x] `submitBidAction(simulationId, userBid)` 호출
+  - [x] `submitBidAction(simulationId, userBid, cashAmount?, loanAmount?)` 호출
+  - [x] 현금/대출 데이터 FormData에 포함하여 전달
   - [x] 제출 시 `/simulations/[id]/result`로 리다이렉트
 - [x] 로그 추가
   - [x] 입찰가 입력 로그
@@ -1119,7 +1137,10 @@
 ### 4.1 기존 Server Actions 확인
 
 - [x] `app/action/generatesimulation.ts` - 확인 필요 (기존 코드 검토)
-- [x] `app/action/submitbid.ts` - 확인 필요 (기존 코드 검토)
+- [x] `app/action/submitbid.ts` - 확인 완료
+  - [x] Zod 스키마에 `cashAmount`, `loanAmount` 추가
+  - [x] 검증 로직: 둘 다 입력 또는 둘 다 비움
+  - [x] `simulationService.submitBid()`에 현금/대출 파라미터 전달
 
 ### 4.2 추가 필요 Server Actions
 
@@ -1914,6 +1935,14 @@ UI → Server Action → Service → SimulationGenerator
 
 ## 📝 버전 히스토리
 
+- **v3.5** (2025-01-28): 현금/대출 자동 계산 기능 구현 완료
+  - BidAmountInput 컴포넌트에 현금/대출 상호 자동 계산 로직 추가
+  - 현금 입력 시 대출 자동 계산 (입찰가 - 현금)
+  - 대출 입력 시 현금 자동 계산 (입찰가 - 대출)
+  - 대출 금액 옆에 입찰가 대비 비율(%) 표시 기능 추가
+  - 무한 루프 방지를 위한 `useRef` 기반 마지막 변경 필드 추적 로직 구현
+  - Phase 2.4 BidAmountInput Props 명세 업데이트
+  - Phase 3.5 Bid Page 구현 내용 업데이트
 - **v3.4** (2025-01-28): 개발자 모드 리포트 구현 계획 추가
   - Phase 2.6에 개발자 모드 잠금 해제 및 상세 리포트 구현 계획 추가
   - 각 리포트별 상세 구현 내용 명시 (report-result.md 기반)

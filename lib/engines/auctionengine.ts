@@ -26,6 +26,8 @@ export class AuctionEngine {
     courtDocs?: CourtDocsNormalized;
     userBid: number;
     policy?: Policy;
+    userCash?: number;    // 사용자 입력 현금 (optional)
+    userLoan?: number;    // 사용자 입력 대출 (optional)
   }): AuctionAnalysisResult {
     const policy = params.policy ?? defaultPolicy;
 
@@ -49,7 +51,9 @@ export class AuctionEngine {
       valuation,
       rights,
       params.userBid,
-      policy
+      policy,
+      params.userCash,
+      params.userLoan
     );
 
     /** 6) Profit (3·6·12) */

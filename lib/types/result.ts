@@ -2,12 +2,12 @@
 // Auction Engine v2.2 – Final Output Types
 // Last Updated: 2025-11-13
 
-import { Property } from "./property";
-import { Valuation } from "./valuation";
-import { Rights } from "./rights";
-import { Costs } from "./cost";
-import { Profit } from "./profit";
-import { CourtDocsNormalized } from "./courtdocs";
+import type { Property } from "@/lib/types/property";
+import type { Valuation } from "@/lib/types/valuation";
+import type { Rights } from "@/lib/types/rights";
+import type { Costs } from "@/lib/types/cost";
+import type { Profit } from "@/lib/types/profit";
+import type { CourtDocsNormalized } from "@/lib/types/courtdocs";
 
 export interface AuctionSummary {
   isProfitable: boolean;

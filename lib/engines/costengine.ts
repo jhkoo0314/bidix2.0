@@ -30,6 +30,8 @@ export class CostEngine {
     rights: Rights,
     userBid: number,
     policy: Policy = defaultPolicy,
+    userCash?: number,
+    userLoan?: number,
   ): Costs {
     const appraisalValue = property.appraisalValue;
 
@@ -54,9 +56,24 @@ export class CostEngine {
      * 2) 대출 & 자기자본
      * ------------------------------------------------------- */
 
-    const loanLtv = policy.cost.loanLtvDefault ?? 0.7;
-    const loanPrincipal = Math.min(userBid * loanLtv, userBid);
-    const ownCash = Math.max(0, totalAcquisition - loanPrincipal);
+    // 사용자 입력 우선, 없으면 정책 기본값
+    let loanPrincipal: number;
+    let ownCash: number;
+
+    if (userLoan !== undefined && userCash !== undefined) {
+      // 사용자 입력 사용
+      loanPrincipal = Math.min(userLoan, userBid); // 입찰가를 넘을 수 없음
+      
+      // ownCash는 totalAcquisition 기준으로 재계산
+      // 사용자가 입력한 현금이 totalAcquisition보다 작으면 보정
+      const requiredCash = Math.max(0, totalAcquisition - loanPrincipal);
+      ownCash = Math.max(userCash, requiredCash);
+    } else {
+      // 정책 기본값 사용 (기존 로직)
+      const loanLtv = policy.cost.loanLtvDefault ?? 0.7;
+      loanPrincipal = Math.min(userBid * loanLtv, userBid);
+      ownCash = Math.max(0, totalAcquisition - loanPrincipal);
+    }
 
     /* -------------------------------------------------------
      * 3) 보유비용 & 이자비용 (3 / 6 / 12개월)

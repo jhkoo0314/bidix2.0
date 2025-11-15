@@ -52,9 +52,13 @@ export function BidForm({ simulationId, minBid }: BidFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
 
-  const handleSubmit = async (bidAmount: number) => {
+  const handleSubmit = async (data: {
+    bidAmount: number;
+    cashAmount?: number;
+    loanAmount?: number;
+  }) => {
     console.group("Bid Submission");
-    console.log("입찰 제출 시작:", { simulationId, bidAmount });
+    console.log("입찰 제출 시작:", { simulationId, ...data });
 
     setIsLoading(true);
     setError("");
@@ -63,11 +67,17 @@ export function BidForm({ simulationId, minBid }: BidFormProps) {
       // FormData 생성
       const formData = new FormData();
       formData.append("simulationId", simulationId);
-      formData.append("bidAmount", bidAmount.toString());
+      formData.append("bidAmount", data.bidAmount.toString());
+      if (data.cashAmount !== undefined) {
+        formData.append("cashAmount", data.cashAmount.toString());
+      }
+      if (data.loanAmount !== undefined) {
+        formData.append("loanAmount", data.loanAmount.toString());
+      }
 
       console.log("FormData 생성 완료:", {
         simulationId,
-        bidAmount,
+        ...data,
       });
 
       // submitBidAction 호출

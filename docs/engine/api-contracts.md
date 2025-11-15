@@ -47,10 +47,17 @@ function generateSimulationAction(difficulty: "easy" | "normal" | "hard")
 ### **1.2 `submitBidAction`**
 
 *   **파일 위치:** `/app/action/submitbid.ts`
-*   **설명:** 사용자가 제출한 입찰가(`userBid`)를 받아, 기존 시뮬레이션 데이터를 업데이트하고 최종 결과와 점수를 계산하여 반환합니다.
+*   **설명:** 사용자가 제출한 입찰가(`userBid`)와 자금 구성(현금/대출)을 받아, 기존 시뮬레이션 데이터를 업데이트하고 최종 결과와 점수를 계산하여 반환합니다.
 *   **입력:** `FormData` (UI의 `<form>`에서 직접 전달)
     *   `simulationId`: `string`
     *   `bidAmount`: `number`
+    *   `cashAmount`: `number` (optional, 현금과 대출을 모두 입력하거나 모두 비워야 함)
+    *   `loanAmount`: `number` (optional, 현금과 대출을 모두 입력하거나 모두 비워야 함)
+    
+**검증 규칙**:
+- 현금과 대출을 모두 입력한 경우: `cashAmount + loanAmount = bidAmount`
+- 현금과 대출을 모두 비운 경우: 정책 기본값 사용 (대출 70%)
+- 하나만 입력한 경우: 에러 반환
 
 **Response (함수 반환값)**
 ```typescript

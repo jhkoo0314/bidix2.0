@@ -14,13 +14,33 @@ import { auth } from "@clerk/nextjs/server";
  * Zod 스키마 (v2.2)
  * - simulationId: UUID
  * - bidAmount: 양수
+ * - cashAmount: 현금 (optional)
+ * - loanAmount: 대출 (optional)
  */
 const BidFormSchema = z.object({
   simulationId: z.string().uuid("유효한 시뮬레이션 ID가 필요합니다."),
   bidAmount: z
     .number({ invalid_type_error: "입찰가는 숫자여야 합니다." })
     .positive("입찰가는 0보다 커야 합니다."),
-});
+  cashAmount: z.number().min(0).optional(),
+  loanAmount: z.number().min(0).optional(),
+}).refine(
+  (data) => {
+    // 둘 다 입력했으면 합이 입찰가와 일치해야 함
+    if (data.cashAmount !== undefined && data.loanAmount !== undefined) {
+      return data.cashAmount + data.loanAmount === data.bidAmount;
+    }
+    // 둘 다 비어있으면 정책 기본값 사용 (허용)
+    if (data.cashAmount === undefined && data.loanAmount === undefined) {
+      return true;
+    }
+    // 하나만 입력하면 에러
+    return false;
+  },
+  { 
+    message: "현금과 대출을 모두 입력하거나 모두 비워두세요." 
+  }
+);
 
 /**
  * submitbid.ts (v2.2)
@@ -45,6 +65,8 @@ export async function submitBidAction(formData: FormData) {
     const rawData = {
       simulationId: formData.get("simulationId"),
       bidAmount: Number(formData.get("bidAmount")),
+      cashAmount: formData.get("cashAmount") ? Number(formData.get("cashAmount")) : undefined,
+      loanAmount: formData.get("loanAmount") ? Number(formData.get("loanAmount")) : undefined,
     };
 
     /* ----------------------------------------------------
@@ -59,7 +81,7 @@ export async function submitBidAction(formData: FormData) {
       };
     }
 
-    const { simulationId, bidAmount } = parsed.data;
+    const { simulationId, bidAmount, cashAmount, loanAmount } = parsed.data;
 
     /* ----------------------------------------------------
      * [4] Domain Logic — v2.2 Core (Service Layer)
@@ -67,7 +89,9 @@ export async function submitBidAction(formData: FormData) {
     const finalResult = await simulationService.submitBid(
       simulationId,
       userId,
-      bidAmount
+      bidAmount,
+      cashAmount,
+      loanAmount
     );
 
     /* ----------------------------------------------------
