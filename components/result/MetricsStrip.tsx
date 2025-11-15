@@ -37,7 +37,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, memo, useMemo } from "react";
 import { Profit } from "@/lib/types";
 import { ScoreBreakdown } from "@/lib/engines/scoreengine";
 import { SectionCard } from "@/components/common/SectionCard";
@@ -50,7 +50,7 @@ export interface MetricsStripProps {
   score: ScoreBreakdown;
 }
 
-export function MetricsStrip({ profit, score }: MetricsStripProps) {
+export const MetricsStrip = memo(function MetricsStrip({ profit, score }: MetricsStripProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   console.group("MetricsStrip Component");
@@ -66,15 +66,17 @@ export function MetricsStrip({ profit, score }: MetricsStripProps) {
     riskControlScore: score.riskControlScore,
   });
 
-  // scenarios 객체에서 최고 ROI 찾기
-  const scenariosArray = [
-    profit.scenarios["3m"],
-    profit.scenarios["6m"],
-    profit.scenarios["12m"],
-  ];
-  const bestScenario = scenariosArray.reduce((best, current) =>
-    current.roi > best.roi ? current : best
-  );
+  // scenarios 객체에서 최고 ROI 찾기 - useMemo로 최적화
+  const bestScenario = useMemo(() => {
+    const scenariosArray = [
+      profit.scenarios["3m"],
+      profit.scenarios["6m"],
+      profit.scenarios["12m"],
+    ];
+    return scenariosArray.reduce((best, current) =>
+      current.roi > best.roi ? current : best
+    );
+  }, [profit.scenarios]);
 
   console.log("Best scenario:", {
     months: bestScenario.months,
@@ -210,5 +212,5 @@ export function MetricsStrip({ profit, score }: MetricsStripProps) {
       </div>
     </SectionCard>
   );
-}
+});
 

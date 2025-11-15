@@ -36,7 +36,7 @@
 
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -97,15 +97,15 @@ export function BidAmountInput({
     }
   }, [bidAmount, cashAmount, loanAmount]);
 
-  const handleBidChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBidChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     const numericValue = value.replace(/[^0-9]/g, "");
     setBidAmount(numericValue);
     setError("");
     lastChangedField.current = "bid";
-  };
+  }, []);
 
-  const handleCashChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCashChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     const numericValue = value.replace(/[^0-9]/g, "");
     setCashAmount(numericValue);
@@ -119,9 +119,9 @@ export function BidAmountInput({
         setLoanAmount(""); // 자동 계산을 위해 초기화
       }
     }
-  };
+  }, [bidAmount, loanAmount]);
 
-  const handleLoanChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLoanChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     const numericValue = value.replace(/[^0-9]/g, "");
     setLoanAmount(numericValue);
@@ -135,26 +135,26 @@ export function BidAmountInput({
         setCashAmount(""); // 자동 계산을 위해 초기화
       }
     }
-  };
+  }, [bidAmount, cashAmount]);
 
-  // 대출 비율 계산 (입찰가 대비 백분율)
-  const calculateLoanRatio = () => {
+  // 대출 비율 계산 (입찰가 대비 백분율) - useMemo로 최적화
+  const loanRatio = useMemo(() => {
     const bid = Number(bidAmount.replace(/[^0-9]/g, "")) || 0;
     const loan = Number(loanAmount.replace(/[^0-9]/g, "")) || 0;
     if (bid > 0 && loan > 0) {
       return Math.round((loan / bid) * 100);
     }
     return 0;
-  };
+  }, [bidAmount, loanAmount]);
 
-  // 실시간 합계 계산
-  const calculateTotal = () => {
+  // 실시간 합계 계산 - useMemo로 최적화
+  const total = useMemo(() => {
     const cash = cashAmount ? Number(cashAmount.replace(/[^0-9]/g, "")) : 0;
     const loan = loanAmount ? Number(loanAmount.replace(/[^0-9]/g, "")) : 0;
     return cash + loan;
-  };
+  }, [cashAmount, loanAmount]);
 
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     console.group("Bid Submission");
     
     const bid = Number(bidAmount.replace(/[^0-9]/g, ""));
@@ -214,11 +214,10 @@ export function BidAmountInput({
     setError("");
     onSubmit({ bidAmount: bid, cashAmount: cash, loanAmount: loan });
     console.groupEnd();
-  };
+  }, [bidAmount, cashAmount, loanAmount, minBid, onSubmit]);
 
-  const total = calculateTotal();
-  const bidNum = Number(bidAmount.replace(/[^0-9]/g, "")) || 0;
-  const isTotalMatch = cashAmount && loanAmount && total === bidNum;
+  const bidNum = useMemo(() => Number(bidAmount.replace(/[^0-9]/g, "")) || 0, [bidAmount]);
+  const isTotalMatch = useMemo(() => cashAmount && loanAmount && total === bidNum, [cashAmount, loanAmount, total, bidNum]);
 
   return (
     <div className="space-y-4">
@@ -287,7 +286,7 @@ export function BidAmountInput({
             />
             {loanAmount && bidAmount && (
               <span className="text-sm font-medium text-gray-600 dark:text-gray-400 whitespace-nowrap">
-                ({calculateLoanRatio()}%)
+                ({loanRatio}%)
               </span>
             )}
           </div>

@@ -28,6 +28,7 @@
  * @see {@link /docs/ui/design-system.md} - Accent Colors 규칙 및 Numeric Highlight
  */
 
+import { memo, useMemo } from "react";
 import { Profit } from "@/lib/types";
 import { SectionCard } from "@/components/common/SectionCard";
 import { BrandTooltip } from "@/components/common/BrandTooltip";
@@ -37,7 +38,7 @@ export interface ExitScenarioTableProps {
   profit: Profit; // scenarios 객체 포함
 }
 
-export function ExitScenarioTable({ profit }: ExitScenarioTableProps) {
+export const ExitScenarioTable = memo(function ExitScenarioTable({ profit }: ExitScenarioTableProps) {
   console.group("ExitScenarioTable Component");
   console.log("Profit scenarios:", {
     "3m": profit.scenarios["3m"],
@@ -45,16 +46,18 @@ export function ExitScenarioTable({ profit }: ExitScenarioTableProps) {
     "12m": profit.scenarios["12m"],
   });
 
-  // scenarios 객체를 배열로 변환
-  const scenarios = [
+  // scenarios 객체를 배열로 변환 - useMemo로 최적화
+  const scenarios = useMemo(() => [
     profit.scenarios["3m"],
     profit.scenarios["6m"],
     profit.scenarios["12m"],
-  ];
+  ], [profit.scenarios]);
 
-  // 최적 시나리오 찾기 (ROI 기준)
-  const bestScenario = scenarios.reduce((best, current) =>
-    current.roi > best.roi ? current : best
+  // 최적 시나리오 찾기 (ROI 기준) - useMemo로 최적화
+  const bestScenario = useMemo(() => 
+    scenarios.reduce((best, current) =>
+      current.roi > best.roi ? current : best
+    ), [scenarios]
   );
 
   console.log("Best scenario:", {
@@ -149,5 +152,5 @@ export function ExitScenarioTable({ profit }: ExitScenarioTableProps) {
       </div>
     </SectionCard>
   );
-}
+});
 

@@ -33,7 +33,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -84,25 +84,7 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
     onFilterChange(filters);
   }, [filters, onFilterChange]);
 
-  const handleDifficultyChange = (difficulty: FilterState["difficulty"]) => {
-    const newFilters = { ...filters, difficulty };
-    setFilters(newFilters);
-    updateURL(newFilters);
-  };
-
-  const handleTypeChange = (type: string | undefined) => {
-    const newFilters = { ...filters, type };
-    setFilters(newFilters);
-    updateURL(newFilters);
-  };
-
-  const handleRegionChange = (region: string) => {
-    const newFilters = { ...filters, region: region || undefined };
-    setFilters(newFilters);
-    updateURL(newFilters);
-  };
-
-  const updateURL = (newFilters: FilterState) => {
+  const updateURL = useCallback((newFilters: FilterState) => {
     const params = new URLSearchParams();
     if (newFilters.difficulty) {
       params.set("difficulty", newFilters.difficulty);
@@ -114,7 +96,25 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
       params.set("region", newFilters.region);
     }
     router.push(`?${params.toString()}`);
-  };
+  }, [router]);
+
+  const handleDifficultyChange = useCallback((difficulty: FilterState["difficulty"]) => {
+    const newFilters = { ...filters, difficulty };
+    setFilters(newFilters);
+    updateURL(newFilters);
+  }, [filters, updateURL]);
+
+  const handleTypeChange = useCallback((type: string | undefined) => {
+    const newFilters = { ...filters, type };
+    setFilters(newFilters);
+    updateURL(newFilters);
+  }, [filters, updateURL]);
+
+  const handleRegionChange = useCallback((region: string) => {
+    const newFilters = { ...filters, region: region || undefined };
+    setFilters(newFilters);
+    updateURL(newFilters);
+  }, [filters, updateURL]);
 
   return (
     <div className="p-6 border rounded-lg space-y-6">

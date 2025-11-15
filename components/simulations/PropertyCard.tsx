@@ -27,6 +27,7 @@
  */
 
 import Link from "next/link";
+import { memo } from "react";
 import { Property } from "@/lib/types";
 import { Badge } from "@/components/common/Badge";
 
@@ -37,7 +38,7 @@ export interface PropertyCardProps {
   };
 }
 
-export function PropertyCard({ property, valuation }: PropertyCardProps) {
+export const PropertyCard = memo(function PropertyCard({ property, valuation }: PropertyCardProps) {
   return (
     <Link
       href={`/simulations/${property.id}`}
@@ -77,5 +78,5 @@ export function PropertyCard({ property, valuation }: PropertyCardProps) {
       </div>
     </Link>
   );
-}
+});
 

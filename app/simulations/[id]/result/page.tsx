@@ -18,6 +18,7 @@
  * - 개발자 모드일 때: RightsAnalysisReport, ProfitAnalysisReport, AuctionAnalysisReport 실제 렌더링
  * - 프로덕션 모드일 때: PremiumReportCTA 잠금 UI 표시
  * - SaleStatementReport: 개발자 모드에서 항상 `isFreeAvailable={true}` 전달
+ * - 성능 최적화: Premium 리포트 컴포넌트 및 CompetitorAnalysis는 동적 import로 코드 스플리팅
  *
  * @dependencies
  * - @clerk/nextjs: 인증 확인
@@ -68,12 +69,64 @@ import { MetricsStrip } from "@/components/result/MetricsStrip";
 import { ExitScenarioTable } from "@/components/result/ExitScenarioTable";
 import { PremiumReportCTA } from "@/components/result/PremiumReportCTA";
 import { SaleStatementReport } from "@/components/reports/SaleStatementReport";
-import { RightsAnalysisReport } from "@/components/reports/RightsAnalysisReport";
-import { ProfitAnalysisReport } from "@/components/reports/ProfitAnalysisReport";
-import { AuctionAnalysisReport } from "@/components/reports/AuctionAnalysisReport";
 import { ResultActions } from "@/components/result/ResultActions";
-import { CompetitorAnalysis } from "@/components/result/CompetitorAnalysis";
 import { Separator } from "@/components/ui/separator";
+import dynamic from "next/dynamic";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// Premium 리포트 컴포넌트 동적 로딩 (개발자 모드에서만 필요)
+const RightsAnalysisReport = dynamic(
+  () => import("@/components/reports/RightsAnalysisReport").then((mod) => mod.RightsAnalysisReport),
+  {
+    loading: () => (
+      <div className="space-y-4">
+        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-64 w-full" />
+      </div>
+    ),
+    ssr: false, // 클라이언트 사이드에서만 로드
+  }
+);
+
+const ProfitAnalysisReport = dynamic(
+  () => import("@/components/reports/ProfitAnalysisReport").then((mod) => mod.ProfitAnalysisReport),
+  {
+    loading: () => (
+      <div className="space-y-4">
+        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-64 w-full" />
+      </div>
+    ),
+    ssr: false,
+  }
+);
+
+const AuctionAnalysisReport = dynamic(
+  () => import("@/components/reports/AuctionAnalysisReport").then((mod) => mod.AuctionAnalysisReport),
+  {
+    loading: () => (
+      <div className="space-y-4">
+        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-64 w-full" />
+      </div>
+    ),
+    ssr: false,
+  }
+);
+
+// CompetitorAnalysis 동적 로딩 (경쟁자 정보가 있을 때만 필요)
+const CompetitorAnalysis = dynamic(
+  () => import("@/components/result/CompetitorAnalysis").then((mod) => mod.CompetitorAnalysis),
+  {
+    loading: () => (
+      <div className="space-y-4">
+        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-48 w-full" />
+      </div>
+    ),
+    ssr: false,
+  }
+);
 
 interface ResultPageProps {
   params: Promise<{ id: string }>;

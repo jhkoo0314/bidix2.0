@@ -24,6 +24,7 @@
  * @see {@link /docs/ui/design-system.md} - Numeric Highlight 규칙 및 브랜드 Accent Colors
  */
 
+import { memo } from "react";
 import { SectionCard } from "@/components/common/SectionCard";
 import { Badge } from "@/components/common/Badge";
 
@@ -41,7 +42,7 @@ function getTier(level: number): string {
   return "Bronze";
 }
 
-export function QuickStats({
+export const QuickStats = memo(function QuickStats({
   level,
   totalScore,
   simulationCount,
@@ -80,5 +81,5 @@ export function QuickStats({
       </SectionCard>
     </div>
   );
-}
+});
 
