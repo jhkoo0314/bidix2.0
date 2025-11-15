@@ -33,6 +33,7 @@
  * @see {@link /docs/ui/design-system.md} - 디자인 시스템
  */
 
+import type { Metadata } from "next";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
@@ -51,6 +52,24 @@ import { formatOutcome } from "@/lib/utils/outcome";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+
+export const metadata: Metadata = {
+  title: "입찰 히스토리 - BIDIX",
+  description: "과거 입찰 결과 및 성과를 분석하고, 점수와 등급을 확인할 수 있습니다",
+  keywords: ["히스토리", "입찰 기록", "성과 분석", "경매 결과", "BIDIX"],
+  openGraph: {
+    title: "입찰 히스토리 - BIDIX",
+    description: "당신의 경험을, 데이터로 증명하다.",
+    images: ["/og-image.png"],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "입찰 히스토리 - BIDIX",
+    description: "당신의 경험을, 데이터로 증명하다.",
+    images: ["/og-image.png"],
+  },
+};
 
 interface HistoryPageProps {
   searchParams: Promise<{

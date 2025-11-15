@@ -36,6 +36,7 @@
  * @see {@link /docs/product/brand-story.md} - 브랜드 보이스 가이드
  */
 
+import type { Metadata } from "next";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { createClerkSupabaseClient } from "@/lib/supabase/server";
@@ -44,6 +45,24 @@ import { SimulationList } from "@/components/simulations/SimulationList";
 import { CreateSimulationButton } from "@/components/dashboard/CreateSimulationButton";
 import { PropertySeed, Valuation } from "@/lib/types";
 import type { SimulationListItem } from "@/components/simulations/SimulationList";
+
+export const metadata: Metadata = {
+  title: "시뮬레이션 목록 - BIDIX",
+  description: "전체 시뮬레이션 목록을 확인하고 난이도별, 매물 타입별, 지역별로 필터링할 수 있습니다",
+  keywords: ["시뮬레이션 목록", "경매 연습", "난이도별 필터", "부동산 경매", "BIDIX"],
+  openGraph: {
+    title: "시뮬레이션 목록 - BIDIX",
+    description: "당신의 경험을, 데이터로 증명하다.",
+    images: ["/og-image.png"],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "시뮬레이션 목록 - BIDIX",
+    description: "당신의 경험을, 데이터로 증명하다.",
+    images: ["/og-image.png"],
+  },
+};
 
 export default async function SimulationsListPage() {
   console.group("Simulation List Page Render");

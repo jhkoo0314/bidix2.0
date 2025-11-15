@@ -37,6 +37,7 @@
  * @see {@link /docs/product/prdv2.md} - 브랜드 메시지 및 사용자 경험 가이드
  */
 
+import type { Metadata } from "next";
 import { auth } from "@clerk/nextjs/server";
 import { redirect, notFound } from "next/navigation";
 import { createClerkSupabaseClient } from "@/lib/supabase/server";
@@ -47,6 +48,28 @@ import { BidForm } from "@/components/bid/BidForm";
 
 interface BidPageProps {
   params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata({
+  params,
+}: BidPageProps): Promise<Metadata> {
+  return {
+    title: "입찰하기 - BIDIX",
+    description: "경매 입찰가를 입력하고 시뮬레이션 결과를 확인할 수 있습니다",
+    keywords: ["입찰", "경매 입찰", "시뮬레이션", "BIDIX"],
+    openGraph: {
+      title: "입찰하기 - BIDIX",
+      description: "당신의 경험을, 데이터로 증명하다.",
+      images: ["/og-image.png"],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "입찰하기 - BIDIX",
+      description: "당신의 경험을, 데이터로 증명하다.",
+      images: ["/og-image.png"],
+    },
+  };
 }
 
 export default async function BidPage({ params }: BidPageProps) {

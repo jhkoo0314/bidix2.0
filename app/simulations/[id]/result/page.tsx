@@ -44,6 +44,7 @@
  * @see {@link /docs/product/todov3.md} - 개발자 모드 리포트 구현 계획 (2.6.5, 2.6.6)
  */
 
+import type { Metadata } from "next";
 import { auth } from "@clerk/nextjs/server";
 import { redirect, notFound } from "next/navigation";
 import { createClerkSupabaseClient } from "@/lib/supabase/server";
@@ -76,7 +77,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 // Premium 리포트 컴포넌트 동적 로딩 (개발자 모드에서만 필요)
 const RightsAnalysisReport = dynamic(
-  () => import("@/components/reports/RightsAnalysisReport").then((mod) => mod.RightsAnalysisReport),
+  () =>
+    import("@/components/reports/RightsAnalysisReport").then(
+      (mod) => mod.RightsAnalysisReport,
+    ),
   {
     loading: () => (
       <div className="space-y-4">
@@ -84,12 +88,14 @@ const RightsAnalysisReport = dynamic(
         <Skeleton className="h-64 w-full" />
       </div>
     ),
-    ssr: false, // 클라이언트 사이드에서만 로드
-  }
+  },
 );
 
 const ProfitAnalysisReport = dynamic(
-  () => import("@/components/reports/ProfitAnalysisReport").then((mod) => mod.ProfitAnalysisReport),
+  () =>
+    import("@/components/reports/ProfitAnalysisReport").then(
+      (mod) => mod.ProfitAnalysisReport,
+    ),
   {
     loading: () => (
       <div className="space-y-4">
@@ -97,12 +103,14 @@ const ProfitAnalysisReport = dynamic(
         <Skeleton className="h-64 w-full" />
       </div>
     ),
-    ssr: false,
-  }
+  },
 );
 
 const AuctionAnalysisReport = dynamic(
-  () => import("@/components/reports/AuctionAnalysisReport").then((mod) => mod.AuctionAnalysisReport),
+  () =>
+    import("@/components/reports/AuctionAnalysisReport").then(
+      (mod) => mod.AuctionAnalysisReport,
+    ),
   {
     loading: () => (
       <div className="space-y-4">
@@ -110,13 +118,15 @@ const AuctionAnalysisReport = dynamic(
         <Skeleton className="h-64 w-full" />
       </div>
     ),
-    ssr: false,
-  }
+  },
 );
 
 // CompetitorAnalysis 동적 로딩 (경쟁자 정보가 있을 때만 필요)
 const CompetitorAnalysis = dynamic(
-  () => import("@/components/result/CompetitorAnalysis").then((mod) => mod.CompetitorAnalysis),
+  () =>
+    import("@/components/result/CompetitorAnalysis").then(
+      (mod) => mod.CompetitorAnalysis,
+    ),
   {
     loading: () => (
       <div className="space-y-4">
@@ -124,12 +134,110 @@ const CompetitorAnalysis = dynamic(
         <Skeleton className="h-48 w-full" />
       </div>
     ),
-    ssr: false,
-  }
+  },
 );
 
 interface ResultPageProps {
   params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata({
+  params,
+}: ResultPageProps): Promise<Metadata> {
+  const { id } = await params;
+  const { userId } = await auth();
+
+  if (!userId) {
+    return {
+      title: "입찰 결과 - BIDIX",
+      description: "입찰 결과 및 성과 분석을 확인할 수 있습니다",
+    };
+  }
+
+  try {
+    const supabase = createClerkSupabaseClient();
+    const { data: simulationRecord } = await supabase
+      .from("simulations")
+      .select("property_json, outcome, score_awarded, result_json")
+      .eq("id", id)
+      .eq("user_id", userId)
+      .single();
+
+    if (simulationRecord) {
+      const propertySeed = simulationRecord.property_json as PropertySeed;
+      const property = PropertyEngine.normalize(propertySeed);
+      const summary = simulationRecord.result_json as AuctionSummary | null;
+
+      const propertyTypeLabels: Record<string, string> = {
+        apartment: "아파트",
+        villa: "빌라/다세대",
+        officetel: "오피스텔",
+        multi_house: "다가구주택",
+        detached: "단독주택",
+        res_land: "대지(주거)",
+      };
+
+      const propertyTypeLabel =
+        propertyTypeLabels[property.type] || property.type;
+      const outcomeLabels: Record<string, string> = {
+        success: "성공",
+        failed: "실패",
+        close: "근접",
+      };
+      const outcomeLabel =
+        outcomeLabels[simulationRecord.outcome || ""] || "결과";
+      const score = simulationRecord.score_awarded || 0;
+      const grade = summary?.grade || "";
+
+      const title = `${propertyTypeLabel} 입찰 결과 (${outcomeLabel}) - BIDIX`;
+      const description = `${
+        property.address || "부동산"
+      } ${propertyTypeLabel} 경매 입찰 결과 - 점수: ${score}점${
+        grade ? `, 등급: ${grade}` : ""
+      }`;
+
+      return {
+        title,
+        description,
+        keywords: [
+          propertyTypeLabel,
+          outcomeLabel,
+          "입찰 결과",
+          "경매 시뮬레이션",
+          "BIDIX",
+        ],
+        openGraph: {
+          title: `${propertyTypeLabel} 입찰 결과 - BIDIX`,
+          description: `${
+            property.address || "부동산"
+          } ${propertyTypeLabel} 경매 입찰 결과`,
+          images: ["/og-image.png"],
+          type: "website",
+        },
+        twitter: {
+          card: "summary_large_image",
+          title: `${propertyTypeLabel} 입찰 결과 - BIDIX`,
+          description: `${
+            property.address || "부동산"
+          } ${propertyTypeLabel} 경매 입찰 결과`,
+          images: ["/og-image.png"],
+        },
+      };
+    }
+  } catch (err) {
+    console.error("메타데이터 생성 에러:", err);
+  }
+
+  return {
+    title: "입찰 결과 - BIDIX",
+    description: "입찰 결과 및 성과 분석을 확인할 수 있습니다",
+    openGraph: {
+      title: "입찰 결과 - BIDIX",
+      description: "당신의 경험을, 데이터로 증명하다.",
+      images: ["/og-image.png"],
+      type: "website",
+    },
+  };
 }
 
 export default async function ResultPage({ params }: ResultPageProps) {
@@ -163,7 +271,7 @@ export default async function ResultPage({ params }: ResultPageProps) {
     const { data: simulationRecord, error } = await supabase
       .from("simulations")
       .select(
-        "id, user_id, my_bid, outcome, score_awarded, property_json, valuation_json, rights_json, costs_json, profit_json, result_json, court_docs_json"
+        "id, user_id, my_bid, outcome, score_awarded, property_json, valuation_json, rights_json, costs_json, profit_json, result_json, court_docs_json",
       )
       .eq("id", id)
       .eq("user_id", userId)
@@ -219,7 +327,11 @@ export default async function ResultPage({ params }: ResultPageProps) {
       if (!rights || typeof rights.assumableRightsTotal !== "number") {
         throw new Error("Rights 데이터 형식 오류");
       }
-      if (!costs || !costs.acquisition || typeof costs.acquisition.totalAcquisition !== "number") {
+      if (
+        !costs ||
+        !costs.acquisition ||
+        typeof costs.acquisition.totalAcquisition !== "number"
+      ) {
         console.error("Costs 데이터 구조:", JSON.stringify(costs, null, 2));
         throw new Error("Costs 데이터 형식 오류");
       }
@@ -314,8 +426,16 @@ export default async function ResultPage({ params }: ResultPageProps) {
 
         console.log("ScoreBreakdown 계산 성공:");
         console.log("- Accuracy Score:", scoreBreakdown.accuracyScore, "/ 400");
-        console.log("- Profitability Score:", scoreBreakdown.profitabilityScore, "/ 400");
-        console.log("- Risk Control Score:", scoreBreakdown.riskControlScore, "/ 200");
+        console.log(
+          "- Profitability Score:",
+          scoreBreakdown.profitabilityScore,
+          "/ 400",
+        );
+        console.log(
+          "- Risk Control Score:",
+          scoreBreakdown.riskControlScore,
+          "/ 200",
+        );
         console.log("- Final Score:", scoreBreakdown.finalScore, "/ 1000");
         console.log("- Grade:", scoreBreakdown.grade);
         console.log("- EXP Gain:", scoreBreakdown.expGain);
@@ -357,7 +477,9 @@ export default async function ResultPage({ params }: ResultPageProps) {
       if (userBid > 0) {
         try {
           const propertySeed = simulationRecord.property_json as PropertySeed;
-          const mergedPolicy = mergePolicyWithDifficulty(propertySeed.difficulty);
+          const mergedPolicy = mergePolicyWithDifficulty(
+            propertySeed.difficulty,
+          );
           competitorBids = generateCompetitorBids(
             propertySeed,
             valuation,
@@ -378,7 +500,11 @@ export default async function ResultPage({ params }: ResultPageProps) {
       console.error("데이터 구조 재구성 에러:", err);
       console.groupEnd();
       console.groupEnd();
-      throw new Error(`데이터 변환 실패: ${err instanceof Error ? err.message : "Unknown error"}`);
+      throw new Error(
+        `데이터 변환 실패: ${
+          err instanceof Error ? err.message : "Unknown error"
+        }`,
+      );
     }
     console.groupEnd();
     console.groupEnd();
@@ -402,13 +528,15 @@ export default async function ResultPage({ params }: ResultPageProps) {
   console.group("Developer Mode Detection");
   const nextPublicDevMode = process.env.NEXT_PUBLIC_DEV_MODE;
   const nodeEnv = process.env.NODE_ENV;
-  const isDevMode =
-    nextPublicDevMode === "true" || nodeEnv === "development";
-  
+  const isDevMode = nextPublicDevMode === "true" || nodeEnv === "development";
+
   console.log("NEXT_PUBLIC_DEV_MODE:", nextPublicDevMode ?? "(undefined)");
   console.log("NODE_ENV:", nodeEnv ?? "(undefined)");
   console.log("isDevMode:", isDevMode);
-  console.log("개발자 모드 활성화:", isDevMode ? "✅ 실제 리포트 표시" : "❌ 잠금 UI 표시");
+  console.log(
+    "개발자 모드 활성화:",
+    isDevMode ? "✅ 실제 리포트 표시" : "❌ 잠금 UI 표시",
+  );
   console.groupEnd();
 
   console.log("렌더링 준비 완료");
@@ -418,8 +546,16 @@ export default async function ResultPage({ params }: ResultPageProps) {
     console.log("ScoreBreakdown 준비 완료:", scoreBreakdown.finalScore);
     console.group("ScoreBreakdown Details");
     console.log("Accuracy Score:", scoreBreakdown.accuracyScore, "/ 400");
-    console.log("Profitability Score:", scoreBreakdown.profitabilityScore, "/ 400");
-    console.log("Risk Control Score:", scoreBreakdown.riskControlScore, "/ 200");
+    console.log(
+      "Profitability Score:",
+      scoreBreakdown.profitabilityScore,
+      "/ 400",
+    );
+    console.log(
+      "Risk Control Score:",
+      scoreBreakdown.riskControlScore,
+      "/ 200",
+    );
     console.log("Final Score:", scoreBreakdown.finalScore, "/ 1000");
     console.log("Grade:", scoreBreakdown.grade);
     console.log("EXP Gain:", scoreBreakdown.expGain);
@@ -438,8 +574,12 @@ export default async function ResultPage({ params }: ResultPageProps) {
       <div className="w-full max-w-7xl mx-auto space-y-6 md:space-y-8">
         {/* 헤더 */}
         <div className="space-y-2">
-          <h1 className="text-3xl md:text-4xl font-bold font-[var(--font-inter)]">입찰 결과</h1>
-          <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 font-[var(--font-noto-sans-kr)]">시뮬레이션 ID: {id}</p>
+          <h1 className="text-3xl md:text-4xl font-bold font-[var(--font-inter)]">
+            입찰 결과
+          </h1>
+          <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 font-[var(--font-noto-sans-kr)]">
+            시뮬레이션 ID: {id}
+          </p>
         </div>
 
         {/* 브랜드 메시지 layer (페이지 최상단) */}
@@ -508,13 +648,18 @@ export default async function ResultPage({ params }: ResultPageProps) {
         )}
 
         {/* Premium Report CTAs (개발자 모드에서 실제 리포트 표시) */}
-        <section className="space-y-4 md:space-y-6">
+        <article className="space-y-4 md:space-y-6">
           {(() => {
             console.group("Premium Report Section");
             console.log("=== Premium Report 렌더링 시작 ===");
             console.log("개발자 모드:", isDevMode);
             console.log("무료 리포트 사용 가능:", freeReportAvailable);
-            console.log("모드:", isDevMode ? "🔓 개발자 모드 (실제 리포트 표시)" : "🔒 프로덕션 모드 (잠금 UI 표시)");
+            console.log(
+              "모드:",
+              isDevMode
+                ? "🔓 개발자 모드 (실제 리포트 표시)"
+                : "🔒 프로덕션 모드 (잠금 UI 표시)",
+            );
             return (
               <>
                 {/* 매각물건명세서 해설판 (무료 리포트) */}
@@ -522,11 +667,15 @@ export default async function ResultPage({ params }: ResultPageProps) {
                 {result.courtDocs && (
                   <div className="space-y-4">
                     {(() => {
-                      const saleStatementFreeAvailable = isDevMode ? true : freeReportAvailable;
+                      const saleStatementFreeAvailable = isDevMode
+                        ? true
+                        : freeReportAvailable;
                       console.log("SaleStatementReport 렌더링:", {
                         hasCourtDocs: !!result.courtDocs,
                         isFreeAvailable: saleStatementFreeAvailable,
-                        mode: isDevMode ? "개발자 모드 (항상 무료)" : "프로덕션 모드 (사용량 체크)",
+                        mode: isDevMode
+                          ? "개발자 모드 (항상 무료)"
+                          : "프로덕션 모드 (사용량 체크)",
                       });
                       return (
                         <SaleStatementReport
@@ -543,8 +692,10 @@ export default async function ResultPage({ params }: ResultPageProps) {
                   <div className="space-y-6">
                     {(() => {
                       console.group("개발자 모드: 실제 리포트 렌더링");
-                      console.log("✅ 개발자 모드 활성화 - 실제 리포트 컴포넌트 렌더링");
-                      
+                      console.log(
+                        "✅ 개발자 모드 활성화 - 실제 리포트 컴포넌트 렌더링",
+                      );
+
                       // 각 리포트 컴포넌트 Props 검증
                       console.group("RightsAnalysisReport Props 검증");
                       const hasRights = !!result.rights;
@@ -553,14 +704,16 @@ export default async function ResultPage({ params }: ResultPageProps) {
                       console.log("courtDocs 존재:", hasCourtDocs);
                       if (hasRights) {
                         console.log("rights 구조:", {
-                          assumableRightsTotal: result.rights.assumableRightsTotal,
+                          assumableRightsTotal:
+                            result.rights.assumableRightsTotal,
                           evictionRisk: result.rights.evictionRisk,
                           riskFlags: result.rights.riskFlags?.length || 0,
                         });
                       }
                       if (hasCourtDocs) {
                         console.log("courtDocs 구조:", {
-                          hasRegisteredRights: !!result.courtDocs?.registeredRights,
+                          hasRegisteredRights:
+                            !!result.courtDocs?.registeredRights,
                           hasOccupants: !!result.courtDocs?.occupants,
                           baseRightDate: result.courtDocs?.baseRightDate,
                         });
@@ -576,9 +729,12 @@ export default async function ResultPage({ params }: ResultPageProps) {
                       console.log("costs 존재:", hasCosts);
                       if (hasProfit) {
                         console.log("profit 구조:", {
-                          initialSafetyMargin: result.profit.initialSafetyMargin,
+                          initialSafetyMargin:
+                            result.profit.initialSafetyMargin,
                           hasScenarios: !!result.profit.scenarios,
-                          scenarioKeys: result.profit.scenarios ? Object.keys(result.profit.scenarios) : [],
+                          scenarioKeys: result.profit.scenarios
+                            ? Object.keys(result.profit.scenarios)
+                            : [],
                         });
                       }
                       if (hasValuation) {
@@ -589,7 +745,8 @@ export default async function ResultPage({ params }: ResultPageProps) {
                       }
                       if (hasCosts) {
                         console.log("costs 구조:", {
-                          totalAcquisition: result.costs.acquisition?.totalAcquisition,
+                          totalAcquisition:
+                            result.costs.acquisition?.totalAcquisition,
                           ownCash: result.costs.acquisition?.ownCash,
                         });
                       }
@@ -609,7 +766,8 @@ export default async function ResultPage({ params }: ResultPageProps) {
                           isProfitable: result.summary.isProfitable,
                           bestHoldingPeriod: result.summary.bestHoldingPeriod,
                           riskLabel: result.summary.riskLabel,
-                          recommendedBidRange: result.summary.recommendedBidRange,
+                          recommendedBidRange:
+                            result.summary.recommendedBidRange,
                         });
                       }
                       if (hasScoreBreakdown) {
@@ -624,18 +782,32 @@ export default async function ResultPage({ params }: ResultPageProps) {
                       console.groupEnd();
 
                       console.groupEnd();
-                      
+
                       // 데이터 검증 및 에러 처리
                       if (!result.rights || !result.courtDocs) {
-                        console.warn("⚠️ RightsAnalysisReport 렌더링 불가: rights 또는 courtDocs 데이터 없음");
+                        console.warn(
+                          "⚠️ RightsAnalysisReport 렌더링 불가: rights 또는 courtDocs 데이터 없음",
+                        );
                       }
-                      if (!result.profit || !result.valuation || !result.costs) {
-                        console.warn("⚠️ ProfitAnalysisReport 렌더링 불가: profit, valuation 또는 costs 데이터 없음");
+                      if (
+                        !result.profit ||
+                        !result.valuation ||
+                        !result.costs
+                      ) {
+                        console.warn(
+                          "⚠️ ProfitAnalysisReport 렌더링 불가: profit, valuation 또는 costs 데이터 없음",
+                        );
                       }
-                      if (!result.summary || !result.valuation || !result.profit) {
-                        console.warn("⚠️ AuctionAnalysisReport 렌더링 불가: summary, valuation 또는 profit 데이터 없음");
+                      if (
+                        !result.summary ||
+                        !result.valuation ||
+                        !result.profit
+                      ) {
+                        console.warn(
+                          "⚠️ AuctionAnalysisReport 렌더링 불가: summary, valuation 또는 profit 데이터 없음",
+                        );
                       }
-                      
+
                       return (
                         <>
                           {/* 권리 분석 상세 리포트 */}
@@ -643,7 +815,9 @@ export default async function ResultPage({ params }: ResultPageProps) {
                             <>
                               <Separator />
                               {(() => {
-                                console.log("✅ RightsAnalysisReport 렌더링 시작");
+                                console.log(
+                                  "✅ RightsAnalysisReport 렌더링 시작",
+                                );
                                 return (
                                   <RightsAnalysisReport
                                     rights={result.rights}
@@ -659,7 +833,9 @@ export default async function ResultPage({ params }: ResultPageProps) {
                             <>
                               <Separator />
                               {(() => {
-                                console.log("✅ ProfitAnalysisReport 렌더링 시작");
+                                console.log(
+                                  "✅ ProfitAnalysisReport 렌더링 시작",
+                                );
                                 return (
                                   <ProfitAnalysisReport
                                     profit={result.profit}
@@ -672,11 +848,15 @@ export default async function ResultPage({ params }: ResultPageProps) {
                           ) : null}
 
                           {/* 경매 분석 상세 리포트 */}
-                          {result.summary && result.valuation && result.profit ? (
+                          {result.summary &&
+                          result.valuation &&
+                          result.profit ? (
                             <>
                               <Separator />
                               {(() => {
-                                console.log("✅ AuctionAnalysisReport 렌더링 시작");
+                                console.log(
+                                  "✅ AuctionAnalysisReport 렌더링 시작",
+                                );
                                 return (
                                   <AuctionAnalysisReport
                                     summary={result.summary}
@@ -698,7 +878,9 @@ export default async function ResultPage({ params }: ResultPageProps) {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                     {(() => {
                       console.group("프로덕션 모드: 잠금 UI 렌더링");
-                      console.log("🔒 프로덕션 모드 활성화 - PremiumReportCTA 잠금 UI 표시");
+                      console.log(
+                        "🔒 프로덕션 모드 활성화 - PremiumReportCTA 잠금 UI 표시",
+                      );
                       console.log("렌더링할 PremiumReportCTA:", [
                         { type: "rights", title: "권리 분석 상세 리포트" },
                         { type: "profit", title: "수익 분석 상세 리포트" },
@@ -723,20 +905,14 @@ export default async function ResultPage({ params }: ResultPageProps) {
               </>
             );
           })()}
-        </section>
+        </article>
 
         {/* ResultActions */}
         {(() => {
           console.log("Rendering ResultActions");
-          return (
-            <ResultActions
-              simulationId={id}
-              isSaved={isHistorySaved}
-            />
-          );
+          return <ResultActions simulationId={id} isSaved={isHistorySaved} />;
         })()}
       </div>
     </main>
   );
 }
-

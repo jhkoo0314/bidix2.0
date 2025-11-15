@@ -38,6 +38,7 @@
  * @see {@link /docs/ui/design-system.md} - 브랜드 통합 디자인 시스템 v2.2
  */
 
+import type { Metadata } from "next";
 import { auth } from "@clerk/nextjs/server";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
@@ -56,6 +57,84 @@ import { Badge } from "@/components/common/Badge";
 
 interface SimulationDetailPageProps {
   params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata({
+  params,
+}: SimulationDetailPageProps): Promise<Metadata> {
+  const { id } = await params;
+  const { userId } = await auth();
+
+  if (!userId) {
+    return {
+      title: "시뮬레이션 상세 - BIDIX",
+      description: "시뮬레이션 상세 정보를 확인할 수 있습니다",
+    };
+  }
+
+  try {
+    const supabase = createClerkSupabaseClient();
+    const { data: simulationRecord } = await supabase
+      .from("simulations")
+      .select("property_json, difficulty")
+      .eq("id", id)
+      .eq("user_id", userId)
+      .single();
+
+    if (simulationRecord) {
+      const propertySeed = simulationRecord.property_json as PropertySeed;
+      const property = PropertyEngine.normalize(propertySeed);
+      const difficulty = simulationRecord.difficulty || property.difficulty;
+
+      const propertyTypeLabels: Record<string, string> = {
+        apartment: "아파트",
+        villa: "빌라/다세대",
+        officetel: "오피스텔",
+        multi_house: "다가구주택",
+        detached: "단독주택",
+        res_land: "대지(주거)",
+      };
+
+      const propertyTypeLabel = propertyTypeLabels[property.type] || property.type;
+      const difficultyLabels: Record<string, string> = {
+        easy: "Easy",
+        normal: "Normal",
+        hard: "Hard",
+      };
+      const difficultyLabel = difficultyLabels[difficulty] || difficulty;
+
+      return {
+        title: `${propertyTypeLabel} 시뮬레이션 (${difficultyLabel}) - BIDIX`,
+        description: `${property.address || "부동산"} ${propertyTypeLabel} 경매 시뮬레이션 - ${difficultyLabel} 난이도`,
+        keywords: [propertyTypeLabel, difficultyLabel, "경매 시뮬레이션", "BIDIX"],
+        openGraph: {
+          title: `${propertyTypeLabel} 시뮬레이션 - BIDIX`,
+          description: `${property.address || "부동산"} ${propertyTypeLabel} 경매 시뮬레이션`,
+          images: ["/og-image.png"],
+          type: "website",
+        },
+        twitter: {
+          card: "summary_large_image",
+          title: `${propertyTypeLabel} 시뮬레이션 - BIDIX`,
+          description: `${property.address || "부동산"} ${propertyTypeLabel} 경매 시뮬레이션`,
+          images: ["/og-image.png"],
+        },
+      };
+    }
+  } catch (err) {
+    console.error("메타데이터 생성 에러:", err);
+  }
+
+  return {
+    title: "시뮬레이션 상세 - BIDIX",
+    description: "시뮬레이션 상세 정보를 확인할 수 있습니다",
+    openGraph: {
+      title: "시뮬레이션 상세 - BIDIX",
+      description: "당신의 경험을, 데이터로 증명하다.",
+      images: ["/og-image.png"],
+      type: "website",
+    },
+  };
 }
 
 export default async function SimulationDetailPage({
@@ -192,17 +271,17 @@ export default async function SimulationDetailPage({
         </div>
 
         {/* 반응형 레이아웃: Desktop 2열, Mobile 1열 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        <article className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           {/* 좌측: 매각물건명세서 요약 */}
-          <div>
+          <section>
             <SaleStatementSummary property={property} courtDocs={courtDocs} />
-          </div>
+          </section>
 
           {/* 우측: 권리 분석 요약 */}
-          <div>
+          <section>
             <RightsSummary rights={rights} />
-          </div>
-        </div>
+          </section>
+        </article>
 
         {/* 입찰하기 CTA */}
         <section className="pt-6 md:pt-8 flex justify-center md:justify-start">

@@ -38,6 +38,7 @@
  * @see {@link /docs/ui/design-system.md} - 디자인 시스템 v2.2
  */
 
+import type { Metadata } from "next";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { createClerkSupabaseClient } from "@/lib/supabase/server";
@@ -48,6 +49,24 @@ import { RecentSimulations } from "@/components/dashboard/RecentSimulations";
 import { CreateSimulationButton } from "@/components/dashboard/CreateSimulationButton";
 import { Property, PropertySeed, Valuation } from "@/lib/types";
 import type { SimulationListItem } from "@/components/dashboard/RecentSimulations";
+
+export const metadata: Metadata = {
+  title: "대시보드 - BIDIX",
+  description: "사용자 통계, 최근 시뮬레이션, 점수 및 레벨 정보를 확인할 수 있는 대시보드",
+  keywords: ["대시보드", "시뮬레이션 통계", "점수", "레벨", "경매 연습", "BIDIX"],
+  openGraph: {
+    title: "대시보드 - BIDIX",
+    description: "당신의 경험을, 데이터로 증명하다.",
+    images: ["/og-image.png"],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "대시보드 - BIDIX",
+    description: "당신의 경험을, 데이터로 증명하다.",
+    images: ["/og-image.png"],
+  },
+};
 
 export default async function DashboardPage() {
   console.group("Dashboard Page Render");
