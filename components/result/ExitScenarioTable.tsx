@@ -30,6 +30,7 @@
 
 import { Profit } from "@/lib/types";
 import { SectionCard } from "@/components/common/SectionCard";
+import { BrandTooltip } from "@/components/common/BrandTooltip";
 import { formatPercentage } from "@/lib/utils/number";
 
 export interface ExitScenarioTableProps {
@@ -127,14 +128,18 @@ export function ExitScenarioTable({ profit }: ExitScenarioTableProps) {
                     {scenario.netProfit.toLocaleString()}원
                   </td>
                   <td className="text-right p-3">
-                    <span className="numeric-highlight font-semibold font-[var(--font-noto-sans-kr)]">
-                      {formatPercentage(scenario.roi * 100)}
-                    </span>
+                    <BrandTooltip content="이 보유기간 동안의 수익률입니다.">
+                      <span className="numeric-highlight font-semibold font-[var(--font-noto-sans-kr)] brand-hover cursor-help">
+                        {formatPercentage(scenario.roi * 100)}
+                      </span>
+                    </BrandTooltip>
                   </td>
                   <td className="text-right p-3">
-                    <span className="numeric-highlight font-semibold font-[var(--font-noto-sans-kr)]">
-                      {formatPercentage(scenario.annualizedRoi * 100)}
-                    </span>
+                    <BrandTooltip content="연간 기준으로 환산한 수익률입니다.">
+                      <span className="numeric-highlight font-semibold font-[var(--font-noto-sans-kr)] brand-hover cursor-help">
+                        {formatPercentage(scenario.annualizedRoi * 100)}
+                      </span>
+                    </BrandTooltip>
                   </td>
                 </tr>
               );

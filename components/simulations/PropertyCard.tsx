@@ -41,7 +41,7 @@ export function PropertyCard({ property, valuation }: PropertyCardProps) {
   return (
     <Link
       href={`/simulations/${property.id}`}
-      className="block p-6 border rounded-lg hover:shadow-md transition-shadow hover:border-[hsl(var(--accent-blue))]/20"
+      className="block p-6 border rounded-lg brand-hover hover:border-[hsl(var(--accent-blue))]/20"
     >
       <div className="space-y-4">
         {/* 헤더 */}

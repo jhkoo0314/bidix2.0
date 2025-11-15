@@ -1574,15 +1574,23 @@
 
 **Hover 효과**:
 
-- [ ] 소극적 강조, 낮은 채도
-- [ ] 브랜드 메시지 포함 미세툴팁 제공
-  - 예: "이 값은 시세 대비 정확도를 의미합니다."
+- [x] 소극적 강조, 낮은 채도
+  - `brand-hover` 클래스가 `globals.css`에 정의되어 있고, 여러 컴포넌트에서 사용 중
+  - 낮은 채도 적용 (opacity 0.05, 0.2), 부드러운 transition (200ms ease)
+- [x] 브랜드 메시지 포함 미세툴팁 제공
+  - `BrandTooltip` 컴포넌트 구현 완료 및 실제 사용 중
+  - ExitScenarioTable, DataRow, MetricsStrip에서 브랜드 메시지 툴팁 제공
+  - 예: "이 보유기간 동안의 수익률입니다.", "FMV 대비 초기 마진입니다."
 
 **Error/Empty State**:
 
-- [ ] 브랜드 톤: 단호하지만 따뜻하게
-- [ ] 사용자를 평가하지 않음
-- [ ] 예: "이 결과는 당신의 학습을 위한 데이터입니다."
+- [x] 브랜드 톤: 단호하지만 따뜻하게
+  - ErrorState: "이 결과는 당신의 학습을 위한 데이터입니다. 문제가 발생했지만 괜찮습니다." 메시지 구현
+  - EmptyState: `brand-message` 클래스 적용 (넓은 letter-spacing, 얇은 weight)
+- [x] 사용자를 평가하지 않음
+  - ErrorState와 EmptyState 모두 사용자를 평가하지 않는 톤으로 구현
+- [x] 예: "이 결과는 당신의 학습을 위한 데이터입니다."
+  - ErrorState에 정확히 해당 메시지 구현됨
 
 ---
 

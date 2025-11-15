@@ -15,15 +15,18 @@
  * - Design System v2.2: Error State 규칙 준수
  * - 브랜드 보이스: 격려하되 과장하지 않음, 사용자를 평가하지 않음
  * - 메시지 톤: "이 결과는 당신의 학습을 위한 데이터입니다." 스타일
+ * - 브랜드 Accent Color 적용
  *
  * @dependencies
  * - @/components/ui/button: shadcn 버튼 컴포넌트
+ * - lucide-react: AlertCircle 아이콘
  *
  * @see {@link /docs/ui/design-system.md} - 에러 처리 가이드 및 인터랙션 규칙
  * @see {@link /docs/product/brand-story.md} - 브랜드 보이스 가이드
  */
 
 import { Button } from "@/components/ui/button";
+import { AlertCircle } from "lucide-react";
 
 export interface ErrorStateProps {
   message?: string;
@@ -38,15 +41,16 @@ export function ErrorState({
   // 원칙: 단호하지만 따뜻하게, 사용자를 평가하지 않음
   const defaultMessage =
     message ||
-    "문제가 발생했습니다. 괜찮습니다. 다시 시도해 주세요.";
+    "이 결과는 당신의 학습을 위한 데이터입니다. 문제가 발생했지만 괜찮습니다.";
 
   return (
     <div className="flex flex-col items-center justify-center p-8 text-center">
+      <AlertCircle className="w-12 h-12 text-[hsl(var(--accent-amber))] mb-4" />
       <p className="text-lg text-muted-foreground mb-4 font-[var(--font-noto-sans-kr)]">
         {defaultMessage}
       </p>
       {onRetry && (
-        <Button onClick={onRetry} variant="outline">
+        <Button onClick={onRetry} variant="outline" className="brand-hover">
           다시 시도
         </Button>
       )}

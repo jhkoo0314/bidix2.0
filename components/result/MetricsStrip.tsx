@@ -42,6 +42,7 @@ import { Profit } from "@/lib/types";
 import { ScoreBreakdown } from "@/lib/engines/scoreengine";
 import { SectionCard } from "@/components/common/SectionCard";
 import { Badge } from "@/components/common/Badge";
+import { BrandTooltip } from "@/components/common/BrandTooltip";
 import { formatPercentage } from "@/lib/utils/number";
 
 export interface MetricsStripProps {
@@ -98,49 +99,55 @@ export function MetricsStrip({ profit, score }: MetricsStripProps) {
         {/* 3개 주요 지표 카드 */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* 초기 안전마진 */}
-          <div className="p-4 border rounded-lg">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-[var(--font-noto-sans-kr)]">
-              초기 안전마진
-            </p>
-            <p className="text-2xl font-bold numeric-highlight">
-              {formatPercentage(safetyMarginPercent)}
-            </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-[var(--font-noto-sans-kr)]">
-              FMV 대비 초기 마진
-            </p>
-            <p className="text-xs text-gray-600 dark:text-gray-400 mt-2 italic font-[var(--font-noto-sans-kr)]">
-              당신의 안전마진은 {formatPercentage(safetyMarginPercent)}였습니다.
-            </p>
-          </div>
+          <BrandTooltip content="FMV 대비 초기 마진입니다. 이 값이 높을수록 안전합니다.">
+            <div className="p-4 border rounded-lg brand-hover cursor-help">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-[var(--font-noto-sans-kr)]">
+                초기 안전마진
+              </p>
+              <p className="text-2xl font-bold numeric-highlight">
+                {formatPercentage(safetyMarginPercent)}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-[var(--font-noto-sans-kr)]">
+                FMV 대비 초기 마진
+              </p>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-2 italic font-[var(--font-noto-sans-kr)]">
+                당신의 안전마진은 {formatPercentage(safetyMarginPercent)}였습니다.
+              </p>
+            </div>
+          </BrandTooltip>
 
           {/* 최적 ROI */}
-          <div className="p-4 border rounded-lg">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-[var(--font-noto-sans-kr)]">
-              최적 ROI
-            </p>
-            <p className="text-2xl font-bold numeric-highlight">
-              {formatPercentage(bestScenario.roi * 100)}
-            </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-[var(--font-noto-sans-kr)]">
-              {bestScenario.months}개월 기준
-            </p>
-          </div>
+          <BrandTooltip content="3/6/12개월 중 가장 높은 수익률입니다.">
+            <div className="p-4 border rounded-lg brand-hover cursor-help">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-[var(--font-noto-sans-kr)]">
+                최적 ROI
+              </p>
+              <p className="text-2xl font-bold numeric-highlight">
+                {formatPercentage(bestScenario.roi * 100)}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-[var(--font-noto-sans-kr)]">
+                {bestScenario.months}개월 기준
+              </p>
+            </div>
+          </BrandTooltip>
 
           {/* 최종 점수 */}
-          <div className="p-4 border rounded-lg">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-[var(--font-noto-sans-kr)]">
-              최종 점수
-            </p>
-            <div className="flex items-center gap-2">
-              <p className="text-2xl font-bold numeric-highlight">
-                {score.finalScore}
+          <BrandTooltip content="정확성, 수익성, 안정성을 종합한 점수입니다.">
+            <div className="p-4 border rounded-lg brand-hover cursor-help">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-[var(--font-noto-sans-kr)]">
+                최종 점수
               </p>
-              <Badge type="grade" value={score.grade} />
+              <div className="flex items-center gap-2">
+                <p className="text-2xl font-bold numeric-highlight">
+                  {score.finalScore}
+                </p>
+                <Badge type="grade" value={score.grade} />
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-[var(--font-noto-sans-kr)]">
+                1000점 만점
+              </p>
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-[var(--font-noto-sans-kr)]">
-              1000점 만점
-            </p>
-          </div>
+          </BrandTooltip>
         </div>
 
         {/* 점수 구성 상세 (접기/펼치기) */}

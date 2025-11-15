@@ -61,11 +61,13 @@ export function QuickFacts({ valuation }: QuickFactsProps) {
           label="조정된 시세"
           value={valuation.adjustedFMV}
           type="currency"
+          tooltipMessage="현재 시장가 기준 판단 정확도입니다."
         />
         <DataRow
           label="최저 입찰가"
           value={valuation.minBid}
           type="currency"
+          tooltipMessage="최저 입찰가입니다. 이 금액 이상 입찰해야 합니다."
         />
 
         {/* 보유기간별 예상 매각가 */}
@@ -81,16 +83,19 @@ export function QuickFacts({ valuation }: QuickFactsProps) {
               label="3개월 후 예상 매각가"
               value={valuation.exitPrice["3m"]}
               type="currency"
+              tooltipMessage="3개월 후 예상 매각가입니다."
             />
             <DataRow
               label="6개월 후 예상 매각가"
               value={valuation.exitPrice["6m"]}
               type="currency"
+              tooltipMessage="6개월 후 예상 매각가입니다."
             />
             <DataRow
               label="12개월 후 예상 매각가"
               value={valuation.exitPrice["12m"]}
               type="currency"
+              tooltipMessage="12개월 후 예상 매각가입니다."
             />
           </div>
         </div>

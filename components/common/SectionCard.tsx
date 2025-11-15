@@ -30,7 +30,7 @@ export interface SectionCardProps {
 
 export function SectionCard({ children, title }: SectionCardProps) {
   return (
-    <Card>
+    <Card className="brand-hover">
       {title && (
         <CardHeader className="p-4 md:p-6">
           <CardTitle className="font-[var(--font-inter)] text-lg md:text-xl">{title}</CardTitle>

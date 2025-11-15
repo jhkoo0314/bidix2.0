@@ -161,4 +161,24 @@
     letter-spacing: 0.05em;
     font-weight: 300;
   }
+  
+  /* 브랜드 Hover 효과 - 소극적 강조, 낮은 채도 */
+  .brand-hover {
+    transition: all 200ms ease;
+  }
+  .brand-hover:hover {
+    background-color: hsl(var(--accent) / 0.05);
+    border-color: hsl(var(--accent) / 0.2);
+  }
+  
+  /* 브랜드 Tooltip 스타일 - 부드러운 애니메이션, 낮은 채도 */
+  .brand-tooltip-content {
+    background-color: hsl(var(--accent-blue));
+    color: white;
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: opacity 200ms ease, transform 200ms ease;
+  }
 }
