@@ -33,6 +33,10 @@ export class ProfitEngine {
   ): Profit {
     const targetMargin = policy.profit.targetMarginRate ?? 0.08;
     const targetAnnualRoi = policy.profit.targetAnnualRoi ?? 0.1;
+    
+    // 🔹 ROI 상한선 정책 값 (기본값 설정)
+    const maxRoi = policy.profit.maxRoi ?? 10; // 1000%
+    const maxAnnualizedRoi = policy.profit.maxAnnualizedRoi ?? 50; // 5000%
 
     /* -------------------------------------------------------
      * 1) 초기 안전마진 (매수 시점 기준 – 단일 값)
@@ -45,6 +49,15 @@ export class ProfitEngine {
     /* -------------------------------------------------------
      * 2) 시나리오별 수익 계산 (3 / 6 / 12개월)
      * ------------------------------------------------------- */
+
+    const totalAcquisition = costs.acquisition.totalAcquisition;
+    
+    // 🔹 Minimum own cash guard (방안 1 핵심)
+    // 현금 전액 구매 케이스도 고려하여 합리적인 ROI 계산
+    const minOwnCash = Math.max(
+      totalAcquisition * 0.1, // 총 취득원가의 10%
+      1_000_000               // 최소 100만원
+    );
 
     const scenarioDefs: Array<{
       months: 3 | 6 | 12;
@@ -72,12 +85,28 @@ export class ProfitEngine {
       }
 
       const netProfit = exitPrice - totalCost;
-      const ownCash = costs.acquisition.ownCash > 0 ? costs.acquisition.ownCash : 1; // 0 방지
-      const roi = netProfit / ownCash;
+      
+      // 🔹 실제 ownCash + 최소자기자본 중 높은 값 선택
+      // 현금 전액 구매 케이스: ownCash = totalAcquisition (minOwnCash보다 크므로 영향 없음)
+      const ownCash = Math.max(
+        costs.acquisition.ownCash > 0 ? costs.acquisition.ownCash : 1,
+        minOwnCash
+      );
+
+      // 🔹 ROI 계산 안정화
+      const rawRoi = netProfit / ownCash;
+      
+      // 🔹 ROI 상한 (방안 2)
+      const cappedRoi = Math.min(rawRoi, maxRoi);
 
       const months = def.months;
-      const annualizedRoi =
-        months > 0 ? Math.pow(1 + roi, 12 / months) - 1 : 0;
+      
+      // 🔹 연환산 ROI
+      let annualizedRoi =
+        months > 0 ? Math.pow(1 + cappedRoi, 12 / months) - 1 : 0;
+
+      // 🔹 연환산 ROI 상한
+      annualizedRoi = Math.min(annualizedRoi, maxAnnualizedRoi);
 
       const projectedProfitMargin =
         exitPrice > 0 ? netProfit / exitPrice : 0;
@@ -90,7 +119,7 @@ export class ProfitEngine {
         exitPrice,
         totalCost,
         netProfit: roundToK(netProfit),
-        roi,
+        roi: cappedRoi,
         annualizedRoi,
         projectedProfitMargin,
         meetsTargetMargin,

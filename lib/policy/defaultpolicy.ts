@@ -89,6 +89,8 @@ const defaultPolicy: Policy = {
   profit: {
     targetMarginRate: 0.08, // 초기 안전마진 목표 8%
     targetAnnualRoi: 0.10,  // 연환산 ROI 10%
+    maxRoi: 10,             // ROI 상한선 (1000%)
+    maxAnnualizedRoi: 50,   // 연환산 ROI 상한선 (5000%)
   },
 
   /* ======================================================

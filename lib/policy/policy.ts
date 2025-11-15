@@ -72,6 +72,8 @@ export interface Policy {
   profit: {
     targetMarginRate: number;   // 목표 초기 안전마진
     targetAnnualRoi: number;    // 목표 연환산 ROI
+    maxRoi?: number;            // ROI 상한선 (기본값: 10 = 1000%)
+    maxAnnualizedRoi?: number; // 연환산 ROI 상한선 (기본값: 50 = 5000%)
   };
 
   /* ======================================================
