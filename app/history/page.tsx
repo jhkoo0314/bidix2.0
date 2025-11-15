@@ -37,7 +37,6 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { HistoryFilterBar } from "@/components/history/HistoryFilterBar";
-import { EmptyState } from "@/components/common/EmptyState";
 import { ErrorState } from "@/components/common/ErrorState";
 import { Badge } from "@/components/common/Badge";
 import {

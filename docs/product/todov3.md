@@ -547,8 +547,8 @@
 
 **참조**: `report-result.md` Section 2
 
-- [ ] 잠금 UI 제거 및 실제 리포트 내용 구현
-- [ ] Props 인터페이스 (Component Spec 준수)
+- [x] 잠금 UI 제거 및 실제 리포트 내용 구현
+- [x] Props 인터페이스 (Component Spec 준수)
   ```typescript
   interface ProfitAnalysisReportProps {
     profit: Profit;
@@ -556,35 +556,35 @@
     costs: Costs;
   }
   ```
-- [ ] Part 1: Profit Summary
-  - [ ] 초기 안전마진 (`profit.initialSafetyMargin`) - 백분율 표시
-  - [ ] 3/6/12개월 순이익 (`profit.scenarios["3m"/"6m"/"12m"].netProfit`)
-  - [ ] 최적 보유기간 (`summary.bestHoldingPeriod` - Result Page에서 전달 필요)
-  - [ ] Numeric Highlight 스타일 적용
-- [ ] Part 2: 필요 자기자본
-  - [ ] 총취득원가 (`costs.acquisition.totalAcquisition`)
-  - [ ] 대출금 (`costs.acquisition.loanPrincipal`)
-  - [ ] 필요 자기자본 (`costs.acquisition.ownCash`)
-  - [ ] 금액 포맷팅 (`formatCurrency()`)
-- [ ] Part 3: 비용 구조 상세
-  - [ ] 취득원가 상세 (`costs.acquisition`)
+- [x] Part 1: Profit Summary
+  - [x] 초기 안전마진 (`profit.initialSafetyMargin`) - 백분율 표시
+  - [x] 3/6/12개월 순이익 (`profit.scenarios["3m"/"6m"/"12m"].netProfit`)
+  - [x] 최적 보유기간 (`summary.bestHoldingPeriod` - Result Page에서 전달 필요)
+  - [x] Numeric Highlight 스타일 적용
+- [x] Part 2: 필요 자기자본
+  - [x] 총취득원가 (`costs.acquisition.totalAcquisition`)
+  - [x] 대출금 (`costs.acquisition.loanPrincipal`)
+  - [x] 필요 자기자본 (`costs.acquisition.ownCash`)
+  - [x] 금액 포맷팅 (`formatCurrency()`)
+- [x] Part 3: 비용 구조 상세
+  - [x] 취득원가 상세 (`costs.acquisition`)
     - 취득세 (`taxes`)
     - 법무비용 (`legalFees`)
     - 수리비 (`repairCost`)
     - 명도비용 (`evictionCost`)
-  - [ ] 보유기간별 비용 (`costs.byPeriod["3m"/"6m"/"12m"]`)
+  - [x] 보유기간별 비용 (`costs.byPeriod["3m"/"6m"/"12m"]`)
     - 보유비용 (`holdingCost`)
     - 이자비용 (`interestCost`)
     - 총비용 (`totalCost`)
-- [ ] Part 4: Profit Scenarios 비교 테이블
-  - [ ] 3/6/12개월 시나리오 비교
-  - [ ] 컬럼: 기간, ExitPrice, TotalCost, Net Profit, Annualized ROI
-  - [ ] `profit.scenarios` 객체 구조 활용 (배열 아님!)
-  - [ ] 최적 시나리오 하이라이트
-  - [ ] 수익분기점 표시 (`profit.breakevenExit_3m/6m/12m`)
-- [ ] 브랜드 통합
-  - [ ] 브랜드 메시지 및 Accent Color 적용
-  - [ ] SectionCard, DataRow 활용
+- [x] Part 4: Profit Scenarios 비교 테이블
+  - [x] 3/6/12개월 시나리오 비교
+  - [x] 컬럼: 기간, ExitPrice, TotalCost, Net Profit, Annualized ROI
+  - [x] `profit.scenarios` 객체 구조 활용 (배열 아님!)
+  - [x] 최적 시나리오 하이라이트
+  - [x] 수익분기점 표시 (`profit.breakevenExit_3m/6m/12m`)
+- [x] 브랜드 통합
+  - [x] 브랜드 메시지 및 Accent Color 적용
+  - [x] SectionCard, DataRow 활용
 
 #### 2.6.4 경매 분석 상세 리포트 (`AuctionAnalysisReport.tsx`)
 

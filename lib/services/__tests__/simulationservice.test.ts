@@ -167,11 +167,6 @@ describe("generateCompetitorBids", () => {
       );
       const hardBids = generateCompetitorBids(hardSeed, valuation, hardPolicy);
 
-      // 각 난이도별 최고 입찰가 비교
-      const easyMax = Math.max(...easyBids);
-      const normalMax = Math.max(...normalBids);
-      const hardMax = Math.max(...hardBids);
-
       // Hard 모드가 가장 높은 범위를 가져야 함 (일반적으로)
       // 하지만 시드에 따라 다를 수 있으므로 범위 자체를 확인
       const easyRange = Math.max(...easyBids) - Math.min(...easyBids);
@@ -288,7 +283,10 @@ describe("determineOutcome", () => {
 
   beforeEach(() => {
     seed = createMockPropertySeed(DifficultyMode.Normal);
-    result = createMockAuctionAnalysisResult(DifficultyMode.Normal, 100_000_000);
+    result = createMockAuctionAnalysisResult(
+      DifficultyMode.Normal,
+      100_000_000,
+    );
     policy = createMockPolicy(DifficultyMode.Normal);
   });
 
@@ -299,7 +297,12 @@ describe("determineOutcome", () => {
         competitor: undefined,
       };
 
-      const outcome = determineOutcome(result, 0, seed, policyWithoutCompetitor);
+      const outcome = determineOutcome(
+        result,
+        0,
+        seed,
+        policyWithoutCompetitor,
+      );
 
       expect(outcome).toBe("lose");
     });
@@ -362,7 +365,11 @@ describe("determineOutcome", () => {
   describe("경쟁자 있을 때 승/패 판단 정확성", () => {
     it("userBid가 모든 경쟁자 입찰가보다 높으면 'win'을 반환해야 함", () => {
       // 경쟁자 입찰가 생성
-      const competitorBids = generateCompetitorBids(seed, result.valuation, policy);
+      const competitorBids = generateCompetitorBids(
+        seed,
+        result.valuation,
+        policy,
+      );
       const maxCompetitorBid = Math.max(...competitorBids);
       const userBid = maxCompetitorBid + 10_000_000; // 경쟁자보다 훨씬 높게
 
@@ -372,7 +379,11 @@ describe("determineOutcome", () => {
     });
 
     it("userBid가 최고 경쟁자 입찰가보다 낮거나 같으면 'lose'를 반환해야 함", () => {
-      const competitorBids = generateCompetitorBids(seed, result.valuation, policy);
+      const competitorBids = generateCompetitorBids(
+        seed,
+        result.valuation,
+        policy,
+      );
       const maxCompetitorBid = Math.max(...competitorBids);
       const userBid = maxCompetitorBid; // 최고 경쟁자와 동일
 
@@ -382,7 +393,11 @@ describe("determineOutcome", () => {
     });
 
     it("userBid가 최고 경쟁자보다 높지만 과입찰이면 'overpay'를 반환해야 함", () => {
-      const competitorBids = generateCompetitorBids(seed, result.valuation, policy);
+      const competitorBids = generateCompetitorBids(
+        seed,
+        result.valuation,
+        policy,
+      );
       const maxCompetitorBid = Math.max(...competitorBids);
       const maxRecommended = result.valuation.recommendedBidRange.max;
       const userBid = Math.max(maxCompetitorBid + 1, maxRecommended * 1.1 + 1); // 경쟁자보다 높지만 과입찰
@@ -395,7 +410,11 @@ describe("determineOutcome", () => {
 
   describe("경계 케이스 테스트", () => {
     it("userBid === maxCompetitorBid일 때 'lose'를 반환해야 함 (동일 입찰가는 패배)", () => {
-      const competitorBids = generateCompetitorBids(seed, result.valuation, policy);
+      const competitorBids = generateCompetitorBids(
+        seed,
+        result.valuation,
+        policy,
+      );
       const maxCompetitorBid = Math.max(...competitorBids);
       const userBid = maxCompetitorBid; // 정확히 동일
 
@@ -405,7 +424,11 @@ describe("determineOutcome", () => {
     });
 
     it("userBid === maxCompetitorBid + 1일 때 'win'을 반환해야 함 (1원 차이로 승리)", () => {
-      const competitorBids = generateCompetitorBids(seed, result.valuation, policy);
+      const competitorBids = generateCompetitorBids(
+        seed,
+        result.valuation,
+        policy,
+      );
       const maxCompetitorBid = Math.max(...competitorBids);
       const userBid = maxCompetitorBid + 1; // 1원 차이
 
@@ -420,7 +443,11 @@ describe("determineOutcome", () => {
     it("경쟁자 입찰가가 모두 minBid 미만인 경우 (이론적으로 불가능하지만 검증)", () => {
       // 이 경우는 generateCompetitorBids에서 minBid 이상으로 보장하므로
       // 실제로는 발생하지 않지만, 테스트로 검증
-      const competitorBids = generateCompetitorBids(seed, result.valuation, policy);
+      const competitorBids = generateCompetitorBids(
+        seed,
+        result.valuation,
+        policy,
+      );
 
       // 모든 경쟁자 입찰가가 minBid 이상인지 확인
       competitorBids.forEach((bid) => {
@@ -440,7 +467,12 @@ describe("determineOutcome", () => {
 
       // 적절한 입찰가로 테스트
       const userBid = easyResult.valuation.recommendedBidRange.max;
-      const outcome = determineOutcome(easyResult, userBid, easySeed, easyPolicy);
+      const outcome = determineOutcome(
+        easyResult,
+        userBid,
+        easySeed,
+        easyPolicy,
+      );
 
       // Easy 모드는 경쟁자가 2명뿐이므로 승리 가능성이 높음
       expect(["win", "overpay"]).toContain(outcome);
@@ -456,7 +488,12 @@ describe("determineOutcome", () => {
 
       // 적절한 입찰가로 테스트
       const userBid = hardResult.valuation.recommendedBidRange.max;
-      const outcome = determineOutcome(hardResult, userBid, hardSeed, hardPolicy);
+      const outcome = determineOutcome(
+        hardResult,
+        userBid,
+        hardSeed,
+        hardPolicy,
+      );
 
       // Hard 모드는 경쟁자가 6명이므로 승리하기 어려움
       // 하지만 입찰가가 충분히 높으면 승리 가능
@@ -464,4 +501,3 @@ describe("determineOutcome", () => {
     });
   });
 });
-

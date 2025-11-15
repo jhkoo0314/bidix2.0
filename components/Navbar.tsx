@@ -4,7 +4,7 @@ import { SignedOut, SignInButton, SignedIn, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import React from "react";
 import { useTheme } from "next-themes";
-import { Moon, Sun, Menu, X } from "lucide-react";
+import { Moon, Sun, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
