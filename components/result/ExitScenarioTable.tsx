@@ -68,22 +68,22 @@ export function ExitScenarioTable({ profit }: ExitScenarioTableProps) {
         <table className="w-full">
           <thead>
             <tr className="border-b">
-              <th className="text-left p-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              <th className="text-left p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 font-[var(--font-noto-sans-kr)]">
                 보유기간
               </th>
-              <th className="text-right p-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              <th className="text-right p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 font-[var(--font-noto-sans-kr)]">
                 매각가
               </th>
-              <th className="text-right p-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              <th className="text-right p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 font-[var(--font-noto-sans-kr)]">
                 총비용
               </th>
-              <th className="text-right p-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              <th className="text-right p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 font-[var(--font-noto-sans-kr)]">
                 순이익
               </th>
-              <th className="text-right p-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              <th className="text-right p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 font-[var(--font-noto-sans-kr)]">
                 ROI
               </th>
-              <th className="text-right p-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              <th className="text-right p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 font-[var(--font-noto-sans-kr)]">
                 연환산 ROI
               </th>
             </tr>
@@ -103,21 +103,21 @@ export function ExitScenarioTable({ profit }: ExitScenarioTableProps) {
                   }`}
                 >
                   <td className="p-3">
-                    <span className="font-semibold">{scenario.months}개월</span>
+                    <span className="font-semibold font-[var(--font-noto-sans-kr)]">{scenario.months}개월</span>
                     {isBest && (
-                      <span className="ml-2 text-xs text-[hsl(var(--accent-amber))] dark:text-[hsl(var(--accent-amber))]">
+                      <span className="ml-2 text-xs text-[hsl(var(--accent-amber))] dark:text-[hsl(var(--accent-amber))] font-[var(--font-noto-sans-kr)]">
                         (최적)
                       </span>
                     )}
                   </td>
-                  <td className="text-right p-3">
+                  <td className="text-right p-3 font-[var(--font-noto-sans-kr)]">
                     {scenario.exitPrice.toLocaleString()}원
                   </td>
-                  <td className="text-right p-3">
+                  <td className="text-right p-3 font-[var(--font-noto-sans-kr)]">
                     {scenario.totalCost.toLocaleString()}원
                   </td>
                   <td
-                    className={`text-right p-3 font-semibold ${
+                    className={`text-right p-3 font-semibold font-[var(--font-noto-sans-kr)] ${
                       isProfitable
                         ? "text-[hsl(var(--accent-green))] dark:text-[hsl(var(--accent-green))]"
                         : "text-red-600 dark:text-red-400"
@@ -126,12 +126,12 @@ export function ExitScenarioTable({ profit }: ExitScenarioTableProps) {
                     {scenario.netProfit.toLocaleString()}원
                   </td>
                   <td className="text-right p-3">
-                    <span className="numeric-highlight font-semibold">
+                    <span className="numeric-highlight font-semibold font-[var(--font-noto-sans-kr)]">
                       {(scenario.roi * 100).toFixed(2)}%
                     </span>
                   </td>
                   <td className="text-right p-3">
-                    <span className="numeric-highlight font-semibold">
+                    <span className="numeric-highlight font-semibold font-[var(--font-noto-sans-kr)]">
                       {(scenario.annualizedRoi * 100).toFixed(2)}%
                     </span>
                   </td>

@@ -111,14 +111,14 @@ export function BidOutcomeBlock({
       <div className="mt-4 space-y-2">
         {competitorCount > 0 && maxCompetitorBid > 0 && (
           <div className="p-3 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 mb-3">
-            <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2 font-[var(--font-noto-sans-kr)]">
               경쟁 상황 분석
             </p>
-            <p className="text-sm text-gray-700 dark:text-gray-300">
+            <p className="text-sm text-gray-700 dark:text-gray-300 font-[var(--font-noto-sans-kr)]">
               총 <span className="font-semibold">{competitorCount}명</span>의 경쟁자가 참여했습니다.
             </p>
             {userBid <= maxCompetitorBid && (
-              <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">
+              <p className="text-sm text-gray-700 dark:text-gray-300 mt-1 font-[var(--font-noto-sans-kr)]">
                 최고 경쟁자 입찰가:{" "}
                 <span className="font-semibold">
                   {maxCompetitorBid.toLocaleString()}원
@@ -132,7 +132,7 @@ export function BidOutcomeBlock({
             )}
           </div>
         )}
-        <p className="text-sm text-gray-700 dark:text-gray-300">
+        <p className="text-sm text-gray-700 dark:text-gray-300 font-[var(--font-noto-sans-kr)]">
           당신의 입찰가는 적정가보다{" "}
           <span className="font-semibold">
             {bidDifferencePercent.toFixed(1)}%
@@ -140,7 +140,7 @@ export function BidOutcomeBlock({
           낮았습니다.
         </p>
         {summary.riskLabel && (
-          <p className="text-sm text-gray-700 dark:text-gray-300">
+          <p className="text-sm text-gray-700 dark:text-gray-300 font-[var(--font-noto-sans-kr)]">
             {summary.riskLabel.includes("임차인") ||
             summary.riskLabel.includes("전세") ||
             summary.riskLabel.includes("권리")
@@ -148,12 +148,9 @@ export function BidOutcomeBlock({
               : `${summary.riskLabel} 리스크를 고려하지 않았습니다.`}
           </p>
         )}
-        <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 mt-3">
+        <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 mt-3 font-[var(--font-noto-sans-kr)]">
           이제 이 데이터를 가지고 다시 도전하세요.{" "}
-          <span
-            className="text-[hsl(var(--accent-blue))] dark:text-[hsl(var(--accent-blue))]"
-            style={{ letterSpacing: "0.05em", fontWeight: 300 }}
-          >
+          <span className="text-[hsl(var(--accent-blue))] dark:text-[hsl(var(--accent-blue))] brand-message">
             실패는 비용이 아니라, 자산입니다.
           </span>
         </p>
@@ -180,10 +177,7 @@ export function BidOutcomeBlock({
       {/* 브랜드 메시지 섹션 */}
       {!isSuccess && (
         <div className="pb-4 border-b">
-          <p
-            className="text-sm text-gray-600 dark:text-gray-400 italic"
-            style={{ letterSpacing: "0.1em", fontWeight: 300 }}
-          >
+          <p className="text-sm text-gray-600 dark:text-gray-400 italic font-[var(--font-noto-sans-kr)] brand-message">
             실패는 비용이 아니라, 자산입니다.
           </p>
         </div>
@@ -191,7 +185,7 @@ export function BidOutcomeBlock({
 
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-semibold">입찰 결과</h2>
+          <h2 className="text-2xl font-semibold font-[var(--font-inter)]">입찰 결과</h2>
           <div className="flex items-center gap-2 mt-1">
             {difficulty && (
               <span className="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded">
@@ -203,7 +197,7 @@ export function BidOutcomeBlock({
               </span>
             )}
             {competitorCount > 0 && (
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-gray-600 dark:text-gray-400 font-[var(--font-noto-sans-kr)]">
                 경쟁자 {competitorCount}명 참여
               </p>
             )}
@@ -213,42 +207,42 @@ export function BidOutcomeBlock({
       </div>
 
       <div className={`p-4 rounded-lg border ${getOutcomeColorClasses()}`}>
-        <p className="text-lg font-medium">{getOutcomeMessage()}</p>
+        <p className="text-lg font-medium font-[var(--font-noto-sans-kr)]">{getOutcomeMessage()}</p>
         {getFailureAnalysis()}
       </div>
 
       {/* 수익성 표시 (3m/6m/12m) */}
       <div className="pt-4 border-t">
-        <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+        <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 font-[var(--font-noto-sans-kr)]">
           보유기간별 수익성
         </p>
         <div className="grid grid-cols-3 gap-2">
           <div className="p-2 border rounded text-center">
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-[var(--font-noto-sans-kr)]">
               3개월
             </p>
-            <p className="text-sm font-semibold">
+            <p className="text-sm font-semibold font-[var(--font-noto-sans-kr)]">
               {isProfitable3m ? "✅ 수익" : "❌ 손실"}
             </p>
           </div>
           <div className="p-2 border rounded text-center">
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-[var(--font-noto-sans-kr)]">
               6개월
             </p>
-            <p className="text-sm font-semibold">
+            <p className="text-sm font-semibold font-[var(--font-noto-sans-kr)]">
               {isProfitable6m ? "✅ 수익" : "❌ 손실"}
             </p>
           </div>
           <div className="p-2 border rounded text-center">
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-[var(--font-noto-sans-kr)]">
               12개월
             </p>
-            <p className="text-sm font-semibold">
+            <p className="text-sm font-semibold font-[var(--font-noto-sans-kr)]">
               {isProfitable12m ? "✅ 수익" : "❌ 손실"}
             </p>
           </div>
         </div>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 font-[var(--font-noto-sans-kr)]">
           최적 보유기간: {summary.bestHoldingPeriod}개월
         </p>
       </div>

@@ -89,7 +89,7 @@ export function MetricsStrip({ profit, score }: MetricsStripProps) {
       <div className="space-y-6">
         {/* 브랜드 메시지 */}
         <div className="pb-4 border-b">
-          <p className="text-sm text-gray-600 dark:text-gray-400 italic">
+          <p className="text-sm text-gray-600 dark:text-gray-400 italic font-[var(--font-noto-sans-kr)] brand-message">
             당신의 경험은 숫자로 증명됩니다.
           </p>
         </div>
@@ -98,36 +98,36 @@ export function MetricsStrip({ profit, score }: MetricsStripProps) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* 초기 안전마진 */}
           <div className="p-4 border rounded-lg">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-[var(--font-noto-sans-kr)]">
               초기 안전마진
             </p>
             <p className="text-2xl font-bold numeric-highlight">
               {safetyMarginPercent.toFixed(2)}%
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-[var(--font-noto-sans-kr)]">
               FMV 대비 초기 마진
             </p>
-            <p className="text-xs text-gray-600 dark:text-gray-400 mt-2 italic">
+            <p className="text-xs text-gray-600 dark:text-gray-400 mt-2 italic font-[var(--font-noto-sans-kr)]">
               당신의 안전마진은 {safetyMarginPercent.toFixed(2)}%였습니다.
             </p>
           </div>
 
           {/* 최적 ROI */}
           <div className="p-4 border rounded-lg">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-[var(--font-noto-sans-kr)]">
               최적 ROI
             </p>
             <p className="text-2xl font-bold numeric-highlight">
               {(bestScenario.roi * 100).toFixed(2)}%
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-[var(--font-noto-sans-kr)]">
               {bestScenario.months}개월 기준
             </p>
           </div>
 
           {/* 최종 점수 */}
           <div className="p-4 border rounded-lg">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-[var(--font-noto-sans-kr)]">
               최종 점수
             </p>
             <div className="flex items-center gap-2">
@@ -136,7 +136,7 @@ export function MetricsStrip({ profit, score }: MetricsStripProps) {
               </p>
               <Badge type="grade" value={score.grade} />
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-[var(--font-noto-sans-kr)]">
               1000점 만점
             </p>
           </div>
@@ -145,12 +145,12 @@ export function MetricsStrip({ profit, score }: MetricsStripProps) {
         {/* 점수 구성 상세 (접기/펼치기) */}
         <div className="pt-4 border-t">
           <div className="mb-3">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-[var(--font-noto-sans-kr)]">
               당신의 성장은 느낌이 아니라, 숫자로 증명됩니다.
             </p>
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+              className="text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors font-[var(--font-noto-sans-kr)]"
             >
               {isExpanded ? "접기" : "점수 구성 상세 보기"}
             </button>
@@ -159,40 +159,40 @@ export function MetricsStrip({ profit, score }: MetricsStripProps) {
             <div className="mt-4 space-y-3">
               <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
                 <div>
-                  <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                  <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 font-[var(--font-noto-sans-kr)]">
                     정확성
                   </span>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-[var(--font-noto-sans-kr)]">
                     Accuracy Score
                   </p>
                 </div>
-                <span className="text-sm font-semibold numeric-highlight">
+                <span className="text-sm font-semibold numeric-highlight font-[var(--font-noto-sans-kr)]">
                   {score.accuracyScore} / 400
                 </span>
               </div>
               <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
                 <div>
-                  <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                  <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 font-[var(--font-noto-sans-kr)]">
                     수익성
                   </span>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-[var(--font-noto-sans-kr)]">
                     Profitability Score
                   </p>
                 </div>
-                <span className="text-sm font-semibold numeric-highlight">
+                <span className="text-sm font-semibold numeric-highlight font-[var(--font-noto-sans-kr)]">
                   {score.profitabilityScore} / 400
                 </span>
               </div>
               <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
                 <div>
-                  <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                  <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 font-[var(--font-noto-sans-kr)]">
                     안정성
                   </span>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-[var(--font-noto-sans-kr)]">
                     Risk Control Score
                   </p>
                 </div>
-                <span className="text-sm font-semibold numeric-highlight">
+                <span className="text-sm font-semibold numeric-highlight font-[var(--font-noto-sans-kr)]">
                   {score.riskControlScore} / 200
                 </span>
               </div>

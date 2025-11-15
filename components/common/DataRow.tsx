@@ -44,9 +44,9 @@ export function DataRow({ label, value, type = "text" }: DataRowProps) {
 
   return (
     <div className="flex justify-between items-center py-2">
-      <span className="text-gray-600 dark:text-gray-400">{label}</span>
+      <span className="text-gray-600 dark:text-gray-400 font-[var(--font-noto-sans-kr)]">{label}</span>
       <span
-        className={`${shouldHighlight ? "numeric-highlight" : "font-semibold"}`}
+        className={`font-[var(--font-noto-sans-kr)] ${shouldHighlight ? "numeric-highlight" : "font-semibold"}`}
       >
         {formatValue()}
       </span>

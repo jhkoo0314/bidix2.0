@@ -1268,7 +1268,7 @@
 
 **Color Tokens (브랜드 통합)**:
 
-- [ ] `app/globals.css`에 브랜드 Color Tokens 설정
+- [x] `app/globals.css`에 브랜드 Color Tokens 설정
 
   ```css
   :root {
@@ -1298,33 +1298,33 @@
   }
   ```
 
-- [ ] Accent Colors 사용 규칙 적용
+- [x] Accent Colors 사용 규칙 적용
   - Green → 점수 상승, MoS+, 긍정적 시나리오
   - Amber → 리스크, 경고, Hard 모드
   - Blue → Premium CTA, 정보 강조
 
 **Typography (브랜드 톤)**:
 
-- [ ] 글꼴 설정
+- [x] 글꼴 설정
 
   - Heading (H1–H4): Inter / Poppins — 기하학적, 안정감
   - Body: Pretendard / Noto Sans KR — 높은 가독성
   - Numeric Highlight: tabular-nums 지원 글꼴 필수
 
-- [ ] 스타일 규칙 적용
+- [x] 스타일 규칙 적용
   - 점수/금액/ROI는 **Numeric Highlight 스타일** (두껍고 선명하게)
   - 브랜드 문구는 **넓은 letter-spacing + 얇은 weight**
   - 예: "실패는 비용이 아니라, 자산입니다." (넓은 letter-spacing)
 
 **Layout Rules (브랜드 원칙)**:
 
-- [ ] 레이아웃 구조
+- [x] 레이아웃 구조
 
   - **좌측 메인 정보 → 우측 인사이트 구조**
   - **간격은 넓게, 경계는 옅게 (눈이 시리지 않게)**
   - **요약 → 상세 → 인사이트** 순서
 
-- [ ] 다크모드 지원 (선택적)
+- [x] 다크모드 지원 (선택적)
 
 ### 5.2 반응형 레이아웃
 

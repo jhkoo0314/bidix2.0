@@ -56,7 +56,7 @@ export function RightsSummary({ rights }: RightsSummaryProps) {
     <SectionCard title="권리 분석 요약">
       <div className="space-y-4">
         {/* 브랜드 메시지 */}
-        <p className="text-sm text-muted-foreground italic border-l-2 border-[hsl(var(--accent-blue))] pl-3 py-2">
+        <p className="text-sm text-muted-foreground italic border-l-2 border-[hsl(var(--accent-blue))] pl-3 py-2 font-[var(--font-noto-sans-kr)] brand-message">
           사실을 먼저 이해한 다음, 분석이 시작됩니다.
         </p>
 
@@ -73,9 +73,9 @@ export function RightsSummary({ rights }: RightsSummaryProps) {
 
         {/* 명도 위험도 */}
         <div className="flex justify-between items-center py-2">
-          <span className="text-muted-foreground">명도 위험도</span>
+          <span className="text-muted-foreground font-[var(--font-noto-sans-kr)]">명도 위험도</span>
           <span
-            className={`font-semibold ${getRiskColor(rights.evictionRisk)}`}
+            className={`font-semibold font-[var(--font-noto-sans-kr)] ${getRiskColor(rights.evictionRisk)}`}
           >
             {getRiskLabel(rights.evictionRisk)}
           </span>
@@ -84,7 +84,7 @@ export function RightsSummary({ rights }: RightsSummaryProps) {
         {/* riskFlags 표시 */}
         {rights.riskFlags && rights.riskFlags.length > 0 && (
           <div>
-            <h4 className="font-semibold mb-2 text-sm">리스크 플래그</h4>
+            <h4 className="font-semibold mb-2 text-sm font-[var(--font-inter)]">리스크 플래그</h4>
             <div className="flex flex-wrap gap-2">
               {rights.riskFlags.map((flag, index) => (
                 <Badge

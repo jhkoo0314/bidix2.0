@@ -31,9 +31,9 @@ export interface SectionHeaderProps {
 export function SectionHeader({ title, description }: SectionHeaderProps) {
   return (
     <div className="space-y-2">
-      <h2 className="text-2xl font-semibold">{title}</h2>
+      <h2 className="text-2xl font-semibold font-[var(--font-inter)]">{title}</h2>
       {description && (
-        <p className="text-muted-foreground">{description}</p>
+        <p className="text-muted-foreground font-[var(--font-noto-sans-kr)]">{description}</p>
       )}
     </div>
   );

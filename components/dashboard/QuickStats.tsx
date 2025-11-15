@@ -53,9 +53,9 @@ export function QuickStats({
       {/* 레벨 카드 */}
       <SectionCard>
         <div className="space-y-2">
-          <h3 className="text-sm text-muted-foreground">레벨</h3>
+          <h3 className="text-sm text-muted-foreground font-[var(--font-noto-sans-kr)]">레벨</h3>
           <div className="flex items-baseline gap-2">
-            <p className="text-3xl font-bold">{level}</p>
+            <p className="text-3xl font-bold numeric-highlight">{level}</p>
             <Badge type="grade" value={tier} />
           </div>
         </div>
@@ -64,7 +64,7 @@ export function QuickStats({
       {/* 총 점수 카드 */}
       <SectionCard>
         <div className="space-y-2">
-          <h3 className="text-sm text-muted-foreground">총 점수</h3>
+          <h3 className="text-sm text-muted-foreground font-[var(--font-noto-sans-kr)]">총 점수</h3>
           <p className="text-3xl numeric-highlight">
             {totalScore.toLocaleString()}
           </p>
@@ -74,8 +74,8 @@ export function QuickStats({
       {/* 총 시뮬레이션 카드 */}
       <SectionCard>
         <div className="space-y-2">
-          <h3 className="text-sm text-muted-foreground">총 시뮬레이션</h3>
-          <p className="text-3xl font-bold">{simulationCount}</p>
+          <h3 className="text-sm text-muted-foreground font-[var(--font-noto-sans-kr)]">총 시뮬레이션</h3>
+          <p className="text-3xl font-bold numeric-highlight">{simulationCount}</p>
         </div>
       </SectionCard>
     </div>

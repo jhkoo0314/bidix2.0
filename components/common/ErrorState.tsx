@@ -42,7 +42,7 @@ export function ErrorState({
 
   return (
     <div className="flex flex-col items-center justify-center p-8 text-center">
-      <p className="text-lg text-muted-foreground mb-4">
+      <p className="text-lg text-muted-foreground mb-4 font-[var(--font-noto-sans-kr)]">
         {defaultMessage}
       </p>
       {onRetry && (

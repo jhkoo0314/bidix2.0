@@ -70,27 +70,27 @@ export function PremiumReportCTA({ type }: PremiumReportCTAProps) {
         {/* 헤더 */}
         <div className="flex items-center gap-3">
           <span className="text-2xl">🔒</span>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 font-[var(--font-inter)]">
             {config.title}
           </h3>
         </div>
 
         {/* 설명 */}
         <div className="space-y-2">
-          <p className="text-sm text-gray-700 dark:text-gray-300">
+          <p className="text-sm text-gray-700 dark:text-gray-300 font-[var(--font-noto-sans-kr)]">
             {config.description}
           </p>
-          <p className="text-xs text-gray-600 dark:text-gray-400">
+          <p className="text-xs text-gray-600 dark:text-gray-400 font-[var(--font-noto-sans-kr)]">
             {config.detail}
           </p>
         </div>
 
         {/* 브랜드 메시지 */}
         <div className="p-4 rounded-lg bg-[hsl(var(--accent-blue))]/10 border border-[hsl(var(--accent-blue))]/20 dark:bg-[hsl(var(--accent-blue))]/20 dark:border-[hsl(var(--accent-blue))]/30">
-          <p className="text-sm text-gray-700 dark:text-gray-300 italic mb-2">
+          <p className="text-sm text-gray-700 dark:text-gray-300 italic mb-2 font-[var(--font-noto-sans-kr)] brand-message">
             &quot;사실을 이해하셨습니다. 이제 분석을 시작할 준비가 되셨나요?&quot;
           </p>
-          <p className="text-xs text-gray-600 dark:text-gray-400">
+          <p className="text-xs text-gray-600 dark:text-gray-400 font-[var(--font-noto-sans-kr)]">
             당신은 이미 물건의 &apos;사실&apos;을 파악했습니다. 이제 더 깊은
             &apos;분석&apos;을 통해 통찰을 얻을 준비가 되셨나요?
           </p>
@@ -100,7 +100,7 @@ export function PremiumReportCTA({ type }: PremiumReportCTAProps) {
         <Button
           variant="outline"
           disabled
-          className="w-full border-[hsl(var(--accent-blue))]/30 text-[hsl(var(--accent-blue))] hover:bg-[hsl(var(--accent-blue))]/10"
+          className="w-full border-[hsl(var(--accent-blue))]/30 text-[hsl(var(--accent-blue))] hover:bg-[hsl(var(--accent-blue))]/10 font-[var(--font-noto-sans-kr)]"
         >
           🔒 프리미엄 해설판 보기
         </Button>

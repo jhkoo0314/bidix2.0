@@ -33,10 +33,10 @@ export function SectionCard({ children, title }: SectionCardProps) {
     <Card>
       {title && (
         <CardHeader>
-          <CardTitle>{title}</CardTitle>
+          <CardTitle className="font-[var(--font-inter)]">{title}</CardTitle>
         </CardHeader>
       )}
-      <CardContent>{children}</CardContent>
+      <CardContent className="font-[var(--font-noto-sans-kr)]">{children}</CardContent>
     </Card>
   );
 }

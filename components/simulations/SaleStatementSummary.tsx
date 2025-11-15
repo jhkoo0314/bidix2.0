@@ -47,31 +47,31 @@ export function SaleStatementSummary({
     <SectionCard title="매각물건명세서 요약">
       <div className="space-y-4">
         {/* 브랜드 메시지 */}
-        <p className="text-sm text-muted-foreground italic border-l-2 border-[hsl(var(--accent-blue))] pl-3 py-2">
+        <p className="text-sm text-muted-foreground italic border-l-2 border-[hsl(var(--accent-blue))] pl-3 py-2 font-[var(--font-noto-sans-kr)] brand-message">
           사실을 먼저 이해한 다음, 분석이 시작됩니다.
         </p>
 
         {/* 부동산 정보 */}
         <div>
-          <h4 className="font-semibold mb-2">부동산 표시</h4>
-          <p className="text-sm text-muted-foreground">{property.address}</p>
-          <p className="text-sm text-muted-foreground">
+          <h4 className="font-semibold mb-2 font-[var(--font-inter)]">부동산 표시</h4>
+          <p className="text-sm text-muted-foreground font-[var(--font-noto-sans-kr)]">{property.address}</p>
+          <p className="text-sm text-muted-foreground font-[var(--font-noto-sans-kr)]">
             {property.type} · {property.sizeM2}㎡
           </p>
         </div>
 
         {/* 권리 정보 */}
         <div>
-          <h4 className="font-semibold mb-2">등기 권리</h4>
-          <p className="text-sm text-muted-foreground">
+          <h4 className="font-semibold mb-2 font-[var(--font-inter)]">등기 권리</h4>
+          <p className="text-sm text-muted-foreground font-[var(--font-noto-sans-kr)]">
             등기된 권리: {registeredRightsCount}건
           </p>
         </div>
 
         {/* 점유자 정보 */}
         <div>
-          <h4 className="font-semibold mb-2">점유자/임차인</h4>
-          <p className="text-sm text-muted-foreground">
+          <h4 className="font-semibold mb-2 font-[var(--font-inter)]">점유자/임차인</h4>
+          <p className="text-sm text-muted-foreground font-[var(--font-noto-sans-kr)]">
             {occupantsCount > 0
               ? `임차인 ${occupantsCount}명 존재`
               : "임차인 없음"}
@@ -81,8 +81,8 @@ export function SaleStatementSummary({
         {/* 비고 */}
         {courtDocs.remarks && (
           <div>
-            <h4 className="font-semibold mb-2">비고</h4>
-            <p className="text-sm text-muted-foreground">{courtDocs.remarks}</p>
+            <h4 className="font-semibold mb-2 font-[var(--font-inter)]">비고</h4>
+            <p className="text-sm text-muted-foreground font-[var(--font-noto-sans-kr)]">{courtDocs.remarks}</p>
           </div>
         )}
       </div>

@@ -18,17 +18,17 @@ const Navbar = () => {
 
   return (
     <header className="flex justify-between items-center p-4 gap-4 h-16 max-w-7xl mx-auto">
-      <Link href="/" className="text-2xl font-bold">
+      <Link href="/" className="text-2xl font-bold font-[var(--font-inter)]">
         BIDIX
       </Link>
       <nav className="flex gap-6 items-center">
-        <Link href="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">
+        <Link href="/dashboard" className="text-sm font-medium hover:text-primary transition-colors font-[var(--font-noto-sans-kr)]">
           Dashboard
         </Link>
-        <Link href="/simulations" className="text-sm font-medium hover:text-primary transition-colors">
+        <Link href="/simulations" className="text-sm font-medium hover:text-primary transition-colors font-[var(--font-noto-sans-kr)]">
           Simulations
         </Link>
-        <Link href="/history" className="text-sm font-medium hover:text-primary transition-colors">
+        <Link href="/history" className="text-sm font-medium hover:text-primary transition-colors font-[var(--font-noto-sans-kr)]">
           History
         </Link>
         {mounted && (

@@ -47,8 +47,8 @@ export function PropertyCard({ property, valuation }: PropertyCardProps) {
         {/* 헤더 */}
         <div className="flex justify-between items-start">
           <div>
-            <h3 className="text-xl font-semibold">{property.type}</h3>
-            <p className="text-sm text-muted-foreground mt-1">
+            <h3 className="text-xl font-semibold font-[var(--font-inter)]">{property.type}</h3>
+            <p className="text-sm text-muted-foreground mt-1 font-[var(--font-noto-sans-kr)]">
               {property.address}
             </p>
           </div>
@@ -58,16 +58,16 @@ export function PropertyCard({ property, valuation }: PropertyCardProps) {
         {/* 정보 */}
         <div className="grid grid-cols-2 gap-4 pt-4 border-t">
           <div>
-            <p className="text-sm text-muted-foreground">감정가</p>
-            <p className="text-lg numeric-highlight">
+            <p className="text-sm text-muted-foreground font-[var(--font-noto-sans-kr)]">감정가</p>
+            <p className="text-lg numeric-highlight font-[var(--font-noto-sans-kr)]">
               {property.appraisalValue
                 ? property.appraisalValue.toLocaleString()
                 : "정보 없음"}원
             </p>
           </div>
           <div>
-            <p className="text-sm text-muted-foreground">최저 입찰가</p>
-            <p className="text-lg numeric-highlight">
+            <p className="text-sm text-muted-foreground font-[var(--font-noto-sans-kr)]">최저 입찰가</p>
+            <p className="text-lg numeric-highlight font-[var(--font-noto-sans-kr)]">
               {valuation.minBid
                 ? valuation.minBid.toLocaleString()
                 : "정보 없음"}원

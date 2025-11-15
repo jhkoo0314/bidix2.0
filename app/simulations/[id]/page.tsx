@@ -175,8 +175,8 @@ export default async function SimulationDetailPage({
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="space-y-2">
-              <h1 className="text-4xl font-bold">시뮬레이션 상세</h1>
-              <p className="text-gray-600 dark:text-gray-400">
+              <h1 className="text-4xl font-bold font-[var(--font-inter)]">시뮬레이션 상세</h1>
+              <p className="text-gray-600 dark:text-gray-400 font-[var(--font-noto-sans-kr)]">
                 사건번호: {caseNumber}
               </p>
             </div>
@@ -185,7 +185,7 @@ export default async function SimulationDetailPage({
 
           {/* 브랜드 문구 */}
           <div className="pt-4 border-t">
-            <p className="text-sm text-muted-foreground italic border-l-2 border-[hsl(var(--accent-blue))] pl-3 py-2">
+            <p className="text-sm text-muted-foreground italic border-l-2 border-[hsl(var(--accent-blue))] pl-3 py-2 font-[var(--font-noto-sans-kr)] brand-message">
               사실을 먼저 이해한 다음, 분석이 시작됩니다.
             </p>
           </div>

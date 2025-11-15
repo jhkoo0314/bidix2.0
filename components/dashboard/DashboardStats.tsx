@@ -57,7 +57,7 @@ export function DashboardStats({
             <div className="p-2 rounded-lg bg-[hsl(var(--accent-green))]/10">
               <Activity className="w-5 h-5 text-[hsl(var(--accent-green))]" />
             </div>
-            <h3 className="text-sm font-medium text-muted-foreground">
+            <h3 className="text-sm font-medium text-muted-foreground font-[var(--font-inter)]">
               Infinite eXperience
             </h3>
           </div>
@@ -65,11 +65,11 @@ export function DashboardStats({
             <p className="text-3xl font-bold numeric-highlight">
               {experience.count}
             </p>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground font-[var(--font-noto-sans-kr)]">
               이번 주 시뮬레이션 횟수
             </p>
           </div>
-          <p className="text-xs text-muted-foreground pt-2 border-t">
+          <p className="text-xs text-muted-foreground pt-2 border-t font-[var(--font-noto-sans-kr)]">
             리스크 없는 실전에서 무한히 경험하고 있습니다.
           </p>
         </div>
@@ -82,7 +82,7 @@ export function DashboardStats({
             <div className="p-2 rounded-lg bg-[hsl(var(--accent-blue))]/10">
               <Eye className="w-5 h-5 text-[hsl(var(--accent-blue))]" />
             </div>
-            <h3 className="text-sm font-medium text-muted-foreground">
+            <h3 className="text-sm font-medium text-muted-foreground font-[var(--font-inter)]">
               Insight
             </h3>
           </div>
@@ -90,11 +90,11 @@ export function DashboardStats({
             <p className="text-3xl font-bold numeric-highlight">
               {insight.count}
             </p>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground font-[var(--font-noto-sans-kr)]">
               무료 리포트 조회 수
             </p>
           </div>
-          <p className="text-xs text-muted-foreground pt-2 border-t">
+          <p className="text-xs text-muted-foreground pt-2 border-t font-[var(--font-noto-sans-kr)]">
             데이터 기반의 복기를 통해 날카로운 통찰을 얻고 있습니다.
           </p>
         </div>
@@ -107,7 +107,7 @@ export function DashboardStats({
             <div className="p-2 rounded-lg bg-[hsl(var(--accent-amber))]/10">
               <Target className="w-5 h-5 text-[hsl(var(--accent-amber))]" />
             </div>
-            <h3 className="text-sm font-medium text-muted-foreground">
+            <h3 className="text-sm font-medium text-muted-foreground font-[var(--font-inter)]">
               Index
             </h3>
           </div>
@@ -115,11 +115,11 @@ export function DashboardStats({
             <p className="text-3xl font-bold numeric-highlight">
               {index.score}
             </p>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground font-[var(--font-noto-sans-kr)]">
               현재 점수 · 레벨 {index.level}
             </p>
           </div>
-          <p className="text-xs text-muted-foreground pt-2 border-t">
+          <p className="text-xs text-muted-foreground pt-2 border-t font-[var(--font-noto-sans-kr)]">
             당신의 실력을 증명하는 객관적인 지표입니다.
           </p>
         </div>

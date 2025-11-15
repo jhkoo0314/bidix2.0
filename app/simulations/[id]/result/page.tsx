@@ -358,17 +358,14 @@ export default async function ResultPage({ params }: ResultPageProps) {
       <div className="w-full max-w-7xl mx-auto space-y-8">
         {/* 헤더 */}
         <div className="space-y-2">
-          <h1 className="text-4xl font-bold">입찰 결과</h1>
-          <p className="text-gray-600 dark:text-gray-400">시뮬레이션 ID: {id}</p>
+          <h1 className="text-4xl font-bold font-[var(--font-inter)]">입찰 결과</h1>
+          <p className="text-gray-600 dark:text-gray-400 font-[var(--font-noto-sans-kr)]">시뮬레이션 ID: {id}</p>
         </div>
 
         {/* 브랜드 메시지 layer (페이지 최상단) */}
         {isBidFailed && (
           <section className="py-6 border-b">
-            <p
-              className="text-lg text-gray-700 dark:text-gray-300 italic text-center"
-              style={{ letterSpacing: "0.1em", fontWeight: 300 }}
-            >
+            <p className="text-lg text-gray-700 dark:text-gray-300 italic text-center font-[var(--font-noto-sans-kr)] brand-message">
               실패는 비용이 아니라, 자산입니다.
             </p>
           </section>
