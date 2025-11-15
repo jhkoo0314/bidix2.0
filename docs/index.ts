@@ -5,9 +5,9 @@
  * 이 파일은 BIDIX 프로젝트의 전체 아키텍처와 데이터 흐름을 한눈에 볼 수 있는 구조도입니다.
  * 프로젝트 구조가 변경되면 반드시 이 파일을 업데이트해야 합니다.
  *
- * @version 2.8
+ * @version 2.9
  * @lastUpdated 2025-01-28
- * @lastModified 2025-01-28 (구조 업데이트 - 테스트 구조 추가: tests/, vitest.config.ts, playwright.config.ts)
+ * @lastModified 2025-01-28 (구조 업데이트 - components/ui/sheet.tsx 추가, 전체 구조 검증 완료)
  */
 
 /**
@@ -65,6 +65,7 @@
  * │   │   ├── input.tsx
  * │   │   ├── label.tsx
  * │   │   ├── separator.tsx
+ * │   │   ├── sheet.tsx
  * │   │   ├── skeleton.tsx
  * │   │   ├── table.tsx
  * │   │   ├── tabs.tsx

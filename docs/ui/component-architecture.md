@@ -100,13 +100,13 @@
 | ------------------------- | ------------------------------ | -------------------------------------------- | -------- | ------------ |
 | **BidOutcomeBlock.tsx**   | 성공/실패/근접                 | `summary: AuctionSummary`, `userBid: number` |          |              |
 | **MetricsStrip.tsx**      | MoS/ROI/Score 3종 스트립       | `profit: Profit`, `score: ScoreBreakdown`    |          |              |
-| **ExitScenarioTable.tsx** | 3/6/12개월 수익 비교           | `scenarios: ProfitScenario[]`                |          |              |
+| **ExitScenarioTable.tsx** | 3/6/12개월 수익 비교           | `profit: Profit` (scenarios 객체 포함)       |          |              |
 | **PremiumReportCTA.tsx**  | 🔒 프리미엄 리포트 잠금        | `{ type: "rights"                            | "profit" | "auction" }` |
 | **ResultActions.tsx**     | 히스토리 저장 / 다음 훈련 관련 | `simulationId: string`                       |          |              |
 
 ### v2.2 핵심 필드 사용
 
-- profit.scenarios[] 사용
+- profit.scenarios 객체 사용 (3m/6m/12m 키)
 - profit.initialSafetyMargin 사용
 - summary.isProfitable3m/6m/12m 사용
 

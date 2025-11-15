@@ -238,7 +238,11 @@ export interface ProfitScenario {
 
 export interface Profit {
   initialSafetyMargin: number;
-  scenarios: ProfitScenario[];
+  scenarios: {
+    "3m": ProfitScenario;
+    "6m": ProfitScenario;
+    "12m": ProfitScenario;
+  };
   breakevenExit_3m: number;
   breakevenExit_6m: number;
   breakevenExit_12m: number;

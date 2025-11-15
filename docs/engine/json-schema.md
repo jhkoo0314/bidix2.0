@@ -14,7 +14,7 @@
 
 * ExitPrice → **3m/6m/12m 3종 구조**
 * CostEngine → **보유기간별 totalCost 제공**
-* ProfitEngine → **ProfitScenario[] 3종 제공**
+* ProfitEngine → **ProfitScenario 객체 구조 (3m/6m/12m 키)**
 * Summary → **bestHoldingPeriod / bestScenario 추가**
 * Valuation → **recommendedBidRange / exitPrices / confidence 강화**
 * CourtDocsNormalized → 변경 없음(유지)
@@ -212,10 +212,14 @@
       "properties": {
         "initialSafetyMargin": { "type": "number" },
         "scenarios": {
-          "type": "array",
-          "items": { "$ref": "#/$defs/ProfitScenario" },
-          "minItems": 3,
-          "maxItems": 3
+          "type": "object",
+          "required": ["3m", "6m", "12m"],
+          "properties": {
+            "3m": { "$ref": "#/$defs/ProfitScenario" },
+            "6m": { "$ref": "#/$defs/ProfitScenario" },
+            "12m": { "$ref": "#/$defs/ProfitScenario" }
+          },
+          "additionalProperties": false
         },
         "breakevenExit_3m": { "type": "number" },
         "breakevenExit_6m": { "type": "number" },

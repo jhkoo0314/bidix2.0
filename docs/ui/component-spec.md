@@ -153,10 +153,19 @@ export interface QuickFactsProps {
 > 수익/총비용 3·6·12개월 비교 테이블
 
 ```ts
-import { ProfitScenario } from "@/lib/types";
+import { Profit } from "@/lib/types";
 
 export interface ExitScenarioTableProps {
-  scenarios: ProfitScenario[]; // 3개 보유기간 모두 표시
+  profit: Profit; // scenarios 객체 포함 (3m/6m/12m 키)
+}
+```
+
+**참고**: `profit.scenarios`는 객체 형태입니다:
+```ts
+profit.scenarios: {
+  "3m": ProfitScenario;
+  "6m": ProfitScenario;
+  "12m": ProfitScenario;
 }
 ```
 

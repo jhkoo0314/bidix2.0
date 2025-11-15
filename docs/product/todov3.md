@@ -410,7 +410,7 @@
   ```typescript
   import { Profit, ScoreBreakdown } from "@/lib/types";
   interface MetricsStripProps {
-    profit: Profit; // initialSafetyMargin, scenarios[]
+    profit: Profit; // initialSafetyMargin, scenarios 객체 (3m/6m/12m 키)
     score: ScoreBreakdown;
   }
   ```
@@ -422,9 +422,19 @@
 - [x] `components/result/ExitScenarioTable.tsx`
 
   ```typescript
-  import { ProfitScenario } from "@/lib/types";
+  import { Profit } from "@/lib/types";
   interface ExitScenarioTableProps {
-    scenarios: ProfitScenario[]; // 3개 보유기간 모두 표시
+    profit: Profit; // scenarios 객체 포함 (3m/6m/12m 키)
+  }
+  ```
+
+  **참고**: `profit.scenarios`는 객체 형태입니다:
+
+  ```typescript
+  profit.scenarios: {
+    "3m": ProfitScenario;
+    "6m": ProfitScenario;
+    "12m": ProfitScenario;
   }
   ```
 
@@ -499,39 +509,39 @@
 
 **참조**: `report-result.md` Section 1
 
-- [ ] 잠금 UI 제거 및 실제 리포트 내용 구현
-- [ ] Props 인터페이스 (Component Spec 준수)
+- [x] 잠금 UI 제거 및 실제 리포트 내용 구현
+- [x] Props 인터페이스 (Component Spec 준수)
   ```typescript
   interface RightsAnalysisReportProps {
     rights: Rights;
     courtDocs: CourtDocsNormalized;
   }
   ```
-- [ ] Part 1: Executive Summary
-  - [ ] 리스크 등급 표시 (`rights.evictionRisk` 기반)
-  - [ ] 주요 리스크 요약 (`rights.riskFlags`)
-  - [ ] 예상 인수금액 (`rights.assumableRightsTotal + rights.evictionCostEstimated`)
-  - [ ] 핵심 판단 기준 (대항력, 우선변제권, 배당요구 여부)
-- [ ] Part 2: 등기 권리 타임라인
-  - [ ] `courtDocs.registeredRights` 테이블 표시
-  - [ ] 말소기준권리 하이라이트 (`isBaseRight` 필드 활용)
-  - [ ] 등기일자, 권리명, 채권자, 금액 표시
-  - [ ] `baseRightDate` 표시
-- [ ] Part 3: 점유자·임차인 분석
-  - [ ] `courtDocs.occupants` 리스트 표시
-  - [ ] 전입일, 확정일자, 배당요구 여부
-  - [ ] 대항력 여부 (`hasCountervailingPower`)
-  - [ ] 우선변제권 여부 (확정일자 기준)
-  - [ ] 보증금 (`deposit`) 표시
-- [ ] Part 4: 명도비용 상세
-  - [ ] 추정 명도비용 (`rights.evictionCostEstimated`)
-  - [ ] 총 인수금액 계산 및 표시
-  - [ ] `rights.breakdown` 활용한 권리별 상세 분석 (선택적)
-- [ ] 브랜드 통합
-  - [ ] 브랜드 메시지: "사실을 이해하셨습니다. 이제 분석을 시작할 준비가 되셨나요?"
-  - [ ] Accent Color: Blue (Premium 리포트)
-  - [ ] SectionCard로 전체 래핑
-  - [ ] DataRow로 레이블/값 표시
+- [x] Part 1: Executive Summary
+  - [x] 리스크 등급 표시 (`rights.evictionRisk` 기반)
+  - [x] 주요 리스크 요약 (`rights.riskFlags`)
+  - [x] 예상 인수금액 (`rights.assumableRightsTotal + rights.evictionCostEstimated`)
+  - [x] 핵심 판단 기준 (대항력, 우선변제권, 배당요구 여부)
+- [x] Part 2: 등기 권리 타임라인
+  - [x] `courtDocs.registeredRights` 테이블 표시
+  - [x] 말소기준권리 하이라이트 (`isBaseRight` 필드 활용)
+  - [x] 등기일자, 권리명, 채권자, 금액 표시
+  - [x] `baseRightDate` 표시
+- [x] Part 3: 점유자·임차인 분석
+  - [x] `courtDocs.occupants` 리스트 표시
+  - [x] 전입일, 확정일자, 배당요구 여부
+  - [x] 대항력 여부 (`hasCountervailingPower`)
+  - [x] 우선변제권 여부 (확정일자 기준)
+  - [x] 보증금 (`deposit`) 표시
+- [x] Part 4: 명도비용 상세
+  - [x] 추정 명도비용 (`rights.evictionCostEstimated`)
+  - [x] 총 인수금액 계산 및 표시
+  - [x] `rights.breakdown` 활용한 권리별 상세 분석 (선택적)
+- [x] 브랜드 통합
+  - [x] 브랜드 메시지: "사실을 이해하셨습니다. 이제 분석을 시작할 준비가 되셨나요?"
+  - [x] Accent Color: Blue (Premium 리포트)
+  - [x] SectionCard로 전체 래핑
+  - [x] DataRow로 레이블/값 표시
 
 #### 2.6.3 수익 분석 상세 리포트 (`ProfitAnalysisReport.tsx`)
 
@@ -1891,7 +1901,7 @@ UI → Server Action → Service → SimulationGenerator
 ### 7. v2.2 핵심 변경사항
 
 - **ExitPrice**: 단일 → `exitPrice3m/6m/12m` 분리
-- **Profit**: 단일 ROI → `scenarios[]` 배열 (3개 기간)
+- **Profit**: 단일 ROI → `scenarios` 객체 (3m/6m/12m 키)
 - **Summary**: 단일 `isProfitable` → `isProfitable3m/6m/12m` 분리
 - **Valuation**: `exitPrice` 객체 구조로 변경
 
