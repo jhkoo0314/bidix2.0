@@ -1,15 +1,15 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-// 로그인 없이 접근 가능한 라우트 목록
+// 로그인 없이 접근 가능한 공개 라우트 목록
 const isPublicRoute = createRouteMatcher([
-  "/", // 랜딩페이지
-  "/guide", // 가이드 (원하면)
-  "/properties", // 매물리스트 (원하면)
-  "/simulation", // 테스트 페이지 (원하면)
-  // Clerk 인증 경로 (필수! - 무한 리디렉션 방지)
-  "/sign-in(.*)", // 로그인 페이지
-  "/sign-up(.*)", // 회원가입 페이지
-  "/sso-callback(.*)", // SSO 콜백
+  "/", // 랜딩페이지 - 항상 공개
+  "/guide", // 가이드 페이지
+  "/properties", // 매물리스트 페이지
+  "/simulation", // 테스트 페이지
+  // Clerk 인증 경로 - 무한 리디렉션 방지를 위해 필수
+  "/sign-in(.*)", // 로그인 페이지 및 하위 경로
+  "/sign-up(.*)", // 회원가입 페이지 및 하위 경로
+  "/sso-callback(.*)", // SSO 콜백 경로
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
@@ -21,6 +21,7 @@ export default clerkMiddleware(async (auth, req) => {
   }
 
   // 공개 경로가 아니면 인증 확인
+  // 보호가 필요한 페이지(/dashboard, /simulations, /history 등)와 API 라우트만 인증 필요
   if (!isPublicRoute(req)) {
     await auth.protect();
   }
