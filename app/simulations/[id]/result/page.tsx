@@ -60,6 +60,9 @@ import { MetricsStrip } from "@/components/result/MetricsStrip";
 import { ExitScenarioTable } from "@/components/result/ExitScenarioTable";
 import { PremiumReportCTA } from "@/components/result/PremiumReportCTA";
 import { SaleStatementReport } from "@/components/reports/SaleStatementReport";
+import { RightsAnalysisReport } from "@/components/reports/RightsAnalysisReport";
+import { ProfitAnalysisReport } from "@/components/reports/ProfitAnalysisReport";
+import { AuctionAnalysisReport } from "@/components/reports/AuctionAnalysisReport";
 import { ResultActions } from "@/components/result/ResultActions";
 import { CompetitorAnalysis } from "@/components/result/CompetitorAnalysis";
 import { Separator } from "@/components/ui/separator";
@@ -332,8 +335,14 @@ export default async function ResultPage({ params }: ResultPageProps) {
   // 입찰 실패 여부 확인 (브랜드 메시지 표시용)
   const isBidFailed = userBid < result.valuation.minBid;
 
+  // 개발자 모드 감지 로직
+  const isDevMode =
+    process.env.NEXT_PUBLIC_DEV_MODE === "true" ||
+    process.env.NODE_ENV === "development";
+
   console.log("렌더링 준비 완료");
   console.log("입찰 실패 여부:", isBidFailed);
+  console.log("개발자 모드:", isDevMode);
   if (scoreBreakdown) {
     console.log("ScoreBreakdown 준비 완료:", scoreBreakdown.finalScore);
     console.group("ScoreBreakdown Details");
@@ -427,10 +436,11 @@ export default async function ResultPage({ params }: ResultPageProps) {
           </>
         )}
 
-        {/* Premium Report CTAs */}
+        {/* Premium Report CTAs (개발자 모드에서 실제 리포트 표시) */}
         <section className="space-y-4 md:space-y-6">
           {(() => {
             console.log("Rendering Premium Report CTAs");
+            console.log("개발자 모드:", isDevMode);
             return (
               <>
                 {/* 매각물건명세서 해설판 (무료 리포트) */}
@@ -438,17 +448,51 @@ export default async function ResultPage({ params }: ResultPageProps) {
                   <div className="space-y-4">
                     <SaleStatementReport
                       courtDocs={result.courtDocs}
-                      isFreeAvailable={freeReportAvailable}
+                      isFreeAvailable={isDevMode ? true : freeReportAvailable}
                     />
                   </div>
                 )}
 
-                {/* Premium Report CTAs - 반응형 그리드 */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                  <PremiumReportCTA type="rights" />
-                  <PremiumReportCTA type="profit" />
-                  <PremiumReportCTA type="auction" />
-                </div>
+                {/* 개발자 모드: 실제 리포트 표시 */}
+                {isDevMode ? (
+                  <div className="space-y-6">
+                    {(() => {
+                      console.log("개발자 모드: 실제 리포트 렌더링");
+                      return (
+                        <>
+                          {/* 권리 분석 상세 리포트 */}
+                          {result.rights && result.courtDocs && (
+                            <RightsAnalysisReport
+                              rights={result.rights}
+                              courtDocs={result.courtDocs}
+                            />
+                          )}
+
+                          {/* 수익 분석 상세 리포트 */}
+                          <ProfitAnalysisReport
+                            profit={result.profit}
+                            valuation={result.valuation}
+                            costs={result.costs}
+                          />
+
+                          {/* 경매 분석 상세 리포트 */}
+                          <AuctionAnalysisReport
+                            summary={result.summary}
+                            valuation={result.valuation}
+                            profit={result.profit}
+                          />
+                        </>
+                      );
+                    })()}
+                  </div>
+                ) : (
+                  /* 프로덕션 모드: 잠금 UI 표시 */
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    <PremiumReportCTA type="rights" />
+                    <PremiumReportCTA type="profit" />
+                    <PremiumReportCTA type="auction" />
+                  </div>
+                )}
               </>
             );
           })()}

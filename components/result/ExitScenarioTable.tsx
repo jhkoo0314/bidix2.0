@@ -30,6 +30,7 @@
 
 import { Profit } from "@/lib/types";
 import { SectionCard } from "@/components/common/SectionCard";
+import { formatPercentage } from "@/lib/utils/number";
 
 export interface ExitScenarioTableProps {
   profit: Profit; // scenarios 객체 포함
@@ -127,12 +128,12 @@ export function ExitScenarioTable({ profit }: ExitScenarioTableProps) {
                   </td>
                   <td className="text-right p-3">
                     <span className="numeric-highlight font-semibold font-[var(--font-noto-sans-kr)]">
-                      {(scenario.roi * 100).toFixed(2)}%
+                      {formatPercentage(scenario.roi * 100)}
                     </span>
                   </td>
                   <td className="text-right p-3">
                     <span className="numeric-highlight font-semibold font-[var(--font-noto-sans-kr)]">
-                      {(scenario.annualizedRoi * 100).toFixed(2)}%
+                      {formatPercentage(scenario.annualizedRoi * 100)}
                     </span>
                   </td>
                 </tr>

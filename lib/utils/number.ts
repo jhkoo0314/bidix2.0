@@ -73,3 +73,27 @@ export function generateSeedFromPropertySeed(
   ];
   return parts.join("|");
 }
+
+/**
+ * 백분율 포맷팅 함수
+ * @param value 백분율 값 (예: 0.15는 15%로 표시)
+ * @param decimals 소수점 자릿수 (기본값: 2)
+ * @returns 포맷된 백분율 문자열 (예: "15.00%")
+ * @example
+ * formatPercentage(0.1523) // "15.23%"
+ * formatPercentage(0.1523, 1) // "15.2%"
+ */
+export function formatPercentage(value: number, decimals: number = 2): string {
+  return `${value.toFixed(decimals)}%`;
+}
+
+/**
+ * 금액 포맷팅 함수
+ * @param value 금액 값
+ * @returns 포맷된 금액 문자열 (예: "1,234,567원")
+ * @example
+ * formatCurrency(1234567) // "1,234,567원"
+ */
+export function formatCurrency(value: number): string {
+  return `${value.toLocaleString()}원`;
+}

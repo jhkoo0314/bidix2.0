@@ -33,6 +33,7 @@
 
 import { AuctionSummary, Profit, DifficultyMode } from "@/lib/types";
 import { Badge } from "@/components/common/Badge";
+import { formatPercentage } from "@/lib/utils/number";
 
 export interface BidOutcomeBlockProps {
   summary: AuctionSummary;
@@ -135,7 +136,7 @@ export function BidOutcomeBlock({
         <p className="text-sm text-gray-700 dark:text-gray-300 font-[var(--font-noto-sans-kr)]">
           당신의 입찰가는 적정가보다{" "}
           <span className="font-semibold">
-            {bidDifferencePercent.toFixed(1)}%
+            {formatPercentage(bidDifferencePercent, 1)}
           </span>{" "}
           낮았습니다.
         </p>

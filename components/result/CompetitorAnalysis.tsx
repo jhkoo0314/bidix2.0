@@ -29,6 +29,7 @@
 
 import { SectionCard } from "@/components/common/SectionCard";
 import { DifficultyMode } from "@/lib/types";
+import { formatPercentage } from "@/lib/utils/number";
 
 export interface CompetitorAnalysisProps {
   competitorBids: number[]; // 경쟁자 입찰가 배열 (내림차순 정렬)
@@ -213,7 +214,7 @@ export function CompetitorAnalysis({
               <span className="font-semibold text-amber-700 dark:text-amber-300">
                 {differenceFromMax.toLocaleString()}원
               </span>{" "}
-              ({differencePercent.toFixed(1)}%)
+              ({formatPercentage(differencePercent, 1)})
             </p>
           </div>
         )}

@@ -42,6 +42,7 @@ import { Profit } from "@/lib/types";
 import { ScoreBreakdown } from "@/lib/engines/scoreengine";
 import { SectionCard } from "@/components/common/SectionCard";
 import { Badge } from "@/components/common/Badge";
+import { formatPercentage } from "@/lib/utils/number";
 
 export interface MetricsStripProps {
   profit: Profit;
@@ -102,13 +103,13 @@ export function MetricsStrip({ profit, score }: MetricsStripProps) {
               초기 안전마진
             </p>
             <p className="text-2xl font-bold numeric-highlight">
-              {safetyMarginPercent.toFixed(2)}%
+              {formatPercentage(safetyMarginPercent)}
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-[var(--font-noto-sans-kr)]">
               FMV 대비 초기 마진
             </p>
             <p className="text-xs text-gray-600 dark:text-gray-400 mt-2 italic font-[var(--font-noto-sans-kr)]">
-              당신의 안전마진은 {safetyMarginPercent.toFixed(2)}%였습니다.
+              당신의 안전마진은 {formatPercentage(safetyMarginPercent)}였습니다.
             </p>
           </div>
 
@@ -118,7 +119,7 @@ export function MetricsStrip({ profit, score }: MetricsStripProps) {
               최적 ROI
             </p>
             <p className="text-2xl font-bold numeric-highlight">
-              {(bestScenario.roi * 100).toFixed(2)}%
+              {formatPercentage(bestScenario.roi * 100)}
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-[var(--font-noto-sans-kr)]">
               {bestScenario.months}개월 기준

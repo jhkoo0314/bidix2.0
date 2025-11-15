@@ -450,12 +450,205 @@
   }
   ```
 
-### 2.6 Premium Report Components (아직 잠금 상태)
+### 2.6 Premium Report Components (개발자 모드 잠금 해제 및 상세 리포트 구현)
 
-- [x] `components/reports/RightsAnalysisReport.tsx` (잠금 UI만)
-- [x] `components/reports/ProfitAnalysisReport.tsx` (잠금 UI만)
-- [x] `components/reports/AuctionAnalysisReport.tsx` (잠금 UI만)
-- [x] `components/reports/SaleStatementReport.tsx` (첫 1회 무료)
+**📚 필수 참조 문서**:
+
+- `docs/product/report-result.md` - 4종 리포트 상세 명세 (SSOT)
+- `docs/ui/component-spec.md` - 리포트 컴포넌트 Props 명세
+- `docs/ui/design-system.md` - 브랜드 Color Tokens 및 Layout Rules
+- `docs/engine/json-schema.md` - 타입 구조 검증 기준
+- `lib/types/*.ts` - 모든 타입 정의 (SSOT)
+- `lib/engines/scoreengine.ts` - ScoreBreakdown 타입
+- `components/reports/SaleStatementReport.tsx` - 기존 구현 참고
+
+**구현 목표**:
+
+- 개발자 모드에서 4개 리포트 모두 잠금 해제
+- 각 리포트의 실제 상세 내용 구현 (report-result.md 기반)
+- 프로덕션에서는 잠금 UI 유지, 개발자 모드에서만 실제 리포트 표시
+
+**개발 규칙 준수**:
+
+- ✅ 엔진 타입 직접 사용 (DTO/Adapter 생성 금지)
+- ✅ `SectionCard`, `DataRow` 공통 컴포넌트 활용
+- ✅ `formatCurrency()`, `formatPercentage()` 유틸리티 사용
+- ✅ Numeric Highlight 스타일 적용 (금액/백분율)
+- ✅ 브랜드 메시지 및 Accent Color 적용
+
+#### 2.6.1 개발자 모드 감지 로직
+
+- [x] 환경 변수 설정 (`.env.local`, `.env`)
+  ```bash
+  NEXT_PUBLIC_DEV_MODE=true
+  ```
+  - 참고: `.env.local` 파일을 프로젝트 루트에 생성하고 위 변수를 추가하세요.
+  - 또는 `NODE_ENV === 'development'`일 때 자동으로 개발자 모드로 인식됩니다.
+- [x] `app/simulations/[id]/result/page.tsx`에 개발자 모드 감지 로직 추가
+  ```typescript
+  const isDevMode =
+    process.env.NEXT_PUBLIC_DEV_MODE === "true" ||
+    process.env.NODE_ENV === "development";
+  ```
+- [x] 개발자 모드일 때 실제 리포트 컴포넌트 렌더링, 아닐 때 잠금 UI 표시
+  - 개발자 모드: `RightsAnalysisReport`, `ProfitAnalysisReport`, `AuctionAnalysisReport` 렌더링
+  - 프로덕션 모드: `PremiumReportCTA` 잠금 UI 표시
+  - `SaleStatementReport`는 개발자 모드에서 항상 `isFreeAvailable={true}`로 설정
+
+#### 2.6.2 권리 분석 상세 리포트 (`RightsAnalysisReport.tsx`)
+
+**참조**: `report-result.md` Section 1
+
+- [ ] 잠금 UI 제거 및 실제 리포트 내용 구현
+- [ ] Props 인터페이스 (Component Spec 준수)
+  ```typescript
+  interface RightsAnalysisReportProps {
+    rights: Rights;
+    courtDocs: CourtDocsNormalized;
+  }
+  ```
+- [ ] Part 1: Executive Summary
+  - [ ] 리스크 등급 표시 (`rights.evictionRisk` 기반)
+  - [ ] 주요 리스크 요약 (`rights.riskFlags`)
+  - [ ] 예상 인수금액 (`rights.assumableRightsTotal + rights.evictionCostEstimated`)
+  - [ ] 핵심 판단 기준 (대항력, 우선변제권, 배당요구 여부)
+- [ ] Part 2: 등기 권리 타임라인
+  - [ ] `courtDocs.registeredRights` 테이블 표시
+  - [ ] 말소기준권리 하이라이트 (`isBaseRight` 필드 활용)
+  - [ ] 등기일자, 권리명, 채권자, 금액 표시
+  - [ ] `baseRightDate` 표시
+- [ ] Part 3: 점유자·임차인 분석
+  - [ ] `courtDocs.occupants` 리스트 표시
+  - [ ] 전입일, 확정일자, 배당요구 여부
+  - [ ] 대항력 여부 (`hasCountervailingPower`)
+  - [ ] 우선변제권 여부 (확정일자 기준)
+  - [ ] 보증금 (`deposit`) 표시
+- [ ] Part 4: 명도비용 상세
+  - [ ] 추정 명도비용 (`rights.evictionCostEstimated`)
+  - [ ] 총 인수금액 계산 및 표시
+  - [ ] `rights.breakdown` 활용한 권리별 상세 분석 (선택적)
+- [ ] 브랜드 통합
+  - [ ] 브랜드 메시지: "사실을 이해하셨습니다. 이제 분석을 시작할 준비가 되셨나요?"
+  - [ ] Accent Color: Blue (Premium 리포트)
+  - [ ] SectionCard로 전체 래핑
+  - [ ] DataRow로 레이블/값 표시
+
+#### 2.6.3 수익 분석 상세 리포트 (`ProfitAnalysisReport.tsx`)
+
+**참조**: `report-result.md` Section 2
+
+- [ ] 잠금 UI 제거 및 실제 리포트 내용 구현
+- [ ] Props 인터페이스 (Component Spec 준수)
+  ```typescript
+  interface ProfitAnalysisReportProps {
+    profit: Profit;
+    valuation: Valuation;
+    costs: Costs;
+  }
+  ```
+- [ ] Part 1: Profit Summary
+  - [ ] 초기 안전마진 (`profit.initialSafetyMargin`) - 백분율 표시
+  - [ ] 3/6/12개월 순이익 (`profit.scenarios["3m"/"6m"/"12m"].netProfit`)
+  - [ ] 최적 보유기간 (`summary.bestHoldingPeriod` - Result Page에서 전달 필요)
+  - [ ] Numeric Highlight 스타일 적용
+- [ ] Part 2: 필요 자기자본
+  - [ ] 총취득원가 (`costs.acquisition.totalAcquisition`)
+  - [ ] 대출금 (`costs.acquisition.loanPrincipal`)
+  - [ ] 필요 자기자본 (`costs.acquisition.ownCash`)
+  - [ ] 금액 포맷팅 (`formatCurrency()`)
+- [ ] Part 3: 비용 구조 상세
+  - [ ] 취득원가 상세 (`costs.acquisition`)
+    - 취득세 (`taxes`)
+    - 법무비용 (`legalFees`)
+    - 수리비 (`repairCost`)
+    - 명도비용 (`evictionCost`)
+  - [ ] 보유기간별 비용 (`costs.byPeriod["3m"/"6m"/"12m"]`)
+    - 보유비용 (`holdingCost`)
+    - 이자비용 (`interestCost`)
+    - 총비용 (`totalCost`)
+- [ ] Part 4: Profit Scenarios 비교 테이블
+  - [ ] 3/6/12개월 시나리오 비교
+  - [ ] 컬럼: 기간, ExitPrice, TotalCost, Net Profit, Annualized ROI
+  - [ ] `profit.scenarios` 객체 구조 활용 (배열 아님!)
+  - [ ] 최적 시나리오 하이라이트
+  - [ ] 수익분기점 표시 (`profit.breakevenExit_3m/6m/12m`)
+- [ ] 브랜드 통합
+  - [ ] 브랜드 메시지 및 Accent Color 적용
+  - [ ] SectionCard, DataRow 활용
+
+#### 2.6.4 경매 분석 상세 리포트 (`AuctionAnalysisReport.tsx`)
+
+**참조**: `report-result.md` Section 3
+
+- [ ] 잠금 UI 제거 및 실제 리포트 내용 구현
+- [ ] Props 인터페이스 (Component Spec 준수)
+  ```typescript
+  interface AuctionAnalysisReportProps {
+    summary: AuctionSummary;
+    valuation: Valuation;
+    profit: Profit;
+  }
+  ```
+- [ ] 추가 Props (Result Page에서 전달 필요)
+  - [ ] `userBid: number` - 사용자 입찰가
+  - [ ] `scoreBreakdown?: ScoreBreakdown` - 점수 상세 (선택적)
+- [ ] Part 1: Result Summary
+  - [ ] 내 입찰가 (`userBid`)
+  - [ ] 결과 (낙찰 성공/실패/근접) - `summary` 기반
+  - [ ] 입찰 등급 (`summary.grade`: S/A/B/C/D)
+  - [ ] 최종 점수 (`scoreBreakdown.finalScore` - 있으면 표시)
+- [ ] Part 2: 입찰 포지션 분석
+  - [ ] 기준별 금액 비교 테이블
+    - 최저입찰가 (`valuation.minBid`)
+    - 권장가 하단 (`valuation.recommendedBidRange.min`)
+    - 내 입찰가 (`userBid`)
+    - 권장가 상단 (`valuation.recommendedBidRange.max`)
+    - FMV (`valuation.adjustedFMV`)
+  - [ ] FMV 대비 비율 계산 및 표시
+  - [ ] 입찰 포지션 시각화 (선택적)
+- [ ] Part 3: 점수 구조 상세 (ScoreBreakdown 있을 때만)
+  - [ ] 정확성 점수 (`scoreBreakdown.accuracyScore` / 400)
+  - [ ] 수익성 점수 (`scoreBreakdown.profitabilityScore` / 400)
+  - [ ] 안정성 점수 (`scoreBreakdown.riskControlScore` / 200)
+  - [ ] 최종 점수 (`scoreBreakdown.finalScore` / 1000)
+  - [ ] 등급 (`scoreBreakdown.grade`)
+  - [ ] 점수 계산 근거 설명 (ScoreEngine 로직 기반)
+- [ ] Part 4: 입찰 전략 개선 포인트
+  - [ ] 안전마진 보너스 분석 (`profit.initialSafetyMargin` 기반)
+  - [ ] 권장입찰가 보너스 분석 (`valuation.recommendedBidRange` 대비 위치)
+  - [ ] 위험도 패널티 분석 (`rights.evictionRisk` 기반 - Rights props 추가 필요)
+  - [ ] 개선 제안 메시지 (브랜드 톤)
+- [ ] 브랜드 통합
+  - [ ] 브랜드 메시지 및 Accent Color 적용
+  - [ ] SectionCard, DataRow 활용
+
+#### 2.6.5 매각물건명세서 해설판 (`SaleStatementReport.tsx`)
+
+- [x] 이미 구현 완료 (참고용)
+- [x] `isFreeAvailable` prop으로 잠금/해제 제어
+- [ ] 개발자 모드에서는 항상 `isFreeAvailable={true}` 전달
+
+#### 2.6.6 Result Page 통합
+
+- [ ] `app/simulations/[id]/result/page.tsx` 수정
+  - [ ] 개발자 모드 감지 로직 추가
+  - [ ] 개발자 모드일 때 실제 리포트 컴포넌트 렌더링
+  - [ ] 각 리포트에 필요한 props 전달
+    - `RightsAnalysisReport`: `rights`, `courtDocs`
+    - `ProfitAnalysisReport`: `profit`, `valuation`, `costs`
+    - `AuctionAnalysisReport`: `summary`, `valuation`, `profit`, `userBid`, `scoreBreakdown`
+    - `SaleStatementReport`: `courtDocs`, `isFreeAvailable={isDevMode ? true : freeReportAvailable}`
+  - [ ] 프로덕션 모드일 때 기존 잠금 UI 유지 (`PremiumReportCTA`)
+
+**예상 소요:** 8-10시간
+
+**구현 순서**:
+
+1. 개발자 모드 감지 로직 (2.6.1) - 30분
+2. 권리 분석 리포트 구현 (2.6.2) - 2-3시간
+3. 수익 분석 리포트 구현 (2.6.3) - 2-3시간
+4. 경매 분석 리포트 구현 (2.6.4) - 2-3시간
+5. Result Page 통합 (2.6.6) - 1시간
 
 ---
 
@@ -768,7 +961,15 @@
      - [x] 금액 포맷: `toLocaleString()`
      - [x] 모바일 스크롤 가능한 테이블
 
-  4. [x] Premium Report CTAs
+  4. [x] Premium Report CTAs (개발자 모드에서 실제 리포트 표시)
+
+     **개발자 모드 감지**:
+
+     - [ ] 환경 변수 체크: `NEXT_PUBLIC_DEV_MODE === 'true'` 또는 `NODE_ENV === 'development'`
+     - [ ] 개발자 모드일 때 실제 리포트 컴포넌트 렌더링
+     - [ ] 프로덕션 모드일 때 기존 잠금 UI 유지
+
+     **프로덕션 모드 (기존 잠금 UI)**:
 
      - [x] `<PremiumReportCTA type="rights" />` 섹션
        - 제목: "권리 분석 상세 리포트"
@@ -792,6 +993,17 @@
        - 또는: **"🔒 더 깊은 분석을 원하신가요?"** + "당신은 이미 사실을 이해했습니다. 이제 분석을 시작할 준비가 되셨습니다."
        - 브랜드 Accent Color (blue/amber) 적용
        - 브랜드 보이스 준수: 격려하되 과장하지 않음, 데이터 기반 강조
+
+     **개발자 모드 (실제 리포트 표시)**:
+
+     - [ ] `<RightsAnalysisReport rights={} courtDocs={} />` 렌더링
+       - Phase 2.6.2 참조: 권리 분석 상세 리포트 구현
+     - [ ] `<ProfitAnalysisReport profit={} valuation={} costs={} />` 렌더링
+       - Phase 2.6.3 참조: 수익 분석 상세 리포트 구현
+     - [ ] `<AuctionAnalysisReport summary={} valuation={} profit={} userBid={} scoreBreakdown={} />` 렌더링
+       - Phase 2.6.4 참조: 경매 분석 상세 리포트 구현
+     - [ ] `<SaleStatementReport courtDocs={} isFreeAvailable={true} />` 렌더링
+       - 개발자 모드에서는 항상 무료로 표시
 
   5. [x] `<ResultActions simulationId={} />`
      - [x] "히스토리 저장" 버튼
@@ -1338,10 +1550,10 @@
 
 ### 5.3 컴포넌트 스타일링
 
-- [ ] 모든 컴포넌트에 Tailwind 클래스 사용
-- [ ] shadcn/ui 기본 커스터마이징 최소화
-- [ ] 금액 표시 포맷팅 (`toLocaleString()`)
-- [ ] 백분율 표시 포맷팅
+- [x] 모든 컴포넌트에 Tailwind 클래스 사용
+- [x] shadcn/ui 기본 커스터마이징 최소화
+- [x] 금액 표시 포맷팅 (`toLocaleString()`)
+- [x] 백분율 표시 포맷팅
 
 ### 5.4 인터랙션 규칙 (Brand Behavior)
 
@@ -1471,24 +1683,25 @@
 
 ## ⏱️ 예상 소요 시간
 
-|  Phase   | 작업 내용                    |   예상 소요   | 비고                         |
-| :------: | :--------------------------- | :-----------: | :--------------------------- |
-|    0     | 참고 문서 학습               |    1-2시간    | 7개 핵심 문서 읽기           |
-|    1     | 프로젝트 기반 구축           |    2-3시간    | 디렉토리, shadcn 설치        |
-|    2     | 컴포넌트 스켈레톤 생성       |    4-5시간    | Props 정의, placeholder UI   |
-|   3.1    | Landing Page                 |    2-3시간    | 브랜드 메시지 중심           |
-|   3.2    | Dashboard                    |    4-5시간    | Usage, Stats, API 연동       |
-|   3.3    | Simulation List              |    5-6시간    | 필터링, 리스트 UI            |
-|   3.4    | Simulation Detail            |    4-5시간    | CourtDocs, Rights 표시       |
-|   3.5    | Bid Page                     |    5-6시간    | QuickFacts, Valuation 표시   |
-|   3.6    | Result Page (핵심)           |   8-10시간    | 4종 리포트 CTA, 점수 표시    |
-|   3.7    | History Page                 |    4-5시간    | 테이블, 페이지네이션         |
-|    4     | Server Actions 및 API Routes |    4-6시간    | 3개 API Routes 추가          |
-|   4.5    | 경쟁자 시뮬레이션 구현       |    6-8시간    | 핵심 기능 (Competitor Logic) |
-|    5     | 스타일링 및 반응형           |    4-5시간    | Design System 사용           |
-|    6     | 테스트 및 디버깅             |    5-6시간    | Chrome DevTools MCP 사용     |
-|    7     | 최적화 및 마무리             |    3-4시간    | SEO, a11y, 문서화            |
-| **총계** |                              | **62-80시간** | 평균 71시간 (약 9일 작업)    |
+|  Phase   | 작업 내용                         |   예상 소요   | 비고                         |
+| :------: | :-------------------------------- | :-----------: | :--------------------------- |
+|    0     | 참고 문서 학습                    |    1-2시간    | 7개 핵심 문서 읽기           |
+|    1     | 프로젝트 기반 구축                |    2-3시간    | 디렉토리, shadcn 설치        |
+|    2     | 컴포넌트 스켈레톤 생성            |    4-5시간    | Props 정의, placeholder UI   |
+|   3.1    | Landing Page                      |    2-3시간    | 브랜드 메시지 중심           |
+|   3.2    | Dashboard                         |    4-5시간    | Usage, Stats, API 연동       |
+|   3.3    | Simulation List                   |    5-6시간    | 필터링, 리스트 UI            |
+|   3.4    | Simulation Detail                 |    4-5시간    | CourtDocs, Rights 표시       |
+|   3.5    | Bid Page                          |    5-6시간    | QuickFacts, Valuation 표시   |
+|   3.6    | Result Page (핵심)                |   8-10시간    | 4종 리포트 CTA, 점수 표시    |
+|   2.6    | Premium 리포트 구현 (개발자 모드) |   8-10시간    | 4종 리포트 상세 구현         |
+|   3.7    | History Page                      |    4-5시간    | 테이블, 페이지네이션         |
+|    4     | Server Actions 및 API Routes      |    4-6시간    | 3개 API Routes 추가          |
+|   4.5    | 경쟁자 시뮬레이션 구현            |    6-8시간    | 핵심 기능 (Competitor Logic) |
+|    5     | 스타일링 및 반응형                |    4-5시간    | Design System 사용           |
+|    6     | 테스트 및 디버깅                  |    5-6시간    | Chrome DevTools MCP 사용     |
+|    7     | 최적화 및 마무리                  |    3-4시간    | SEO, a11y, 문서화            |
+| **총계** |                                   | **70-90시간** | 평균 80시간 (약 10일 작업)   |
 
 ### 우선순위별 분류
 
@@ -1622,6 +1835,14 @@ UI → Server Action → Service → SimulationGenerator
 3. 경매 분석: 입찰 전략의 점수 상세, 개선 포인트
 4. 매각물건명세서 법원 분류 해설판 (첫 1회 무료)
 
+**개발자 모드 리포트 구현**:
+
+- 개발자 모드에서 4개 리포트 모두 잠금 해제 및 상세 내용 구현
+- 환경 변수: `NEXT_PUBLIC_DEV_MODE=true` 또는 `NODE_ENV === 'development'`
+- 각 리포트는 `report-result.md` 기반으로 구현
+- 프로덕션에서는 잠금 UI 유지, 개발자 모드에서만 실제 리포트 표시
+- 구현 순서: 개발자 모드 감지 → 권리 분석 → 수익 분석 → 경매 분석 → Result Page 통합
+
 ### 5. API 구조
 
 **Server Actions**: `generateSimulationAction`, `submitBidAction`, `saveHistoryAction`  
@@ -1699,6 +1920,13 @@ UI → Server Action → Service → SimulationGenerator
 
 ## 📝 버전 히스토리
 
+- **v3.4** (2025-01-28): 개발자 모드 리포트 구현 계획 추가
+  - Phase 2.6에 개발자 모드 잠금 해제 및 상세 리포트 구현 계획 추가
+  - 각 리포트별 상세 구현 내용 명시 (report-result.md 기반)
+  - 개발자 모드 감지 로직 및 Result Page 통합 계획
+  - 예상 소요 시간 및 구현 순서 명시
+  - Phase 3.6 Result Page에 개발자 모드 관련 내용 추가
+  - 핵심 학습 내용에 개발자 모드 리포트 구현 섹션 추가
 - **v3.3** (2025-01-28): 경쟁자 시뮬레이션 구현 계획 추가
   - Phase 4.5에 경쟁자 시뮬레이션 구현 섹션 추가
   - Policy 확장, 경쟁자 생성 함수, determineOutcome 수정 계획
