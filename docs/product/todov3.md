@@ -590,8 +590,8 @@
 
 **참조**: `report-result.md` Section 3
 
-- [ ] 잠금 UI 제거 및 실제 리포트 내용 구현
-- [ ] Props 인터페이스 (Component Spec 준수)
+- [x] 잠금 UI 제거 및 실제 리포트 내용 구현
+- [x] Props 인터페이스 (Component Spec 준수)
   ```typescript
   interface AuctionAnalysisReportProps {
     summary: AuctionSummary;
@@ -599,56 +599,40 @@
     profit: Profit;
   }
   ```
-- [ ] 추가 Props (Result Page에서 전달 필요)
-  - [ ] `userBid: number` - 사용자 입찰가
-  - [ ] `scoreBreakdown?: ScoreBreakdown` - 점수 상세 (선택적)
-- [ ] Part 1: Result Summary
-  - [ ] 내 입찰가 (`userBid`)
-  - [ ] 결과 (낙찰 성공/실패/근접) - `summary` 기반
-  - [ ] 입찰 등급 (`summary.grade`: S/A/B/C/D)
-  - [ ] 최종 점수 (`scoreBreakdown.finalScore` - 있으면 표시)
-- [ ] Part 2: 입찰 포지션 분석
-  - [ ] 기준별 금액 비교 테이블
+- [x] 추가 Props (Result Page에서 전달 필요)
+  - [x] `userBid: number` - 사용자 입찰가
+  - [x] `scoreBreakdown?: ScoreBreakdown` - 점수 상세 (선택적)
+- [x] Part 1: Result Summary
+  - [x] 내 입찰가 (`userBid`)
+  - [x] 결과 (낙찰 성공/실패/근접) - `summary` 기반
+  - [x] 입찰 등급 (`summary.grade`: S/A/B/C/D)
+  - [x] 최종 점수 (`scoreBreakdown.finalScore` - 있으면 표시)
+- [x] Part 2: 입찰 포지션 분석
+  - [x] 기준별 금액 비교 테이블
     - 최저입찰가 (`valuation.minBid`)
     - 권장가 하단 (`valuation.recommendedBidRange.min`)
     - 내 입찰가 (`userBid`)
     - 권장가 상단 (`valuation.recommendedBidRange.max`)
     - FMV (`valuation.adjustedFMV`)
-  - [ ] FMV 대비 비율 계산 및 표시
-  - [ ] 입찰 포지션 시각화 (선택적)
-- [ ] Part 3: 점수 구조 상세 (ScoreBreakdown 있을 때만)
-  - [ ] 정확성 점수 (`scoreBreakdown.accuracyScore` / 400)
-  - [ ] 수익성 점수 (`scoreBreakdown.profitabilityScore` / 400)
-  - [ ] 안정성 점수 (`scoreBreakdown.riskControlScore` / 200)
-  - [ ] 최종 점수 (`scoreBreakdown.finalScore` / 1000)
-  - [ ] 등급 (`scoreBreakdown.grade`)
-  - [ ] 점수 계산 근거 설명 (ScoreEngine 로직 기반)
-- [ ] Part 4: 입찰 전략 개선 포인트
-  - [ ] 안전마진 보너스 분석 (`profit.initialSafetyMargin` 기반)
-  - [ ] 권장입찰가 보너스 분석 (`valuation.recommendedBidRange` 대비 위치)
-  - [ ] 위험도 패널티 분석 (`rights.evictionRisk` 기반 - Rights props 추가 필요)
-  - [ ] 개선 제안 메시지 (브랜드 톤)
-- [ ] 브랜드 통합
-  - [ ] 브랜드 메시지 및 Accent Color 적용
-  - [ ] SectionCard, DataRow 활용
+  - [x] FMV 대비 비율 계산 및 표시
+  - [x] 입찰 포지션 시각화 (선택적)
+- [x] Part 3: 점수 구조 상세 (ScoreBreakdown 있을 때만)
+  - [x] 정확성 점수 (`scoreBreakdown.accuracyScore` / 400)
+  - [x] 수익성 점수 (`scoreBreakdown.profitabilityScore` / 400)
+  - [x] 안정성 점수 (`scoreBreakdown.riskControlScore` / 200)
+  - [x] 최종 점수 (`scoreBreakdown.finalScore` / 1000)
+  - [x] 등급 (`scoreBreakdown.grade`)
+  - [x] 점수 계산 근거 설명 (ScoreEngine 로직 기반)
+- [x] Part 4: 입찰 전략 개선 포인트
+  - [x] 안전마진 보너스 분석 (`profit.initialSafetyMargin` 기반)
+  - [x] 권장입찰가 보너스 분석 (`valuation.recommendedBidRange` 대비 위치)
+  - [x] 위험도 패널티 분석 (`summary.riskLabel` 기반)
+  - [x] 개선 제안 메시지 (브랜드 톤)
+- [x] 브랜드 통합
+  - [x] 브랜드 메시지 및 Accent Color 적용
+  - [x] SectionCard, DataRow 활용
 
-#### 2.6.5 매각물건명세서 해설판 (`SaleStatementReport.tsx`)
-
-- [x] 이미 구현 완료 (참고용)
-- [x] `isFreeAvailable` prop으로 잠금/해제 제어
-- [ ] 개발자 모드에서는 항상 `isFreeAvailable={true}` 전달
-
-#### 2.6.6 Result Page 통합
-
-- [ ] `app/simulations/[id]/result/page.tsx` 수정
-  - [ ] 개발자 모드 감지 로직 추가
-  - [ ] 개발자 모드일 때 실제 리포트 컴포넌트 렌더링
-  - [ ] 각 리포트에 필요한 props 전달
-    - `RightsAnalysisReport`: `rights`, `courtDocs`
-    - `ProfitAnalysisReport`: `profit`, `valuation`, `costs`
-    - `AuctionAnalysisReport`: `summary`, `valuation`, `profit`, `userBid`, `scoreBreakdown`
-    - `SaleStatementReport`: `courtDocs`, `isFreeAvailable={isDevMode ? true : freeReportAvailable}`
-  - [ ] 프로덕션 모드일 때 기존 잠금 UI 유지 (`PremiumReportCTA`)
+#### 
 
 **예상 소요:** 8-10시간
 

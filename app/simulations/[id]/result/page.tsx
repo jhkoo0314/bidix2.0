@@ -6,7 +6,7 @@
  * 1. BidOutcomeBlock (입찰 성공/실패/근접)
  * 2. MetricsStrip (초기 안전마진, ROI, 점수)
  * 3. ExitScenarioTable (3/6/12개월 비교 테이블)
- * 4. Premium Report CTAs (잠금 UI)
+ * 4. Premium Report CTAs (개발자 모드: 실제 리포트, 프로덕션: 잠금 UI)
  * 5. ResultActions (히스토리 저장, 다음 연습)
  *
  * 핵심 구현 로직:
@@ -14,6 +14,10 @@
  * - Supabase에서 시뮬레이션 결과 조회
  * - AuctionAnalysisResult 전체 데이터 사용
  * - Point & Level System 공식 적용
+ * - 개발자 모드 감지: `NEXT_PUBLIC_DEV_MODE === "true"` 또는 `NODE_ENV === "development"`
+ * - 개발자 모드일 때: RightsAnalysisReport, ProfitAnalysisReport, AuctionAnalysisReport 실제 렌더링
+ * - 프로덕션 모드일 때: PremiumReportCTA 잠금 UI 표시
+ * - SaleStatementReport: 개발자 모드에서 항상 `isFreeAvailable={true}` 전달
  *
  * @dependencies
  * - @clerk/nextjs: 인증 확인
@@ -26,6 +30,9 @@
  * - @/components/result/ExitScenarioTable: 보유기간별 수익 시나리오 테이블 컴포넌트
  * - @/components/result/PremiumReportCTA: 프리미엄 리포트 CTA 컴포넌트
  * - @/components/reports/SaleStatementReport: 매각물건명세서 해설판 리포트 컴포넌트
+ * - @/components/reports/RightsAnalysisReport: 권리 분석 상세 리포트 컴포넌트
+ * - @/components/reports/ProfitAnalysisReport: 수익 분석 상세 리포트 컴포넌트
+ * - @/components/reports/AuctionAnalysisReport: 경매 분석 상세 리포트 컴포넌트
  * - @/components/result/ResultActions: 결과 페이지 액션 컴포넌트
  * - @/components/ui/separator: 섹션 구분선 컴포넌트
  *
@@ -33,6 +40,7 @@
  * @see {@link /docs/product/point-level-system.md} - 점수 계산 공식
  * @see {@link /docs/engine/json-schema.md} - AuctionAnalysisResult 전체 구조
  * @see {@link /docs/ui/component-spec.md} - 모든 Result 컴포넌트 Props
+ * @see {@link /docs/product/todov3.md} - 개발자 모드 리포트 구현 계획 (2.6.5, 2.6.6)
  */
 
 import { auth } from "@clerk/nextjs/server";
@@ -336,6 +344,8 @@ export default async function ResultPage({ params }: ResultPageProps) {
   const isBidFailed = userBid < result.valuation.minBid;
 
   // 개발자 모드 감지 로직
+  // 환경 변수 NEXT_PUBLIC_DEV_MODE가 "true"이거나 NODE_ENV가 "development"일 때 개발자 모드 활성화
+  // 개발자 모드에서는 모든 Premium 리포트가 잠금 해제되어 실제 내용이 표시됨
   const isDevMode =
     process.env.NEXT_PUBLIC_DEV_MODE === "true" ||
     process.env.NODE_ENV === "development";
@@ -439,11 +449,13 @@ export default async function ResultPage({ params }: ResultPageProps) {
         {/* Premium Report CTAs (개발자 모드에서 실제 리포트 표시) */}
         <section className="space-y-4 md:space-y-6">
           {(() => {
-            console.log("Rendering Premium Report CTAs");
+            console.group("Premium Report Section");
             console.log("개발자 모드:", isDevMode);
+            console.log("무료 리포트 사용 가능:", freeReportAvailable);
             return (
               <>
                 {/* 매각물건명세서 해설판 (무료 리포트) */}
+                {/* 개발자 모드에서는 항상 isFreeAvailable={true} 전달 */}
                 {result.courtDocs && (
                   <div className="space-y-4">
                     <SaleStatementReport
@@ -457,7 +469,24 @@ export default async function ResultPage({ params }: ResultPageProps) {
                 {isDevMode ? (
                   <div className="space-y-6">
                     {(() => {
-                      console.log("개발자 모드: 실제 리포트 렌더링");
+                      console.log("개발자 모드: 실제 리포트 렌더링 시작");
+                      console.log("RightsAnalysisReport props:", {
+                        hasRights: !!result.rights,
+                        hasCourtDocs: !!result.courtDocs,
+                      });
+                      console.log("ProfitAnalysisReport props:", {
+                        hasProfit: !!result.profit,
+                        hasValuation: !!result.valuation,
+                        hasCosts: !!result.costs,
+                      });
+                      console.log("AuctionAnalysisReport props:", {
+                        hasSummary: !!result.summary,
+                        hasValuation: !!result.valuation,
+                        hasProfit: !!result.profit,
+                        userBid,
+                        hasScoreBreakdown: !!scoreBreakdown,
+                      });
+                      console.groupEnd();
                       return (
                         <>
                           {/* 권리 분석 상세 리포트 */}
@@ -480,6 +509,8 @@ export default async function ResultPage({ params }: ResultPageProps) {
                             summary={result.summary}
                             valuation={result.valuation}
                             profit={result.profit}
+                            userBid={userBid}
+                            scoreBreakdown={scoreBreakdown || undefined}
                           />
                         </>
                       );
