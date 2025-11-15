@@ -553,10 +553,10 @@ export default async function ResultPage({ params }: ResultPageProps) {
                       if (hasSummary) {
                         console.log("summary 구조:", {
                           grade: result.summary.grade,
-                          isProfitable3m: result.summary.isProfitable3m,
-                          isProfitable6m: result.summary.isProfitable6m,
-                          isProfitable12m: result.summary.isProfitable12m,
+                          isProfitable: result.summary.isProfitable,
                           bestHoldingPeriod: result.summary.bestHoldingPeriod,
+                          riskLabel: result.summary.riskLabel,
+                          recommendedBidRange: result.summary.recommendedBidRange,
                         });
                       }
                       if (hasScoreBreakdown) {
