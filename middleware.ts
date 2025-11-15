@@ -13,6 +13,13 @@ const isPublicRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
+  const { pathname } = req.nextUrl;
+
+  // 루트 경로는 명시적으로 공개 (404 방지)
+  if (pathname === "/") {
+    return;
+  }
+
   // 공개 경로가 아니면 인증 확인
   if (!isPublicRoute(req)) {
     await auth.protect();
