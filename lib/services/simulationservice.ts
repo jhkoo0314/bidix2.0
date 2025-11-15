@@ -1,7 +1,38 @@
-// lib/services/simulationservice.ts
-// BIDIX AI - Simulation Service (v2.2 Full Rewrite)
-// Version: 2.2
-// Last Updated: 2025-01-28
+/**
+ * @file simulationservice.ts
+ * @description 시뮬레이션 서비스 레이어 (v2.2)
+ *
+ * 주요 기능:
+ * 1. 시뮬레이션 생성 (create): Generator + AuctionEngine 실행 후 DB 저장
+ * 2. 입찰 제출 (submitBid): 기존 시뮬레이션에 사용자 입찰가 적용하여 재계산
+ * 3. 히스토리 저장 (saveHistory): 시뮬레이션을 히스토리에 고정
+ * 4. 시뮬레이션 조회 (getById, listByUserId): DB에서 시뮬레이션 데이터 조회
+ *
+ * 핵심 구현 로직:
+ * - 서비스 레이어 역할: DB 통신 + 엔진 실행 조합
+ * - Generator → AuctionEngine → DB 저장 파이프라인
+ * - 난이도별 Policy 적용 (Easy/Normal/Hard)
+ * - 사용자 입찰가 기반 재계산 (submitBid)
+ * - 에러 처리 및 로깅
+ *
+ * 브랜드 통합:
+ * - Design System v2.2 준수
+ * - Policy 기반 유연성: 난이도별 정책 적용
+ *
+ * @dependencies
+ * - @supabase/supabase-js: createClient (Service Role Key 사용)
+ * - @/lib/engines/auctionengine: AuctionEngine
+ * - @/lib/engines/scoreengine: ScoreEngine
+ * - @/lib/generators/simulationgenerator: generateSimulationScenario
+ * - @/lib/types: AuctionAnalysisResult, DifficultyMode, PropertySeed 등
+ * - @/lib/policy/policy: Policy, PolicyOverrides
+ * - @/lib/policy/defaultpolicy: defaultPolicy
+ * - @/lib/policy/difficultypolicy: easyModePolicy, hardModePolicy
+ * - @/lib/utils/number: seedBasedRandom, generateSeedFromPropertySeed
+ *
+ * @see {@link /docs/engine/api-contracts.md} - API 명세
+ * @see {@link /docs/product/project-structure.md} - 서비스 레이어 구조
+ */
 
 import { createClient } from "@supabase/supabase-js";
 // import { Database } from "@/types/supabase"; // 타입 파일이 없으므로 주석 처리

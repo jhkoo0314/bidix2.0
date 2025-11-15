@@ -1,7 +1,36 @@
-// src/app/actions/submitbid.ts
-// BIDIX AI - Submit Bid Action (v2.2)
-// Version: 2.2
-// Last Updated: 2025-11-14
+/**
+ * @file submitbid.ts
+ * @description 입찰 제출 Server Action
+ *
+ * 주요 기능:
+ * 1. 사용자 입찰가 및 자금 구성 제출 처리
+ * 2. Zod를 통한 입력값 검증 (simulationId, bidAmount, cashAmount, loanAmount)
+ * 3. simulationService.submitBid() 호출하여 엔진 재실행
+ * 4. DB 업데이트 및 결과 반환
+ * 5. 페이지 캐시 재검증 (revalidatePath)
+ *
+ * 핵심 구현 로직:
+ * - Server Action으로 구현 ("use server")
+ * - Clerk 인증 확인 (auth())
+ * - FormData → Raw Object 변환
+ * - Zod 스키마 검증 (BidFormSchema)
+ * - 현금 + 대출 = 입찰가 검증
+ * - simulationService.submitBid() 호출
+ * - 결과 페이지 캐시 재검증
+ *
+ * 브랜드 통합:
+ * - Design System v2.2 준수
+ * - 브랜드 보이스: 따뜻하고 격려하는 톤
+ *
+ * @dependencies
+ * - @clerk/nextjs/server: auth() 인증 확인
+ * - @/lib/services/simulationservice: submitBid 함수
+ * - zod: 입력값 검증
+ * - next/cache: revalidatePath
+ *
+ * @see {@link /docs/engine/api-contracts.md} - API 명세
+ * @see {@link /docs/product/todov3.md} - Phase 4.2 요구사항
+ */
 
 "use server";
 
@@ -16,6 +45,7 @@ import { auth } from "@clerk/nextjs/server";
  * - bidAmount: 양수
  * - cashAmount: 현금 (optional)
  * - loanAmount: 대출 (optional)
+ * - 검증 규칙: 현금 + 대출 = 입찰가 (둘 다 입력한 경우)
  */
 const BidFormSchema = z.object({
   simulationId: z.string().uuid("유효한 시뮬레이션 ID가 필요합니다."),
@@ -43,11 +73,23 @@ const BidFormSchema = z.object({
 );
 
 /**
- * submitbid.ts (v2.2)
+ * submitBidAction (v2.2)
  * ---------------------------------------
- * - 사용자가 입찰 제출 시 호출되는 Server Action
- * - simulationService.submitBid() → v2.2 엔진 실행
- * - DB 업데이트 + 결과 반환
+ * 입찰 제출 Server Action
+ *
+ * @param formData - FormData 객체 (simulationId, bidAmount, cashAmount, loanAmount)
+ * @returns 입찰 결과 데이터
+ *
+ * @example
+ * ```typescript
+ * const formData = new FormData();
+ * formData.append("simulationId", simulationId);
+ * formData.append("bidAmount", "50000000");
+ * const result = await submitBidAction(formData);
+ * if (result.ok) {
+ *   router.push(`/simulations/${simulationId}/result`);
+ * }
+ * ```
  */
 export async function submitBidAction(formData: FormData) {
   try {

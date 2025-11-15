@@ -573,7 +573,7 @@ export default async function ResultPage({ params }: ResultPageProps) {
     <main className="min-h-[calc(100vh-80px)] px-4 md:px-8 py-8 md:py-16">
       <div className="w-full max-w-7xl mx-auto space-y-6 md:space-y-8">
         {/* 헤더 */}
-        <div className="space-y-2">
+        <div className="space-y-2 animate-in fade-in slide-in-from-top-4 duration-500">
           <h1 className="text-3xl md:text-4xl font-bold font-[var(--font-inter)]">
             입찰 결과
           </h1>
@@ -584,7 +584,7 @@ export default async function ResultPage({ params }: ResultPageProps) {
 
         {/* 브랜드 메시지 layer (페이지 최상단) */}
         {isBidFailed && (
-          <section className="py-6 border-b">
+          <section className="py-6 border-b animate-in fade-in slide-in-from-top-4 duration-500 delay-100">
             <p className="text-lg text-gray-700 dark:text-gray-300 italic text-center font-[var(--font-noto-sans-kr)] brand-message">
               실패는 비용이 아니라, 자산입니다.
             </p>
@@ -595,18 +595,20 @@ export default async function ResultPage({ params }: ResultPageProps) {
         {(() => {
           console.log("Rendering BidOutcomeBlock");
           return (
-            <BidOutcomeBlock
-              summary={result.summary}
-              userBid={userBid}
-              minBid={result.valuation.minBid}
-              profit={result.profit}
-              competitorBids={competitorBids}
-              difficulty={result.property.difficulty}
-            />
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
+              <BidOutcomeBlock
+                summary={result.summary}
+                userBid={userBid}
+                minBid={result.valuation.minBid}
+                profit={result.profit}
+                competitorBids={competitorBids}
+                difficulty={result.property.difficulty}
+              />
+            </div>
           );
         })()}
 
-        <Separator />
+        <Separator className="animate-in fade-in duration-300 delay-300" />
 
         {/* MetricsStrip */}
         {scoreBreakdown && (
@@ -614,20 +616,26 @@ export default async function ResultPage({ params }: ResultPageProps) {
             {(() => {
               console.log("Rendering MetricsStrip");
               return (
-                <MetricsStrip profit={result.profit} score={scoreBreakdown} />
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+                  <MetricsStrip profit={result.profit} score={scoreBreakdown} />
+                </div>
               );
             })()}
-            <Separator />
+            <Separator className="animate-in fade-in duration-300 delay-500" />
           </>
         )}
 
         {/* ExitScenarioTable */}
         {(() => {
           console.log("Rendering ExitScenarioTable");
-          return <ExitScenarioTable profit={result.profit} />;
+          return (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500">
+              <ExitScenarioTable profit={result.profit} />
+            </div>
+          );
         })()}
 
-        <Separator />
+        <Separator className="animate-in fade-in duration-300 delay-700" />
 
         {/* CompetitorAnalysis */}
         {competitorBids.length > 0 && (
@@ -635,15 +643,17 @@ export default async function ResultPage({ params }: ResultPageProps) {
             {(() => {
               console.log("Rendering CompetitorAnalysis");
               return (
-                <CompetitorAnalysis
-                  competitorBids={competitorBids}
-                  userBid={userBid}
-                  minBid={result.valuation.minBid}
-                  difficulty={result.property.difficulty}
-                />
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-700">
+                  <CompetitorAnalysis
+                    competitorBids={competitorBids}
+                    userBid={userBid}
+                    minBid={result.valuation.minBid}
+                    difficulty={result.property.difficulty}
+                  />
+                </div>
               );
             })()}
-            <Separator />
+            <Separator className="animate-in fade-in duration-300 delay-1000" />
           </>
         )}
 
@@ -665,7 +675,7 @@ export default async function ResultPage({ params }: ResultPageProps) {
                 {/* 매각물건명세서 해설판 (무료 리포트) */}
                 {/* 개발자 모드에서는 항상 isFreeAvailable={true} 전달 */}
                 {result.courtDocs && (
-                  <div className="space-y-4">
+                  <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-1000">
                     {(() => {
                       const saleStatementFreeAvailable = isDevMode
                         ? true
@@ -689,7 +699,7 @@ export default async function ResultPage({ params }: ResultPageProps) {
 
                 {/* 개발자 모드: 실제 Premium 리포트 표시 */}
                 {isDevMode ? (
-                  <div className="space-y-6">
+                  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-1000">
                     {(() => {
                       console.group("개발자 모드: 실제 리포트 렌더링");
                       console.log(
@@ -875,7 +885,7 @@ export default async function ResultPage({ params }: ResultPageProps) {
                   </div>
                 ) : (
                   /* 프로덕션 모드: 잠금 UI 표시 */
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-1000">
                     {(() => {
                       console.group("프로덕션 모드: 잠금 UI 렌더링");
                       console.log(
@@ -889,9 +899,15 @@ export default async function ResultPage({ params }: ResultPageProps) {
                       console.groupEnd();
                       return (
                         <>
-                          <PremiumReportCTA type="rights" />
-                          <PremiumReportCTA type="profit" />
-                          <PremiumReportCTA type="auction" />
+                          <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 delay-1000">
+                            <PremiumReportCTA type="rights" />
+                          </div>
+                          <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 delay-700">
+                            <PremiumReportCTA type="profit" />
+                          </div>
+                          <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 delay-1000">
+                            <PremiumReportCTA type="auction" />
+                          </div>
                         </>
                       );
                     })()}
@@ -910,7 +926,11 @@ export default async function ResultPage({ params }: ResultPageProps) {
         {/* ResultActions */}
         {(() => {
           console.log("Rendering ResultActions");
-          return <ResultActions simulationId={id} isSaved={isHistorySaved} />;
+          return (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-1000">
+              <ResultActions simulationId={id} isSaved={isHistorySaved} />
+            </div>
+          );
         })()}
       </div>
     </main>

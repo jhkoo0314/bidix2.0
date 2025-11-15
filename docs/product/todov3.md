@@ -1663,15 +1663,15 @@
 
 ### 7.3 접근성 (a11y)
 
-- [ ] 키보드 내비게이션 확인
-- [ ] ARIA 라벨 추가
-- [ ] 색상 대비 확인
+- [x] 키보드 내비게이션 확인
+- [x] ARIA 라벨 추가
+- [x] 색상 대비 확인
 
 ### 7.4 문서화
 
-- [ ] README 업데이트
-- [ ] CHANGELOG 생성
-- [ ] 주요 컴포넌트 JSDoc 추가
+- [x] README 업데이트
+- [x] CHANGELOG 생성
+- [x] 주요 컴포넌트 JSDoc 추가
 
 ---
 
@@ -1679,28 +1679,28 @@
 
 ### 필수 (MVP)
 
-- [ ] Phase 1: 프로젝트 기반 구축 완료
-- [ ] Phase 2: 컴포넌트 스켈레톤 생성 완료
-- [ ] Phase 3.2: Dashboard 구현 ⭐⭐⭐⭐
-- [ ] Phase 3.3: Simulation List 구현 ⭐⭐⭐⭐
-- [ ] Phase 3.4: Simulation Detail 구현 ⭐⭐⭐⭐
-- [ ] Phase 3.5: Bid Page 구현 ⭐⭐⭐⭐
-- [ ] Phase 3.6: Result Page 구현 ⭐⭐⭐⭐
+- [x] Phase 1: 프로젝트 기반 구축 완료
+- [x] Phase 2: 컴포넌트 스켈레톤 생성 완료
+- [x] Phase 3.2: Dashboard 구현 ⭐⭐⭐⭐
+- [x] Phase 3.3: Simulation List 구현 ⭐⭐⭐⭐
+- [x] Phase 3.4: Simulation Detail 구현 ⭐⭐⭐⭐
+- [x] Phase 3.5: Bid Page 구현 ⭐⭐⭐⭐
+- [x] Phase 3.6: Result Page 구현 ⭐⭐⭐⭐
 
 ### 중요
 
-- [ ] Phase 3.1: Landing Page 구현 ⭐⭐
+- [x] Phase 3.1: Landing Page 구현 ⭐⭐
 - [x] Phase 3.7: History Page 구현 ⭐⭐
-- [ ] Phase 4: Server Actions 및 API Routes
-- [ ] Phase 4.5: 경쟁자 시뮬레이션 구현 ⭐⭐⭐⭐⭐ (핵심 기능)
-- [ ] Phase 5: 스타일링 및 반응형
-- [ ] Phase 6: 테스트 및 디버깅
+- [x] Phase 4: Server Actions 및 API Routes
+- [x] Phase 4.5: 경쟁자 시뮬레이션 구현 ⭐⭐⭐⭐⭐ (핵심 기능)
+- [x] Phase 5: 스타일링 및 반응형
+- [x] Phase 6: 테스트 및 디버깅
 
 ### 선택
 
-- [ ] 다크모드 지원
-- [ ] 고급 필터링
-- [ ] 애니메이션 효과
+- [x] 다크모드 지원
+- [x] 고급 필터링
+- [x] 애니메이션 효과
 
 ---
 

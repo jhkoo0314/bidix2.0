@@ -1,7 +1,7 @@
 # 📐 BIDIX v2.0 - lib 폴더 구조 (Project Structure)
 
 **Version:** 2.2  
-**Last Updated:** 2025-01-29  
+**Last Updated:** 2025-01-30  
 **Status:** ✅ **SSOT - Single Source of Truth**
 
 ---

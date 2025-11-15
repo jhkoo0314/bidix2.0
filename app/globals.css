@@ -140,6 +140,9 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    zoom: 0.9;
+  }
   body {
     @apply bg-background text-foreground;
   }
@@ -179,13 +182,13 @@
     font-weight: 700;
     font-feature-settings: "tnum";
   }
-  
+
   /* 브랜드 문구 스타일 - 넓은 letter-spacing + 얇은 weight */
   .brand-message {
     letter-spacing: 0.05em;
     font-weight: 300;
   }
-  
+
   /* 브랜드 Hover 효과 - 소극적 강조, 낮은 채도 */
   .brand-hover {
     transition: all 200ms ease;
@@ -194,7 +197,7 @@
     background-color: hsl(var(--accent) / 0.05);
     border-color: hsl(var(--accent) / 0.2);
   }
-  
+
   /* 브랜드 Tooltip 스타일 - 부드러운 애니메이션, 낮은 채도 */
   .brand-tooltip-content {
     background-color: hsl(var(--accent-blue));
@@ -213,7 +216,7 @@
     /* 주요 텍스트용 - 대비 4.5:1 이상 보장 */
     color: hsl(var(--foreground));
   }
-  
+
   .text-accessible-muted {
     /* 보조 텍스트용 - 대비 3:1 이상 보장 (큰 텍스트) */
     color: hsl(var(--muted-foreground));

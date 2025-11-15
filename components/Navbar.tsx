@@ -1,3 +1,36 @@
+/**
+ * @file Navbar.tsx
+ * @description 네비게이션 바 컴포넌트 (Client Component)
+ *
+ * 주요 기능:
+ * 1. 데스크톱/모바일 반응형 네비게이션
+ * 2. 다크모드 토글 (next-themes)
+ * 3. Clerk 인증 상태에 따른 로그인/사용자 버튼 표시
+ * 4. 모바일 햄버거 메뉴 (Sheet 컴포넌트)
+ *
+ * 핵심 구현 로직:
+ * - Client Component로 구현 ("use client")
+ * - Hydration mismatch 방지를 위한 mounted 상태 관리
+ * - 데스크톱: 가로 네비게이션 링크
+ * - 모바일: 햄버거 메뉴 (Sheet 컴포넌트)
+ * - 다크모드 토글 버튼 (aria-label 포함)
+ * - 접근성: 내비게이션에 aria-label, 포커스 링 스타일 적용
+ *
+ * 브랜드 통합:
+ * - 브랜드 폰트: Inter (로고), Noto Sans KR (링크)
+ * - Design System v2.2: 반응형 레이아웃, 접근성 준수
+ *
+ * @dependencies
+ * - @clerk/nextjs: SignedOut, SignInButton, SignedIn, UserButton
+ * - next-themes: useTheme (다크모드)
+ * - lucide-react: Moon, Sun, Menu 아이콘
+ * - @/components/ui/button: shadcn 버튼 컴포넌트
+ * - @/components/ui/sheet: shadcn 시트 컴포넌트
+ *
+ * @see {@link /docs/ui/component-architecture.md} - 컴포넌트 구조
+ * @see {@link /docs/ui/design-system.md} - 브랜드 Typography 규칙
+ */
+
 "use client";
 
 import { SignedOut, SignInButton, SignedIn, UserButton } from "@clerk/nextjs";

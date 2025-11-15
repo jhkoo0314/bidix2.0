@@ -1,7 +1,42 @@
-// lib/engines/auctionengine.ts
-// Auction Engine v2.2 - Master Orchestrator
-// Version: 2.2
-// Last Updated: 2025-11-13
+/**
+ * @file auctionengine.ts
+ * @description 경매 엔진 - Master Orchestrator (v2.2)
+ *
+ * 주요 기능:
+ * 1. 모든 하위 엔진을 순차적으로 실행하여 경매 분석 결과 생성
+ * 2. Property → Valuation → Rights → Cost → Profit 계산 파이프라인
+ * 3. 최종 결과 요약 생성 (등급, 리스크 라벨, 최적 보유기간)
+ *
+ * 핵심 구현 로직:
+ * - 순수 함수 (Pure Function): 외부 I/O 금지, 결정론적 계산
+ * - Policy 기반 계산: 모든 비즈니스 규칙은 Policy에서 가져옴
+ * - 엔진 실행 순서:
+ *   1. PropertyEngine: PropertySeed → Property 정규화
+ *   2. CourtDocsLayer: 법원 문서 정규화
+ *   3. ValuationEngine: FMV, 최저입찰가, ExitPrice 계산
+ *   4. RightsEngine: 권리 분석, 명도비용, 리스크 계산
+ *   5. CostEngine: 취득비용, 보유비용, 대출이자 계산
+ *   6. ProfitEngine: 3/6/12개월 수익 시나리오 계산
+ * - 최종 요약: 등급(S/A/B/C/D), 리스크 라벨, 최적 보유기간 결정
+ *
+ * 브랜드 통합:
+ * - Design System v2.2 준수
+ * - Policy 기반 유연성: 난이도별 정책 적용 가능
+ *
+ * @dependencies
+ * - @/lib/types: PropertySeed, AuctionAnalysisResult, CourtDocsNormalized, Profit
+ * - @/lib/policy/policy: Policy 인터페이스
+ * - @/lib/policy/defaultpolicy: 기본 정책값
+ * - @/lib/engines/propertyengine: PropertyEngine
+ * - @/lib/engines/valuationengine: ValuationEngine
+ * - @/lib/engines/rightsengine: RightsEngine
+ * - @/lib/engines/costengine: CostEngine
+ * - @/lib/engines/profitengine: ProfitEngine
+ * - @/lib/engines/courtdocslayer: normalizeCourtDocs
+ *
+ * @see {@link /docs/engine/auction-flow.md} - 경매 엔진 플로우
+ * @see {@link /docs/engine/api-contracts.md} - API 계약
+ */
 
 import {
   Profit,
@@ -20,6 +55,23 @@ import { CostEngine } from "./costengine";
 import { ProfitEngine } from "./profitengine";
 import { normalizeCourtDocs } from "./courtdocslayer";
 
+/**
+ * AuctionEngine (v2.2)
+ * ---------------------------------------
+ * 경매 분석 마스터 오케스트레이터
+ *
+ * @example
+ * ```typescript
+ * const result = AuctionEngine.run({
+ *   seed: propertySeed,
+ *   courtDocs: courtDocsNormalized,
+ *   userBid: 50000000,
+ *   policy: customPolicy, // optional
+ *   userCash: 20000000, // optional
+ *   userLoan: 30000000, // optional
+ * });
+ * ```
+ */
 export class AuctionEngine {
   static run(params: {
     seed: PropertySeed;

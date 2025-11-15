@@ -1,7 +1,32 @@
-// src/app/actions/generateSimulation.ts
-// BIDIX AI - Generate Simulation Action
-// Version: 2.2
-// Last Updated: 2025-11-14
+/**
+ * @file generatesimulation.ts
+ * @description 시뮬레이션 생성 Server Action
+ *
+ * 주요 기능:
+ * 1. 사용자가 선택한 난이도로 시뮬레이션 생성
+ * 2. v2.2 Generator를 통한 시나리오 생성
+ * 3. v2.2 AuctionEngine을 통한 초기 분석 실행
+ * 4. 생성된 시뮬레이션 ID 및 초기 결과 반환
+ *
+ * 핵심 구현 로직:
+ * - Server Action으로 구현 ("use server")
+ * - Clerk 인증 확인 (auth())
+ * - simulationService.create() 호출
+ * - 난이도별 Policy 적용 (Easy/Normal/Hard)
+ * - 에러 처리 및 로깅
+ *
+ * 브랜드 통합:
+ * - Design System v2.2 준수
+ * - 브랜드 보이스: 따뜻하고 격려하는 톤
+ *
+ * @dependencies
+ * - @clerk/nextjs/server: auth() 인증 확인
+ * - @/lib/services/simulationservice: create 함수
+ * - @/lib/types: DifficultyMode 타입
+ *
+ * @see {@link /docs/engine/api-contracts.md} - API 명세
+ * @see {@link /docs/product/todov3.md} - Phase 4.1 요구사항
+ */
 
 "use server";
 
@@ -10,10 +35,20 @@ import { simulationService } from "@/lib/services/simulationservice";
 import { DifficultyMode } from "@/lib/types";
 
 /**
- * [Server Action] 시뮬레이션 생성 (입찰 전 단계)
- * - 난이도 선택 → v2.2 Generator → v2.2 AuctionEngine
- * - 생성된 시뮬레이션의 ID + 초기 분석 데이터를 반환
- * - UI는 simulationId를 사용하여 상세 페이지로 이동
+ * generateSimulationAction (v2.2)
+ * ---------------------------------------
+ * 시뮬레이션 생성 Server Action
+ *
+ * @param difficulty - 난이도 모드 (Easy/Normal/Hard)
+ * @returns 시뮬레이션 ID 및 초기 분석 결과
+ *
+ * @example
+ * ```typescript
+ * const result = await generateSimulationAction(DifficultyMode.Normal);
+ * if (result.ok) {
+ *   router.push(`/simulations/${result.data.simulationId}`);
+ * }
+ * ```
  */
 export async function generateSimulationAction(difficulty: DifficultyMode) {
   try {
