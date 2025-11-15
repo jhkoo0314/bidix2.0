@@ -219,25 +219,46 @@ export function BidAmountInput({
   const bidNum = useMemo(() => Number(bidAmount.replace(/[^0-9]/g, "")) || 0, [bidAmount]);
   const isTotalMatch = useMemo(() => cashAmount && loanAmount && total === bidNum, [cashAmount, loanAmount, total, bidNum]);
 
+  const bidInputId = "bid-amount-input";
+  const bidErrorId = "bid-amount-error";
+  const bidHelpId = "bid-amount-help";
+  const cashInputId = "cash-amount-input";
+  const cashHelpId = "cash-amount-help";
+  const loanInputId = "loan-amount-input";
+  const loanHelpId = "loan-amount-help";
+
+  // Enter 키로 제출 처리
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && !disabled) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  }, [disabled, handleSubmit]);
+
   return (
     <div className="space-y-4">
       {/* 입찰가 입력 */}
       <div>
-        <label className="text-sm font-semibold mb-2 block text-gray-700 dark:text-gray-300">
-          입찰가
+        <label htmlFor={bidInputId} className="text-sm font-semibold mb-2 block text-gray-700 dark:text-gray-300">
+          입찰가 <span className="text-red-500" aria-label="필수">*</span>
         </label>
         <Input
+          id={bidInputId}
           type="text"
           inputMode="numeric"
           placeholder="입찰가를 입력하세요 (숫자만)"
           value={bidAmount ? Number(bidAmount).toLocaleString() : ""}
           onChange={handleBidChange}
+          onKeyDown={handleKeyDown}
           disabled={disabled}
+          aria-required="true"
+          aria-invalid={!!error}
+          aria-describedby={error ? bidErrorId : minBid ? bidHelpId : undefined}
           className={error ? "border-red-500 focus-visible:ring-red-500" : ""}
         />
         {minBid && !error && (
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-            최저 입찰가: <span className="font-semibold">{minBid.toLocaleString()}원</span>
+          <p id={bidHelpId} className="text-sm text-muted-foreground mt-2">
+            최저 입찰가: <span className="font-semibold text-foreground">{minBid.toLocaleString()}원</span>
           </p>
         )}
       </div>
@@ -250,20 +271,23 @@ export function BidAmountInput({
 
         {/* 현금 입력 */}
         <div>
-          <label className="text-sm font-medium mb-2 block text-gray-700 dark:text-gray-300">
+          <label htmlFor={cashInputId} className="text-sm font-medium mb-2 block text-gray-700 dark:text-gray-300">
             현금
           </label>
           <Input
+            id={cashInputId}
             type="text"
             inputMode="numeric"
             placeholder="현금 금액을 입력하세요"
             value={cashAmount ? Number(cashAmount).toLocaleString() : ""}
             onChange={handleCashChange}
+            onKeyDown={handleKeyDown}
             disabled={disabled}
+            aria-describedby={cashAmount && !loanAmount ? cashHelpId : undefined}
             className={cashAmount && !loanAmount ? "bg-gray-50 dark:bg-gray-900" : ""}
           />
           {cashAmount && !loanAmount && (
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <p id={cashHelpId} className="text-xs text-muted-foreground mt-1">
               대출이 자동으로 계산됩니다
             </p>
           )}
@@ -271,27 +295,30 @@ export function BidAmountInput({
 
         {/* 대출 입력 */}
         <div>
-          <label className="text-sm font-medium mb-2 block text-gray-700 dark:text-gray-300">
+          <label htmlFor={loanInputId} className="text-sm font-medium mb-2 block text-gray-700 dark:text-gray-300">
             대출
           </label>
           <div className="flex items-center gap-2">
             <Input
+              id={loanInputId}
               type="text"
               inputMode="numeric"
               placeholder="대출 금액을 입력하세요"
               value={loanAmount ? Number(loanAmount).toLocaleString() : ""}
               onChange={handleLoanChange}
+              onKeyDown={handleKeyDown}
               disabled={disabled}
+              aria-describedby={loanAmount && !cashAmount ? loanHelpId : undefined}
               className={loanAmount && !cashAmount ? "bg-gray-50 dark:bg-gray-900" : ""}
             />
             {loanAmount && bidAmount && (
-              <span className="text-sm font-medium text-gray-600 dark:text-gray-400 whitespace-nowrap">
+              <span className="text-sm font-medium text-gray-600 dark:text-gray-400 whitespace-nowrap" aria-label={`대출 비율 ${loanRatio}퍼센트`}>
                 ({loanRatio}%)
               </span>
             )}
           </div>
           {loanAmount && !cashAmount && (
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <p id={loanHelpId} className="text-xs text-muted-foreground mt-1">
               현금이 자동으로 계산됩니다
             </p>
           )}
@@ -320,7 +347,7 @@ export function BidAmountInput({
 
       {/* 에러 메시지 */}
       {error && (
-        <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+        <div id={bidErrorId} className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md" role="alert" aria-live="polite">
           <p className="text-sm text-red-600 dark:text-red-400">
             {error}
           </p>

@@ -122,14 +122,16 @@ export function CreateSimulationButton({
   return (
     <div className="space-y-4">
       {showDifficultySelect && !isExceeded && (
-        <div className="p-4 border rounded-lg bg-muted/50 space-y-3">
-          <label className="text-sm font-medium">난이도 선택</label>
-          <div className="flex gap-2 flex-wrap">
+        <div className="p-4 border rounded-lg bg-muted/50 space-y-3" role="group" aria-labelledby="difficulty-select-label">
+          <label id="difficulty-select-label" className="text-sm font-medium">난이도 선택</label>
+          <div className="flex gap-2 flex-wrap" role="radiogroup" aria-label="난이도 옵션">
             {DIFFICULTY_OPTIONS.map((option) => (
               <button
                 key={option.value}
                 onClick={() => setSelectedDifficulty(option.value)}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                role="radio"
+                aria-checked={selectedDifficulty === option.value}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
                   selectedDifficulty === option.value
                     ? "bg-primary text-primary-foreground"
                     : "bg-background border hover:bg-muted"
@@ -146,8 +148,8 @@ export function CreateSimulationButton({
       )}
 
       {error && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
+        <Alert variant="destructive" role="alert" aria-live="polite">
+          <AlertCircle className="h-4 w-4" aria-hidden="true" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}

@@ -88,12 +88,15 @@ export const MetricsStrip = memo(function MetricsStrip({ profit, score }: Metric
   // 초기 안전마진 백분율
   const safetyMarginPercent = profit.initialSafetyMargin * 100;
 
+  const metricsSectionId = "metrics-section";
+  const scoreDetailsId = "score-details";
+
   return (
     <SectionCard title="핵심 지표">
-      <div className="space-y-6">
+      <div className="space-y-6" role="region" aria-labelledby={metricsSectionId}>
         {/* 브랜드 메시지 */}
         <div className="pb-4 border-b">
-          <p className="text-sm text-gray-600 dark:text-gray-400 italic font-[var(--font-noto-sans-kr)] brand-message">
+          <p id={metricsSectionId} className="text-sm text-gray-600 dark:text-gray-400 italic font-[var(--font-noto-sans-kr)] brand-message">
             당신의 경험은 숫자로 증명됩니다.
           </p>
         </div>
@@ -160,13 +163,15 @@ export const MetricsStrip = memo(function MetricsStrip({ profit, score }: Metric
             </p>
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors font-[var(--font-noto-sans-kr)]"
+              aria-expanded={isExpanded}
+              aria-controls={scoreDetailsId}
+              className="text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors font-[var(--font-noto-sans-kr)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
             >
               {isExpanded ? "접기" : "점수 구성 상세 보기"}
             </button>
           </div>
           {isExpanded && (
-            <div className="mt-4 space-y-3">
+            <div id={scoreDetailsId} className="mt-4 space-y-3" role="region" aria-label="점수 구성 상세">
               <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
                 <div>
                   <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 font-[var(--font-noto-sans-kr)]">

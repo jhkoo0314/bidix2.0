@@ -37,12 +37,12 @@ const Navbar = () => {
       </Link>
       
       {/* Desktop Navigation */}
-      <nav className="hidden md:flex gap-6 items-center">
+      <nav className="hidden md:flex gap-6 items-center" aria-label="주요 내비게이션">
         {navLinks.map((link) => (
           <Link
             key={link.href}
             href={link.href}
-            className="text-sm font-medium hover:text-primary transition-colors font-[var(--font-noto-sans-kr)]"
+            className="text-sm font-medium hover:text-primary transition-colors font-[var(--font-noto-sans-kr)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
           >
             {link.label}
           </Link>
@@ -105,13 +105,13 @@ const Navbar = () => {
             <SheetHeader>
               <SheetTitle className="font-[var(--font-inter)]">메뉴</SheetTitle>
             </SheetHeader>
-            <nav className="flex flex-col gap-4 mt-8">
+            <nav className="flex flex-col gap-4 mt-8" aria-label="모바일 메뉴">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setIsOpen(false)}
-                  className="text-base font-medium hover:text-primary transition-colors font-[var(--font-noto-sans-kr)] py-2"
+                  className="text-base font-medium hover:text-primary transition-colors font-[var(--font-noto-sans-kr)] py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
                 >
                   {link.label}
                 </Link>

@@ -173,8 +173,11 @@ export function BidOutcomeBlock({
     return "bg-red-50 border-red-200 dark:bg-red-950 dark:border-red-800";
   };
 
+  const outcomeSectionId = "bid-outcome-section";
+  const profitabilitySectionId = "profitability-section";
+
   return (
-    <div className="p-6 border rounded-lg space-y-4">
+    <div className="p-6 border rounded-lg space-y-4" role="region" aria-labelledby={outcomeSectionId}>
       {/* 브랜드 메시지 섹션 */}
       {!isSuccess && (
         <div className="pb-4 border-b">
@@ -186,7 +189,7 @@ export function BidOutcomeBlock({
 
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-semibold font-[var(--font-inter)]">입찰 결과</h2>
+          <h2 id={outcomeSectionId} className="text-2xl font-semibold font-[var(--font-inter)]">입찰 결과</h2>
           <div className="flex items-center gap-2 mt-1">
             {difficulty && (
               <span className="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded">
@@ -213,8 +216,8 @@ export function BidOutcomeBlock({
       </div>
 
       {/* 수익성 표시 (3m/6m/12m) */}
-      <div className="pt-4 border-t">
-        <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 font-[var(--font-noto-sans-kr)]">
+      <div className="pt-4 border-t" role="region" aria-labelledby={profitabilitySectionId}>
+        <p id={profitabilitySectionId} className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 font-[var(--font-noto-sans-kr)]">
           보유기간별 수익성
         </p>
         <div className="grid grid-cols-3 gap-2">
@@ -223,7 +226,8 @@ export function BidOutcomeBlock({
               3개월
             </p>
             <p className="text-sm font-semibold font-[var(--font-noto-sans-kr)]">
-              {isProfitable3m ? "✅ 수익" : "❌ 손실"}
+              <span aria-hidden="true">{isProfitable3m ? "✅" : "❌"}</span>{" "}
+              <span>{isProfitable3m ? "수익" : "손실"}</span>
             </p>
           </div>
           <div className="p-2 border rounded text-center">
@@ -231,7 +235,8 @@ export function BidOutcomeBlock({
               6개월
             </p>
             <p className="text-sm font-semibold font-[var(--font-noto-sans-kr)]">
-              {isProfitable6m ? "✅ 수익" : "❌ 손실"}
+              <span aria-hidden="true">{isProfitable6m ? "✅" : "❌"}</span>{" "}
+              <span>{isProfitable6m ? "수익" : "손실"}</span>
             </p>
           </div>
           <div className="p-2 border rounded text-center">
@@ -239,7 +244,8 @@ export function BidOutcomeBlock({
               12개월
             </p>
             <p className="text-sm font-semibold font-[var(--font-noto-sans-kr)]">
-              {isProfitable12m ? "✅ 수익" : "❌ 손실"}
+              <span aria-hidden="true">{isProfitable12m ? "✅" : "❌"}</span>{" "}
+              <span>{isProfitable12m ? "수익" : "손실"}</span>
             </p>
           </div>
         </div>

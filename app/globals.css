@@ -146,6 +146,30 @@
   main {
     @apply max-w-7xl mx-auto pt-16 px-4;
   }
+
+  /* Skip Link 스타일 - 접근성 개선 */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .focus\:not-sr-only:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: inherit;
+    margin: inherit;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
 }
 
 @layer utilities {
@@ -180,5 +204,18 @@
     border-radius: 0.375rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     transition: opacity 200ms ease, transform 200ms ease;
+  }
+
+  /* 접근성: 색상 대비 개선 유틸리티 */
+  /* WCAG 2.1 AA 기준: 일반 텍스트 4.5:1, 큰 텍스트(18pt 이상) 3:1 */
+  /* text-gray-400, text-gray-500은 보조 텍스트에만 사용하고, 주요 텍스트는 text-gray-600 이상 사용 권장 */
+  .text-accessible {
+    /* 주요 텍스트용 - 대비 4.5:1 이상 보장 */
+    color: hsl(var(--foreground));
+  }
+  
+  .text-accessible-muted {
+    /* 보조 텍스트용 - 대비 3:1 이상 보장 (큰 텍스트) */
+    color: hsl(var(--muted-foreground));
   }
 }

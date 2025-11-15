@@ -40,8 +40,8 @@ export function EmptyState({
   onAction,
 }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center p-8 text-center">
-      <Inbox className="w-12 h-12 text-[hsl(var(--accent-blue))] mb-4 opacity-60" />
+    <div className="flex flex-col items-center justify-center p-8 text-center" role="status" aria-live="polite">
+      <Inbox className="w-12 h-12 text-[hsl(var(--accent-blue))] mb-4 opacity-60" aria-hidden="true" />
       <p className="text-lg text-muted-foreground mb-4 font-[var(--font-noto-sans-kr)] brand-message">
         {message}
       </p>

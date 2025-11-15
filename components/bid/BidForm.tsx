@@ -118,7 +118,7 @@ export function BidForm({ simulationId, minBid }: BidFormProps) {
       <div className="space-y-4">
         {/* 에러 메시지 */}
         {error && (
-          <Alert variant="destructive">
+          <Alert variant="destructive" role="alert" aria-live="assertive">
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
@@ -132,7 +132,7 @@ export function BidForm({ simulationId, minBid }: BidFormProps) {
 
         {/* 로딩 상태 안내 */}
         {isLoading && (
-          <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
+          <p className="text-sm text-muted-foreground text-center" aria-live="polite" aria-busy="true">
             입찰을 처리하고 있습니다...
           </p>
         )}

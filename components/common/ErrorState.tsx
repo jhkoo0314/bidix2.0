@@ -44,8 +44,8 @@ export function ErrorState({
     "이 결과는 당신의 학습을 위한 데이터입니다. 문제가 발생했지만 괜찮습니다.";
 
   return (
-    <div className="flex flex-col items-center justify-center p-8 text-center">
-      <AlertCircle className="w-12 h-12 text-[hsl(var(--accent-amber))] mb-4" />
+    <div className="flex flex-col items-center justify-center p-8 text-center" role="alert" aria-live="polite">
+      <AlertCircle className="w-12 h-12 text-[hsl(var(--accent-amber))] mb-4" aria-hidden="true" />
       <p className="text-lg text-muted-foreground mb-4 font-[var(--font-noto-sans-kr)]">
         {defaultMessage}
       </p>

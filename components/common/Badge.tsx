@@ -74,6 +74,21 @@ export function Badge({ type, value, className }: BadgeProps) {
     return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200";
   };
 
+  const getAriaLabel = () => {
+    if (type === "difficulty") {
+      const labels: Record<string, string> = {
+        easy: "쉬운 난이도",
+        normal: "보통 난이도",
+        hard: "어려운 난이도",
+      };
+      return labels[value.toLowerCase()] || `${value} 난이도`;
+    }
+    if (type === "grade") {
+      return `${value} 등급`;
+    }
+    return value;
+  };
+
   return (
     <span
       className={cn(
@@ -81,6 +96,7 @@ export function Badge({ type, value, className }: BadgeProps) {
         getColorClass(),
         className
       )}
+      aria-label={getAriaLabel()}
     >
       {value}
     </span>

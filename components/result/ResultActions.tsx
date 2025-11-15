@@ -105,7 +105,7 @@ export function ResultActions({
         </Button>
       </div>
       {error && (
-        <p className="text-sm text-red-600 dark:text-red-400">
+        <p className="text-sm text-red-600 dark:text-red-400" role="alert" aria-live="polite">
           {error}
         </p>
       )}

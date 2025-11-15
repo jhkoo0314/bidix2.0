@@ -67,28 +67,30 @@ export const ExitScenarioTable = memo(function ExitScenarioTable({ profit }: Exi
   });
   console.groupEnd();
 
+  const tableId = "exit-scenario-table";
+
   return (
     <SectionCard title="보유기간별 수익 시나리오">
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <table id={tableId} className="w-full" role="table" aria-label="보유기간별 수익 시나리오 비교">
           <thead>
             <tr className="border-b">
-              <th className="text-left p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 font-[var(--font-noto-sans-kr)]">
+              <th scope="col" className="text-left p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 font-[var(--font-noto-sans-kr)]">
                 보유기간
               </th>
-              <th className="text-right p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 font-[var(--font-noto-sans-kr)]">
+              <th scope="col" className="text-right p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 font-[var(--font-noto-sans-kr)]">
                 매각가
               </th>
-              <th className="text-right p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 font-[var(--font-noto-sans-kr)]">
+              <th scope="col" className="text-right p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 font-[var(--font-noto-sans-kr)]">
                 총비용
               </th>
-              <th className="text-right p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 font-[var(--font-noto-sans-kr)]">
+              <th scope="col" className="text-right p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 font-[var(--font-noto-sans-kr)]">
                 순이익
               </th>
-              <th className="text-right p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 font-[var(--font-noto-sans-kr)]">
+              <th scope="col" className="text-right p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 font-[var(--font-noto-sans-kr)]">
                 ROI
               </th>
-              <th className="text-right p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 font-[var(--font-noto-sans-kr)]">
+              <th scope="col" className="text-right p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 font-[var(--font-noto-sans-kr)]">
                 연환산 ROI
               </th>
             </tr>
@@ -107,14 +109,14 @@ export const ExitScenarioTable = memo(function ExitScenarioTable({ profit }: Exi
                       : ""
                   }`}
                 >
-                  <td className="p-3">
+                  <th scope="row" className="p-3 text-left">
                     <span className="font-semibold font-[var(--font-noto-sans-kr)]">{scenario.months}개월</span>
                     {isBest && (
-                      <span className="ml-2 text-xs text-[hsl(var(--accent-amber))] dark:text-[hsl(var(--accent-amber))] font-[var(--font-noto-sans-kr)]">
+                      <span className="ml-2 text-xs text-[hsl(var(--accent-amber))] dark:text-[hsl(var(--accent-amber))] font-[var(--font-noto-sans-kr)]" aria-label="최적 보유기간">
                         (최적)
                       </span>
                     )}
-                  </td>
+                  </th>
                   <td className="text-right p-3 font-[var(--font-noto-sans-kr)]">
                     {scenario.exitPrice.toLocaleString()}원
                   </td>

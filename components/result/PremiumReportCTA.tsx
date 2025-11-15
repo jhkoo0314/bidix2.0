@@ -69,7 +69,7 @@ export function PremiumReportCTA({ type }: PremiumReportCTAProps) {
       <div className="space-y-4">
         {/* 헤더 */}
         <div className="flex items-center gap-3">
-          <span className="text-2xl">🔒</span>
+          <span className="text-2xl" aria-hidden="true">🔒</span>
           <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 font-[var(--font-inter)]">
             {config.title}
           </h3>
@@ -100,9 +100,10 @@ export function PremiumReportCTA({ type }: PremiumReportCTAProps) {
         <Button
           variant="outline"
           disabled
+          aria-label="프리미엄 해설판 보기 (현재 잠금 상태)"
           className="w-full border-[hsl(var(--accent-blue))]/30 text-[hsl(var(--accent-blue))] hover:bg-[hsl(var(--accent-blue))]/10 font-[var(--font-noto-sans-kr)]"
         >
-          🔒 프리미엄 해설판 보기
+          <span aria-hidden="true">🔒</span> 프리미엄 해설판 보기
         </Button>
       </div>
     </div>
