@@ -163,7 +163,7 @@ export default async function HistoryPage({ searchParams }: HistoryPageProps) {
 
       console.groupEnd();
       return (
-        <main className="min-h-[calc(100vh-80px)] px-8 py-16">
+        <main className="min-h-[calc(100vh-80px)] px-4 md:px-8 py-8 md:py-16">
           <div className="w-full max-w-7xl mx-auto">
             <ErrorState message={errorMessage} />
           </div>
@@ -179,12 +179,12 @@ export default async function HistoryPage({ searchParams }: HistoryPageProps) {
 
     // 4. UI 렌더링
     return (
-      <main className="min-h-[calc(100vh-80px)] px-8 py-16">
-        <div className="w-full max-w-7xl mx-auto space-y-8">
+      <main className="min-h-[calc(100vh-80px)] px-4 md:px-8 py-8 md:py-16">
+        <div className="w-full max-w-7xl mx-auto space-y-6 md:space-y-8">
           {/* 헤더 */}
           <div className="space-y-2">
-            <h1 className="text-4xl font-bold">입찰 히스토리</h1>
-            <p className="text-gray-600 dark:text-gray-400">
+            <h1 className="text-3xl md:text-4xl font-bold font-[var(--font-inter)]">입찰 히스토리</h1>
+            <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 font-[var(--font-noto-sans-kr)]">
               전체 개수: {items?.length || 0}개
             </p>
           </div>
@@ -208,7 +208,7 @@ export default async function HistoryPage({ searchParams }: HistoryPageProps) {
             ) : (
               <>
                 {/* Desktop: 테이블 */}
-                <div className="hidden md:block">
+                <div className="hidden lg:block overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -301,8 +301,8 @@ export default async function HistoryPage({ searchParams }: HistoryPageProps) {
                   </Table>
                 </div>
 
-                {/* Mobile: 카드 */}
-                <div className="md:hidden space-y-4">
+                {/* Mobile/Tablet: 카드 */}
+                <div className="lg:hidden space-y-4">
                   {items.map((item: any) => {
                     const outcomeDisplay = formatOutcome(item.outcome);
                     const date = new Date(item.savedAt);
@@ -396,7 +396,7 @@ export default async function HistoryPage({ searchParams }: HistoryPageProps) {
     console.error("예상치 못한 에러:", err);
     console.groupEnd();
     return (
-      <main className="min-h-[calc(100vh-80px)] px-8 py-16">
+      <main className="min-h-[calc(100vh-80px)] px-4 md:px-8 py-8 md:py-16">
         <div className="w-full max-w-7xl mx-auto">
           <ErrorState message="문제가 발생했습니다. 괜찮습니다. 다시 시도해 주세요." />
         </div>

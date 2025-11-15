@@ -210,14 +210,14 @@ export default async function DashboardPage() {
   console.groupEnd();
 
   return (
-    <main className="min-h-[calc(100vh-80px)] px-8 py-16">
-      <div className="w-full max-w-7xl mx-auto space-y-8">
+    <main className="min-h-[calc(100vh-80px)] px-4 md:px-8 py-8 md:py-16">
+      <div className="w-full max-w-7xl mx-auto space-y-6 md:space-y-8">
         {/* 환영 메시지 헤더 */}
         <div className="space-y-2">
-          <h1 className="text-4xl lg:text-5xl font-bold font-[var(--font-inter)]">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold font-[var(--font-inter)]">
             대시보드
           </h1>
-          <p className="text-lg lg:text-xl text-foreground leading-relaxed font-[var(--font-noto-sans-kr)]">
+          <p className="text-base md:text-lg lg:text-xl text-foreground leading-relaxed font-[var(--font-noto-sans-kr)]">
             안녕하세요. 당신은 이미 경매를 공부했습니다. 이제 BIDIX에서 안전하게
             경험할 차례입니다.
           </p>

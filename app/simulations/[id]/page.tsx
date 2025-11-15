@@ -169,14 +169,14 @@ export default async function SimulationDetailPage({
   }
 
   return (
-    <main className="min-h-[calc(100vh-80px)] px-8 py-16">
-      <div className="w-full max-w-7xl mx-auto space-y-8">
+    <main className="min-h-[calc(100vh-80px)] px-4 md:px-8 py-8 md:py-16">
+      <div className="w-full max-w-7xl mx-auto space-y-6 md:space-y-8">
         {/* 헤더 */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="space-y-2">
-              <h1 className="text-4xl font-bold font-[var(--font-inter)]">시뮬레이션 상세</h1>
-              <p className="text-gray-600 dark:text-gray-400 font-[var(--font-noto-sans-kr)]">
+              <h1 className="text-3xl md:text-4xl font-bold font-[var(--font-inter)]">시뮬레이션 상세</h1>
+              <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 font-[var(--font-noto-sans-kr)]">
                 사건번호: {caseNumber}
               </p>
             </div>
@@ -192,7 +192,7 @@ export default async function SimulationDetailPage({
         </div>
 
         {/* 반응형 레이아웃: Desktop 2열, Mobile 1열 */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           {/* 좌측: 매각물건명세서 요약 */}
           <div>
             <SaleStatementSummary property={property} courtDocs={courtDocs} />
@@ -205,7 +205,7 @@ export default async function SimulationDetailPage({
         </div>
 
         {/* 입찰하기 CTA */}
-        <section className="pt-8 flex justify-center lg:justify-start">
+        <section className="pt-6 md:pt-8 flex justify-center md:justify-start">
           <Link href={`/simulations/${id}/bid`}>
             <Button size="lg" className="w-full md:w-auto">
               입찰하기

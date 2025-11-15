@@ -354,12 +354,12 @@ export default async function ResultPage({ params }: ResultPageProps) {
   console.groupEnd();
 
   return (
-    <main className="min-h-[calc(100vh-80px)] px-8 py-16">
-      <div className="w-full max-w-7xl mx-auto space-y-8">
+    <main className="min-h-[calc(100vh-80px)] px-4 md:px-8 py-8 md:py-16">
+      <div className="w-full max-w-7xl mx-auto space-y-6 md:space-y-8">
         {/* 헤더 */}
         <div className="space-y-2">
-          <h1 className="text-4xl font-bold font-[var(--font-inter)]">입찰 결과</h1>
-          <p className="text-gray-600 dark:text-gray-400 font-[var(--font-noto-sans-kr)]">시뮬레이션 ID: {id}</p>
+          <h1 className="text-3xl md:text-4xl font-bold font-[var(--font-inter)]">입찰 결과</h1>
+          <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 font-[var(--font-noto-sans-kr)]">시뮬레이션 ID: {id}</p>
         </div>
 
         {/* 브랜드 메시지 layer (페이지 최상단) */}
@@ -428,7 +428,7 @@ export default async function ResultPage({ params }: ResultPageProps) {
         )}
 
         {/* Premium Report CTAs */}
-        <section className="space-y-6">
+        <section className="space-y-4 md:space-y-6">
           {(() => {
             console.log("Rendering Premium Report CTAs");
             return (
@@ -443,10 +443,12 @@ export default async function ResultPage({ params }: ResultPageProps) {
                   </div>
                 )}
 
-                {/* Premium Report CTAs */}
-                <PremiumReportCTA type="rights" />
-                <PremiumReportCTA type="profit" />
-                <PremiumReportCTA type="auction" />
+                {/* Premium Report CTAs - 반응형 그리드 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                  <PremiumReportCTA type="rights" />
+                  <PremiumReportCTA type="profit" />
+                  <PremiumReportCTA type="auction" />
+                </div>
               </>
             );
           })()}

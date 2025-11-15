@@ -47,44 +47,44 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen flex flex-col">
       {/* 히어로 섹션 */}
-      <section className="w-full max-w-4xl mx-auto text-center px-8 py-16 lg:py-24 space-y-8">
-        <div className="space-y-6">
-          <h1 className="text-5xl lg:text-7xl font-bold leading-tight font-[var(--font-inter)]">
+      <section className="w-full max-w-4xl mx-auto text-center px-4 md:px-8 py-12 md:py-16 lg:py-24 space-y-6 md:space-y-8">
+        <div className="space-y-4 md:space-y-6">
+          <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold leading-tight font-[var(--font-inter)]">
             BIDIX
           </h1>
-          <div className="space-y-3">
-            <p className="text-2xl lg:text-3xl text-foreground font-medium font-[var(--font-inter)]">
+          <div className="space-y-2 md:space-y-3">
+            <p className="text-xl md:text-2xl lg:text-3xl text-foreground font-medium font-[var(--font-inter)]">
               Fail Safe, Bid Better.
             </p>
-            <p className="text-lg lg:text-xl text-muted-foreground font-[var(--font-noto-sans-kr)]">
+            <p className="text-base md:text-lg lg:text-xl text-muted-foreground font-[var(--font-noto-sans-kr)]">
               안전하게 실패하고, 더 나은 입찰자가 되는 것. 이것이 BIDIX의 약속입니다.
             </p>
           </div>
-          <p className="text-xl lg:text-2xl text-foreground brand-message font-[var(--font-noto-sans-kr)]">
+          <p className="text-lg md:text-xl lg:text-2xl text-foreground brand-message font-[var(--font-noto-sans-kr)]">
             당신의 경험을, 데이터로 증명하다.
           </p>
         </div>
 
-        <div className="space-y-6 pt-8 max-w-3xl mx-auto">
-          <p className="text-xl lg:text-2xl text-foreground leading-relaxed font-[var(--font-noto-sans-kr)]">
+        <div className="space-y-4 md:space-y-6 pt-6 md:pt-8 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl lg:text-2xl text-foreground leading-relaxed font-[var(--font-noto-sans-kr)]">
             우리는 경매를 &apos;배워본 적 없는 사람&apos;이 아니라, &apos;해본 적 없는 사람&apos;을 위해 존재합니다.
           </p>
-          <p className="text-lg lg:text-xl text-foreground leading-relaxed font-[var(--font-noto-sans-kr)]">
+          <p className="text-base md:text-lg lg:text-xl text-foreground leading-relaxed font-[var(--font-noto-sans-kr)]">
             당신은 이미 충분히 공부했습니다. 이제 경험할 차례입니다.
           </p>
-          <p className="text-base lg:text-lg text-muted-foreground leading-relaxed font-[var(--font-noto-sans-kr)]">
+          <p className="text-sm md:text-base lg:text-lg text-muted-foreground leading-relaxed font-[var(--font-noto-sans-kr)]">
             초보 투자자가 실패의 두려움 없이 무한히 실전 경험을 쌓아,
             스스로 좋은 의사결정을 내릴 수 있는 판단력을 기르도록 돕는
             AI 기반 실전 훈련 시뮬레이터입니다.
           </p>
-          <p className="text-base lg:text-lg text-foreground font-semibold leading-relaxed font-[var(--font-noto-sans-kr)]">
+          <p className="text-sm md:text-base lg:text-lg text-foreground font-semibold leading-relaxed font-[var(--font-noto-sans-kr)]">
             실패해도 되는 완벽한 실전을 제공합니다.
           </p>
         </div>
 
-        <div className="pt-8">
+        <div className="pt-6 md:pt-8">
           <Link href="/dashboard">
-            <Button size="lg" className="text-lg px-8 py-6 bg-primary hover:bg-primary/90">
+            <Button size="lg" className="text-base md:text-lg px-6 md:px-8 py-4 md:py-6 bg-primary hover:bg-primary/90 w-full md:w-auto">
               첫 입찰을 시작하시겠습니까?
             </Button>
           </Link>
@@ -92,16 +92,16 @@ export default function LandingPage() {
       </section>
 
       {/* 'ix' 가치 사슬 섹션 */}
-      <section className="w-full max-w-6xl mx-auto mt-24 px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold mb-4 font-[var(--font-inter)]">
+      <section className="w-full max-w-6xl mx-auto mt-12 md:mt-24 px-4 md:px-8">
+        <div className="text-center mb-8 md:mb-12">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 font-[var(--font-inter)]">
             BIDIX의 &apos;ix&apos; 가치 사슬
           </h2>
-          <p className="text-muted-foreground text-lg font-[var(--font-noto-sans-kr)]">
+          <p className="text-muted-foreground text-base md:text-lg font-[var(--font-noto-sans-kr)]">
             당신의 실력이 완성되는 3단계 여정
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           <Card className="p-8 space-y-4 border-border/50">
             <h3 className="text-2xl font-semibold font-[var(--font-inter)]">
               Infinite eXperience
@@ -136,16 +136,16 @@ export default function LandingPage() {
       </section>
 
       {/* Hard 모드 소개 섹션 */}
-      <section className="w-full max-w-4xl mx-auto mt-24 px-8">
-        <Card className="p-8 lg:p-12 border-2" style={{ borderColor: 'hsl(var(--accent-amber))' }}>
-          <div className="space-y-6 text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold font-[var(--font-inter)]" style={{ color: 'hsl(var(--accent-amber))' }}>
+      <section className="w-full max-w-4xl mx-auto mt-12 md:mt-24 px-4 md:px-8">
+        <Card className="p-6 md:p-8 lg:p-12 border-2" style={{ borderColor: 'hsl(var(--accent-amber))' }}>
+          <div className="space-y-4 md:space-y-6 text-center">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-[var(--font-inter)]" style={{ color: 'hsl(var(--accent-amber))' }}>
               Hard 모드
             </h2>
-            <p className="text-2xl lg:text-3xl font-semibold leading-relaxed font-[var(--font-noto-sans-kr)]">
+            <p className="text-xl md:text-2xl lg:text-3xl font-semibold leading-relaxed font-[var(--font-noto-sans-kr)]">
               실패는 비용이 아닙니다. 여기서는 데이터가 됩니다.
             </p>
-            <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto font-[var(--font-noto-sans-kr)]">
+            <p className="text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto font-[var(--font-noto-sans-kr)]">
               고난이도 시나리오에서 리스크 없는 환경에서 도전하세요.
               실제 경매와 동일한 변수와 리스크 구조 속에서, 당신은 비로소 진짜 배움을 시작합니다.
             </p>
@@ -154,9 +154,9 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="w-full mt-32 border-t border-border/50">
-        <div className="max-w-6xl mx-auto px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <footer className="w-full mt-16 md:mt-32 border-t border-border/50">
+        <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 md:py-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             <div className="space-y-4">
               <h3 className="text-xl font-bold font-[var(--font-inter)]">BIDIX</h3>
               <p className="text-muted-foreground font-[var(--font-noto-sans-kr)]">

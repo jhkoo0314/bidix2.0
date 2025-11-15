@@ -144,24 +144,29 @@ export default async function BidPage({ params }: BidPageProps) {
   }
 
   return (
-    <main className="min-h-[calc(100vh-80px)] px-8 py-16">
-      <div className="w-full max-w-4xl mx-auto space-y-8">
+    <main className="min-h-[calc(100vh-80px)] px-4 md:px-8 py-8 md:py-16">
+      <div className="w-full max-w-4xl mx-auto space-y-6 md:space-y-8">
         {/* 헤더 */}
         <div className="space-y-2">
-          <h1 className="text-4xl font-bold">입찰하기</h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <h1 className="text-3xl md:text-4xl font-bold font-[var(--font-inter)]">입찰하기</h1>
+          <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 font-[var(--font-noto-sans-kr)]">
             시뮬레이션 ID: {id}
           </p>
         </div>
 
-        {/* QuickFacts */}
-        <QuickFacts valuation={valuation} />
+        {/* 반응형 레이아웃: Tablet/Desktop 2열, Mobile 1열 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          {/* QuickFacts */}
+          <QuickFacts valuation={valuation} />
 
-        {/* BidGuidanceBox */}
-        <BidGuidanceBox valuation={valuation} />
+          {/* BidGuidanceBox */}
+          <BidGuidanceBox valuation={valuation} />
+        </div>
 
-        {/* BidForm (Client Component) */}
-        <BidForm simulationId={id} minBid={minBid} />
+        {/* BidForm (Client Component) - 전체 너비 */}
+        <div className="pt-4 md:pt-6">
+          <BidForm simulationId={id} minBid={minBid} />
+        </div>
       </div>
     </main>
   );
