@@ -632,7 +632,7 @@
   - [x] 브랜드 메시지 및 Accent Color 적용
   - [x] SectionCard, DataRow 활용
 
-#### 
+####
 
 **예상 소요:** 8-10시간
 
@@ -959,45 +959,45 @@
 
      **개발자 모드 감지**:
 
-     - [ ] 환경 변수 체크: `NEXT_PUBLIC_DEV_MODE === 'true'` 또는 `NODE_ENV === 'development'`
-     - [ ] 개발자 모드일 때 실제 리포트 컴포넌트 렌더링
-     - [ ] 프로덕션 모드일 때 기존 잠금 UI 유지
+  - [x] 환경 변수 체크: `NEXT_PUBLIC_DEV_MODE === 'true'` 또는 `NODE_ENV === 'development'`
+  - [x] 개발자 모드일 때 실제 리포트 컴포넌트 렌더링
+  - [x] 프로덕션 모드일 때 기존 잠금 UI 유지
 
-     **프로덕션 모드 (기존 잠금 UI)**:
+  **프로덕션 모드 (기존 잠금 UI)**:
 
-     - [x] `<PremiumReportCTA type="rights" />` 섹션
-       - 제목: "권리 분석 상세 리포트"
-       - 설명: "임대 권리 관계, 우선순위 분석, 명도비용 상세"
-       - 미리보기: `report-result.md` Section 1 참조
-     - [x] `<PremiumReportCTA type="profit" />` 섹션
-       - 제목: "수익 분석 상세 리포트"
-       - 설명: "비용 구조, 수익 시나리오, 수익분기점 분석"
-       - 미리보기: `report-result.md` Section 2 참조
-     - [x] `<PremiumReportCTA type="auction" />` 섹션
-       - 제목: "경매 분석 상세 리포트"
-       - 설명: "입찰 전략의 점수 상세, 개선 포인트"
-       - 미리보기: `report-result.md` Section 3 참조
-     - [x] 무료 리포트 1회 제공
-       - "매각물건명세서 해설판" 첫 1회 무료
-       - 사용량 체크 (`GET /api/usage`)
-     - [x] 잠금 UI
-       - 🔒 아이콘
-       - "로그인하기" 버튼 (v2.2에서는 비활성)
-       - 브랜드 메시지: **"사실을 이해하셨습니다. 이제 분석을 시작할 준비가 되셨나요?"** (브랜드 톤)
-       - 또는: **"🔒 더 깊은 분석을 원하신가요?"** + "당신은 이미 사실을 이해했습니다. 이제 분석을 시작할 준비가 되셨습니다."
-       - 브랜드 Accent Color (blue/amber) 적용
-       - 브랜드 보이스 준수: 격려하되 과장하지 않음, 데이터 기반 강조
+  - [x] `<PremiumReportCTA type="rights" />` 섹션
+    - 제목: "권리 분석 상세 리포트"
+    - 설명: "임대 권리 관계, 우선순위 분석, 명도비용 상세"
+    - 미리보기: `report-result.md` Section 1 참조
+  - [x] `<PremiumReportCTA type="profit" />` 섹션
+    - 제목: "수익 분석 상세 리포트"
+    - 설명: "비용 구조, 수익 시나리오, 수익분기점 분석"
+    - 미리보기: `report-result.md` Section 2 참조
+  - [x] `<PremiumReportCTA type="auction" />` 섹션
+    - 제목: "경매 분석 상세 리포트"
+    - 설명: "입찰 전략의 점수 상세, 개선 포인트"
+    - 미리보기: `report-result.md` Section 3 참조
+  - [x] 무료 리포트 1회 제공
+    - "매각물건명세서 해설판" 첫 1회 무료
+    - 사용량 체크 (`GET /api/usage`)
+  - [x] 잠금 UI
+    - 🔒 아이콘
+    - "로그인하기" 버튼 (v2.2에서는 비활성)
+    - 브랜드 메시지: **"사실을 이해하셨습니다. 이제 분석을 시작할 준비가 되셨나요?"** (브랜드 톤)
+    - 또는: **"🔒 더 깊은 분석을 원하신가요?"** + "당신은 이미 사실을 이해했습니다. 이제 분석을 시작할 준비가 되셨습니다."
+    - 브랜드 Accent Color (blue/amber) 적용
+    - 브랜드 보이스 준수: 격려하되 과장하지 않음, 데이터 기반 강조
 
-     **개발자 모드 (실제 리포트 표시)**:
+  **개발자 모드 (실제 리포트 표시)**:
 
-     - [ ] `<RightsAnalysisReport rights={} courtDocs={} />` 렌더링
-       - Phase 2.6.2 참조: 권리 분석 상세 리포트 구현
-     - [ ] `<ProfitAnalysisReport profit={} valuation={} costs={} />` 렌더링
-       - Phase 2.6.3 참조: 수익 분석 상세 리포트 구현
-     - [ ] `<AuctionAnalysisReport summary={} valuation={} profit={} userBid={} scoreBreakdown={} />` 렌더링
-       - Phase 2.6.4 참조: 경매 분석 상세 리포트 구현
-     - [ ] `<SaleStatementReport courtDocs={} isFreeAvailable={true} />` 렌더링
-       - 개발자 모드에서는 항상 무료로 표시
+  - [x] `<RightsAnalysisReport rights={} courtDocs={} />` 렌더링
+    - Phase 2.6.2 참조: 권리 분석 상세 리포트 구현
+  - [x] `<ProfitAnalysisReport profit={} valuation={} costs={} />` 렌더링
+    - Phase 2.6.3 참조: 수익 분석 상세 리포트 구현
+  - [x] `<AuctionAnalysisReport summary={} valuation={} profit={} userBid={} scoreBreakdown={} />` 렌더링
+    - Phase 2.6.4 참조: 경매 분석 상세 리포트 구현
+  - [x] `<SaleStatementReport courtDocs={} isFreeAvailable={true} />` 렌더링
+    - 개발자 모드에서는 항상 무료로 표시
 
   5. [x] `<ResultActions simulationId={} />`
      - [x] "히스토리 저장" 버튼

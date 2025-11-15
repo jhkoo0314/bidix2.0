@@ -346,9 +346,17 @@ export default async function ResultPage({ params }: ResultPageProps) {
   // 개발자 모드 감지 로직
   // 환경 변수 NEXT_PUBLIC_DEV_MODE가 "true"이거나 NODE_ENV가 "development"일 때 개발자 모드 활성화
   // 개발자 모드에서는 모든 Premium 리포트가 잠금 해제되어 실제 내용이 표시됨
+  console.group("Developer Mode Detection");
+  const nextPublicDevMode = process.env.NEXT_PUBLIC_DEV_MODE;
+  const nodeEnv = process.env.NODE_ENV;
   const isDevMode =
-    process.env.NEXT_PUBLIC_DEV_MODE === "true" ||
-    process.env.NODE_ENV === "development";
+    nextPublicDevMode === "true" || nodeEnv === "development";
+  
+  console.log("NEXT_PUBLIC_DEV_MODE:", nextPublicDevMode ?? "(undefined)");
+  console.log("NODE_ENV:", nodeEnv ?? "(undefined)");
+  console.log("isDevMode:", isDevMode);
+  console.log("개발자 모드 활성화:", isDevMode ? "✅ 실제 리포트 표시" : "❌ 잠금 UI 표시");
+  console.groupEnd();
 
   console.log("렌더링 준비 완료");
   console.log("입찰 실패 여부:", isBidFailed);
@@ -450,68 +458,184 @@ export default async function ResultPage({ params }: ResultPageProps) {
         <section className="space-y-4 md:space-y-6">
           {(() => {
             console.group("Premium Report Section");
+            console.log("=== Premium Report 렌더링 시작 ===");
             console.log("개발자 모드:", isDevMode);
             console.log("무료 리포트 사용 가능:", freeReportAvailable);
+            console.log("모드:", isDevMode ? "🔓 개발자 모드 (실제 리포트 표시)" : "🔒 프로덕션 모드 (잠금 UI 표시)");
             return (
               <>
                 {/* 매각물건명세서 해설판 (무료 리포트) */}
                 {/* 개발자 모드에서는 항상 isFreeAvailable={true} 전달 */}
                 {result.courtDocs && (
                   <div className="space-y-4">
-                    <SaleStatementReport
-                      courtDocs={result.courtDocs}
-                      isFreeAvailable={isDevMode ? true : freeReportAvailable}
-                    />
+                    {(() => {
+                      const saleStatementFreeAvailable = isDevMode ? true : freeReportAvailable;
+                      console.log("SaleStatementReport 렌더링:", {
+                        hasCourtDocs: !!result.courtDocs,
+                        isFreeAvailable: saleStatementFreeAvailable,
+                        mode: isDevMode ? "개발자 모드 (항상 무료)" : "프로덕션 모드 (사용량 체크)",
+                      });
+                      return (
+                        <SaleStatementReport
+                          courtDocs={result.courtDocs}
+                          isFreeAvailable={saleStatementFreeAvailable}
+                        />
+                      );
+                    })()}
                   </div>
                 )}
 
-                {/* 개발자 모드: 실제 리포트 표시 */}
+                {/* 개발자 모드: 실제 Premium 리포트 표시 */}
                 {isDevMode ? (
                   <div className="space-y-6">
                     {(() => {
-                      console.log("개발자 모드: 실제 리포트 렌더링 시작");
-                      console.log("RightsAnalysisReport props:", {
-                        hasRights: !!result.rights,
-                        hasCourtDocs: !!result.courtDocs,
-                      });
-                      console.log("ProfitAnalysisReport props:", {
-                        hasProfit: !!result.profit,
-                        hasValuation: !!result.valuation,
-                        hasCosts: !!result.costs,
-                      });
-                      console.log("AuctionAnalysisReport props:", {
-                        hasSummary: !!result.summary,
-                        hasValuation: !!result.valuation,
-                        hasProfit: !!result.profit,
-                        userBid,
-                        hasScoreBreakdown: !!scoreBreakdown,
-                      });
+                      console.group("개발자 모드: 실제 리포트 렌더링");
+                      console.log("✅ 개발자 모드 활성화 - 실제 리포트 컴포넌트 렌더링");
+                      
+                      // 각 리포트 컴포넌트 Props 검증
+                      console.group("RightsAnalysisReport Props 검증");
+                      const hasRights = !!result.rights;
+                      const hasCourtDocs = !!result.courtDocs;
+                      console.log("rights 존재:", hasRights);
+                      console.log("courtDocs 존재:", hasCourtDocs);
+                      if (hasRights) {
+                        console.log("rights 구조:", {
+                          assumableRightsTotal: result.rights.assumableRightsTotal,
+                          evictionRisk: result.rights.evictionRisk,
+                          riskFlags: result.rights.riskFlags?.length || 0,
+                        });
+                      }
+                      if (hasCourtDocs) {
+                        console.log("courtDocs 구조:", {
+                          hasRegisteredRights: !!result.courtDocs?.registeredRights,
+                          hasOccupants: !!result.courtDocs?.occupants,
+                          baseRightDate: result.courtDocs?.baseRightDate,
+                        });
+                      }
                       console.groupEnd();
+
+                      console.group("ProfitAnalysisReport Props 검증");
+                      const hasProfit = !!result.profit;
+                      const hasValuation = !!result.valuation;
+                      const hasCosts = !!result.costs;
+                      console.log("profit 존재:", hasProfit);
+                      console.log("valuation 존재:", hasValuation);
+                      console.log("costs 존재:", hasCosts);
+                      if (hasProfit) {
+                        console.log("profit 구조:", {
+                          initialSafetyMargin: result.profit.initialSafetyMargin,
+                          hasScenarios: !!result.profit.scenarios,
+                          scenarioKeys: result.profit.scenarios ? Object.keys(result.profit.scenarios) : [],
+                        });
+                      }
+                      if (hasValuation) {
+                        console.log("valuation 구조:", {
+                          minBid: result.valuation.minBid,
+                          adjustedFMV: result.valuation.adjustedFMV,
+                        });
+                      }
+                      if (hasCosts) {
+                        console.log("costs 구조:", {
+                          totalAcquisition: result.costs.acquisition?.totalAcquisition,
+                          ownCash: result.costs.acquisition?.ownCash,
+                        });
+                      }
+                      console.groupEnd();
+
+                      console.group("AuctionAnalysisReport Props 검증");
+                      const hasSummary = !!result.summary;
+                      const hasScoreBreakdown = !!scoreBreakdown;
+                      console.log("summary 존재:", hasSummary);
+                      console.log("valuation 존재:", hasValuation);
+                      console.log("profit 존재:", hasProfit);
+                      console.log("userBid:", userBid);
+                      console.log("scoreBreakdown 존재:", hasScoreBreakdown);
+                      if (hasSummary) {
+                        console.log("summary 구조:", {
+                          grade: result.summary.grade,
+                          isProfitable3m: result.summary.isProfitable3m,
+                          isProfitable6m: result.summary.isProfitable6m,
+                          isProfitable12m: result.summary.isProfitable12m,
+                          bestHoldingPeriod: result.summary.bestHoldingPeriod,
+                        });
+                      }
+                      if (hasScoreBreakdown) {
+                        console.log("scoreBreakdown 구조:", {
+                          finalScore: scoreBreakdown.finalScore,
+                          grade: scoreBreakdown.grade,
+                          accuracyScore: scoreBreakdown.accuracyScore,
+                          profitabilityScore: scoreBreakdown.profitabilityScore,
+                          riskControlScore: scoreBreakdown.riskControlScore,
+                        });
+                      }
+                      console.groupEnd();
+
+                      console.groupEnd();
+                      
+                      // 데이터 검증 및 에러 처리
+                      if (!result.rights || !result.courtDocs) {
+                        console.warn("⚠️ RightsAnalysisReport 렌더링 불가: rights 또는 courtDocs 데이터 없음");
+                      }
+                      if (!result.profit || !result.valuation || !result.costs) {
+                        console.warn("⚠️ ProfitAnalysisReport 렌더링 불가: profit, valuation 또는 costs 데이터 없음");
+                      }
+                      if (!result.summary || !result.valuation || !result.profit) {
+                        console.warn("⚠️ AuctionAnalysisReport 렌더링 불가: summary, valuation 또는 profit 데이터 없음");
+                      }
+                      
                       return (
                         <>
                           {/* 권리 분석 상세 리포트 */}
-                          {result.rights && result.courtDocs && (
-                            <RightsAnalysisReport
-                              rights={result.rights}
-                              courtDocs={result.courtDocs}
-                            />
-                          )}
+                          {result.rights && result.courtDocs ? (
+                            <>
+                              <Separator />
+                              {(() => {
+                                console.log("✅ RightsAnalysisReport 렌더링 시작");
+                                return (
+                                  <RightsAnalysisReport
+                                    rights={result.rights}
+                                    courtDocs={result.courtDocs}
+                                  />
+                                );
+                              })()}
+                            </>
+                          ) : null}
 
                           {/* 수익 분석 상세 리포트 */}
-                          <ProfitAnalysisReport
-                            profit={result.profit}
-                            valuation={result.valuation}
-                            costs={result.costs}
-                          />
+                          {result.profit && result.valuation && result.costs ? (
+                            <>
+                              <Separator />
+                              {(() => {
+                                console.log("✅ ProfitAnalysisReport 렌더링 시작");
+                                return (
+                                  <ProfitAnalysisReport
+                                    profit={result.profit}
+                                    valuation={result.valuation}
+                                    costs={result.costs}
+                                  />
+                                );
+                              })()}
+                            </>
+                          ) : null}
 
                           {/* 경매 분석 상세 리포트 */}
-                          <AuctionAnalysisReport
-                            summary={result.summary}
-                            valuation={result.valuation}
-                            profit={result.profit}
-                            userBid={userBid}
-                            scoreBreakdown={scoreBreakdown || undefined}
-                          />
+                          {result.summary && result.valuation && result.profit ? (
+                            <>
+                              <Separator />
+                              {(() => {
+                                console.log("✅ AuctionAnalysisReport 렌더링 시작");
+                                return (
+                                  <AuctionAnalysisReport
+                                    summary={result.summary}
+                                    valuation={result.valuation}
+                                    profit={result.profit}
+                                    userBid={userBid}
+                                    scoreBreakdown={scoreBreakdown || undefined}
+                                  />
+                                );
+                              })()}
+                            </>
+                          ) : null}
                         </>
                       );
                     })()}
@@ -519,11 +643,30 @@ export default async function ResultPage({ params }: ResultPageProps) {
                 ) : (
                   /* 프로덕션 모드: 잠금 UI 표시 */
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                    <PremiumReportCTA type="rights" />
-                    <PremiumReportCTA type="profit" />
-                    <PremiumReportCTA type="auction" />
+                    {(() => {
+                      console.group("프로덕션 모드: 잠금 UI 렌더링");
+                      console.log("🔒 프로덕션 모드 활성화 - PremiumReportCTA 잠금 UI 표시");
+                      console.log("렌더링할 PremiumReportCTA:", [
+                        { type: "rights", title: "권리 분석 상세 리포트" },
+                        { type: "profit", title: "수익 분석 상세 리포트" },
+                        { type: "auction", title: "경매 분석 상세 리포트" },
+                      ]);
+                      console.groupEnd();
+                      return (
+                        <>
+                          <PremiumReportCTA type="rights" />
+                          <PremiumReportCTA type="profit" />
+                          <PremiumReportCTA type="auction" />
+                        </>
+                      );
+                    })()}
                   </div>
                 )}
+                {(() => {
+                  console.log("=== Premium Report 렌더링 완료 ===");
+                  console.groupEnd();
+                  return null;
+                })()}
               </>
             );
           })()}
