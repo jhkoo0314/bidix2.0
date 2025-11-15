@@ -60,6 +60,9 @@ next-env.d.ts
 prompts/
 repomix-output.xml
 
+# test fixtures (contains sensitive auth data)
+tests/fixtures/auth.json
+
 # clerk configuration (can include secrets)
 /.clerk/
 
